@@ -79,6 +79,16 @@
           <a-textarea v-model:value="recipe.description" rows="3" />
         </a-form-item>
 
+        <a-form-item label="Изображение">
+          <div class="flex gap-4 items-center">
+            <input type="file" accept="image/*" @change="onImageChange" />
+
+            <div v-if="recipe.image">
+              <img :src="recipe.image" alt="Preview" class="w-24 h-24 object-cover rounded" />
+            </div>
+          </div>
+        </a-form-item>
+
         <a-form-item>
           <a-button type="primary" html-type="submit">💾 Сохранить</a-button>
         </a-form-item>
@@ -109,6 +119,7 @@ const recipe = ref({
   glass: "",
   decoration: "",
   description: "",
+  image: "",
 })
 
 const components = ref([])
@@ -135,6 +146,25 @@ const addEmptyComponent = () => {
 
 const removeComponent = (i) => {
   recipe.value.components.splice(i, 1)
+}
+
+const onImageChange = async (e) => {
+  const file = e.target.files[0]
+  if (!file) return
+
+  const formData = new FormData()
+  formData.append("image", file)
+
+  try {
+    const res = await axios.post("http://localhost:3000/api/upload", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    recipe.value.image = res.data.url
+    message.success("Изображение загружено!")
+  } catch (err) {
+    console.error(err)
+    message.error("Ошибка при загрузке изображения")
+  }
 }
 
 const updateRecipe = async () => {
