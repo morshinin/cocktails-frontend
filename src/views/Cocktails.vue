@@ -26,6 +26,14 @@
             </router-link>
           </template>
 
+          <div v-if="r.image" class="mb-3">
+            <img
+              :src="r.image"
+              alt="cocktail image"
+              class="w-full h-48 object-cover rounded"
+            />
+          </div>
+
           <a-table
             :columns="[
               { title: 'Ингредиент', dataIndex: 'name', key: 'name' },

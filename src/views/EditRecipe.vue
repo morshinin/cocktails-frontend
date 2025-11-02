@@ -156,7 +156,7 @@ const onImageChange = async (e) => {
   formData.append("image", file)
 
   try {
-    const res = await axios.post(`${API_URL}/upload-image`, formData, {
+    const res = await axios.post("http://localhost:3000/api/upload", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     })
     recipe.value.image = res.data.url
