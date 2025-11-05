@@ -61,15 +61,15 @@ import { ref, onMounted } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import axios from "axios"
 import { message } from "ant-design-vue"
+import { RECIPES_URL } from '../config/api.js';
 
 const route = useRoute()
 const router = useRouter()
 const cocktail = ref(null)
-const API_URL = "http://localhost:3000/api/recipes"
 
 const fetchCocktail = async () => {
   try {
-    const res = await axios.get(`${API_URL}/${route.params.id}`)
+    const res = await axios.get(`${RECIPES_URL}/${route.params.id}`)
     cocktail.value = res.data
   } catch (err) {
     console.error("Ошибка при загрузке коктейля:", err)
@@ -80,7 +80,7 @@ const fetchCocktail = async () => {
 // ===== Удаление =====
 const deleteCocktail = async () => {
   try {
-    await axios.delete(`${API_URL}/${route.params.id}`)
+    await axios.delete(`${RECIPES_URL}/${route.params.id}`)
     message.success("Коктейль удалён")
     router.push("/cocktails")
   } catch (err) {

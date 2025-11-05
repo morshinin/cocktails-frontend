@@ -65,9 +65,7 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import { message } from "ant-design-vue";
 import { DeleteOutlined } from "@ant-design/icons-vue";
-
-const COMPONENTS_URL = "http://localhost:3000/api/components";
-const UPLOAD_URL = "http://localhost:3000/api/upload";
+import { COMPONENTS_URL, UPLOAD_URL } from '../config/api.js';
 
 const components = ref([]);
 const newComponent = ref({ name: "", category: "", description: "", image: "" });

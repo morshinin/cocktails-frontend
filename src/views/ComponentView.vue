@@ -29,13 +29,14 @@
 import { ref, onMounted } from "vue"
 import { useRoute } from "vue-router"
 import axios from "axios"
+import { COMPONENTS_URL } from '../config/api.js';
 
 const route = useRoute()
 const component = ref(null)
 
 onMounted(async () => {
   try {
-    const res = await axios.get(`http://localhost:3000/api/components/${route.params.id}`)
+    const res = await axios.get(`${COMPONENTS_URL}/${route.params.id}`)
     component.value = res.data
   } catch (err) {
     console.error("Ошибка загрузки компонента:", err)

@@ -35,6 +35,7 @@
 import { ref, onMounted } from "vue"
 import axios from "axios"
 import { useRoute } from "vue-router"
+import { RECIPES_URL, INSTRUCTIONS_URL } from '../config/api.js';
 
 const route = useRoute()
 const cocktailId = route.params.id
@@ -43,14 +44,11 @@ const cocktail = ref(null)
 const instruction = ref(null)
 const loading = ref(true)
 
-const RECIPE_URL = "http://localhost:3000/api/recipes"
-const INSTRUCTION_URL = "http://localhost:3000/api/instructions"
-
 const loadData = async () => {
   try {
     const [cocktailRes, instructionRes] = await Promise.all([
-      axios.get(`${RECIPE_URL}/${cocktailId}`),
-      axios.get(`${INSTRUCTION_URL}/${cocktailId}`).catch(() => null)
+      axios.get(`${RECIPES_URL}/${cocktailId}`),
+      axios.get(`${INSTRUCTIONS_URL}/${cocktailId}`).catch(() => null)
     ])
 
     cocktail.value = cocktailRes.data
