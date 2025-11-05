@@ -102,14 +102,11 @@ import { ref, onMounted } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import axios from "axios"
 import { message } from "ant-design-vue"
+import { RECIPES_URL, COMPONENTS_URL, METHODS_URL, UPLOAD_URL } from '../config/api.js';
 
 const route = useRoute()
 const router = useRouter()
 const id = route.params.id
-
-const API_URL = "http://localhost:3000/api/recipes"
-const COMPONENTS_URL = "http://localhost:3000/api/components"
-const METHODS_URL = "http://localhost:3000/api/methods"
 
 const recipe = ref({
   name: "",
@@ -126,7 +123,7 @@ const components = ref([])
 const methods = ref([])
 
 const fetchRecipe = async () => {
-  const res = await axios.get(`${API_URL}/${id}`)
+  const res = await axios.get(`${RECIPES_URL}/${id}`)
   recipe.value = res.data
 }
 
@@ -156,7 +153,7 @@ const onImageChange = async (e) => {
   formData.append("image", file)
 
   try {
-    const res = await axios.post("http://localhost:3000/api/upload", formData, {
+    const res = await axios.post(UPLOAD_URL, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     })
     recipe.value.image = res.data.url
@@ -169,7 +166,7 @@ const onImageChange = async (e) => {
 
 const updateRecipe = async () => {
   try {
-    await axios.put(`${API_URL}/${id}`, recipe.value)
+    await axios.put(`${RECIPES_URL}/${id}`, recipe.value)
     message.success("Изменения сохранены")
     router.push("/cocktails")
   } catch (e) {

@@ -104,10 +104,7 @@ import { ref, onMounted } from "vue"
 import axios from "axios"
 import { message } from "ant-design-vue"
 import { useRouter } from "vue-router"
-
-const API_URL = "http://localhost:3000/api/recipes"
-const COMPONENTS_URL = "http://localhost:3000/api/components"
-const METHODS_URL = "http://localhost:3000/api/methods"
+import { RECIPES_URL, COMPONENTS_URL, METHODS_URL } from "../config/api"
 
 const router = useRouter()
 
@@ -146,7 +143,7 @@ const addRecipe = async () => {
   if (!newRecipe.value.name) return message.warning("Введите название")
 
   try {
-    await axios.post(API_URL, newRecipe.value)
+    await axios.post(RECIPES_URL, newRecipe.value)
     message.success("Коктейль добавлен")
     router.push("/cocktails")
   } catch (e) {
