@@ -124,9 +124,7 @@
 import { ref, onMounted, h } from "vue";
 import axios from "axios";
 import { message, Popconfirm } from "ant-design-vue";
-
-const API_URL = "http://localhost:3000/api/recipes";
-const COMPONENTS_URL = "http://localhost:3000/api/components";
+import { RECIPES_URL, COMPONENTS_URL, METHODS_URL } from '../config/api.js';
 
 const recipes = ref([]);
 const components = ref([]);
@@ -145,7 +143,7 @@ const newRecipe = ref({
 
 const fetchRecipes = async () => {
   try {
-    const res = await axios.get(API_URL);
+    const res = await axios.get(RECIPES_URL);
     // гарантируем, что поле Компоненты всегда массив
     recipes.value = (res.data || []).map((r) => ({
       ...r,
@@ -173,7 +171,7 @@ const fetchComponents = async () => {
 
 const fetchMethod = async () => {
   try {
-    const res = await axios.get("http://localhost:3000/api/method");
+    const res = await axios.get(METHODS_URL);
     method.value = res.data || [];
   } catch (e) {
     console.error(e);
@@ -185,7 +183,7 @@ const addRecipe = async () => {
   if (!newRecipe.value.name) return message.warning("Введите название");
 
   try {
-    await axios.post(API_URL, newRecipe.value);
+    await axios.post(RECIPES_URL, newRecipe.value);
     message.success("Коктейль добавлен");
     await fetchRecipes();
 
@@ -231,7 +229,7 @@ const removeComponent = (i) => {
 
 const deleteRecipe = async (id) => {
   try {
-    await axios.delete(`${API_URL}/${id}`);
+    await axios.delete(`${RECIPES_URL}/${id}`);
     message.info("Коктейль удалён");
     await fetchRecipes();
   } catch (e) {

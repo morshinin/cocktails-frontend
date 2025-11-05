@@ -79,13 +79,13 @@ import { ref, onMounted } from "vue"
 import axios from "axios"
 import { message } from "ant-design-vue"
 import CocktailFilter from "../components/CocktailFilter.vue"
+import { RECIPES_URL } from '../config/api.js';
 
-const API_URL = "http://localhost:3000/api/recipes"
 const recipes = ref([])
 const filteredRecipes = ref([])
 
 const fetchRecipes = async () => {
-  const res = await axios.get(API_URL)
+  const res = await axios.get(RECIPES_URL)
   recipes.value = res.data
   filteredRecipes.value = res.data
 }
@@ -103,7 +103,7 @@ const applyFilters = (filters) => {
 }
 
 const deleteRecipe = async (id) => {
-  await axios.delete(`${API_URL}/${id}`)
+  await axios.delete(`${RECIPES_URL}/${id}`)
   message.info("Коктейль удалён")
   await fetchRecipes()
 }

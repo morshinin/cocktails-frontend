@@ -69,6 +69,7 @@
 import { ref, onMounted } from "vue"
 import axios from "axios"
 import { message } from "ant-design-vue"
+import { COMPONENTS_URL, METHODS_URL } from '../config/api.js';
 
 const filters = ref({
   category: "",
@@ -85,9 +86,9 @@ const methods = ref([])
 const fetchFilterData = async () => {
   try {
     const [compRes, glassRes, methodRes] = await Promise.all([
-      axios.get("http://localhost:3000/api/components"),
+      axios.get(COMPONENTS_URL),
       // axios.get("http://localhost:3000/api/glasses"),
-      // axios.get("http://localhost:3000/api/methods"),
+      // axios.get(METHODS_URL),
     ])
     components.value = compRes.data || []
     // glasses.value = glassRes.data || []

@@ -71,9 +71,7 @@
 import { ref, onMounted } from "vue"
 import axios from "axios"
 import { message } from "ant-design-vue"
-
-const API_URL = "http://localhost:3000/api/recipes"
-const COMPONENTS_URL = "http://localhost:3000/api/components"
+import { RECIPES_URL, COMPONENTS_URL } from '../config/api.js';
 
 const gameStarted = ref(false)
 const gameEnded = ref(false)
@@ -98,7 +96,7 @@ const wrongCount = ref(0)
 const fetchData = async () => {
   try {
     const [cocktailsRes, componentsRes] = await Promise.all([
-      axios.get(API_URL),
+      axios.get(RECIPES_URL),
       axios.get(COMPONENTS_URL)
     ])
     cocktails.value = cocktailsRes.data
@@ -189,7 +187,6 @@ const submitCocktail = () => {
     message.info("Игра завершена")
   }
 }
-
 
 onMounted(fetchData)
 </script>

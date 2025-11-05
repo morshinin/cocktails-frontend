@@ -72,8 +72,7 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import { message } from "ant-design-vue";
 import { DeleteOutlined } from "@ant-design/icons-vue";
-
-const METHODS_URL = "http://localhost:3000/api/methods";
+import { METHODS_URL} from '../config/api.js';
 
 const methods = ref([]);
 const newMethod = ref({ name: "" });
