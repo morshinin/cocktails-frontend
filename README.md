@@ -2,6 +2,25 @@
 
 #### English description below
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Vue-3-42b883?logo=vue.js" />
+  <img src="https://img.shields.io/badge/Vite-Bundler-646cff?logo=vite" />
+  <img src="https://img.shields.io/badge/Pinia-State%20Store-fad64d?logo=pinia" />
+  <img src="https://img.shields.io/badge/TailwindCSS-Utility%20CSS-38bdf8?logo=tailwindcss" />
+  <img src="https://img.shields.io/badge/Ant%20Design%20Vue-UI%20Library-0170fe?logo=antdesign" />
+</p>
+
+<p align="center">
+  <a href="https://cocktails-frontend-omega.vercel.app/"><img src="https://img.shields.io/badge/🌍_Live Demo-Visit-green" /></a>
+  <a href="https://github.com/morshinin"><img src="https://img.shields.io/badge/Author-morshinin-blue?logo=github" /></a>
+</p>
+
+<p align="center">
+  <a href="https://cocktails-frontend-omega.vercel.app/">
+    <img src="https://vercel-badge.vercel.app/api/morshinin/cocktails-frontend" />
+  </a>
+</p>
+
 Интерфейс для приложения, которое позволяет:
 - просматривать коктейли,
 - фильтровать их по ингредиентам, методам, бокалам и категории,
