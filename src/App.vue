@@ -1,8 +1,22 @@
 <script setup>
 import EnvBadge from "./components/EnvBadge.vue";
 import { useAuthStore } from "./stores/auth";
+import { useRouter } from "vue-router";
+import { onMounted } from "vue";
 
 const authStore = useAuthStore();
+const router = useRouter();
+
+onMounted(() => {
+  if (authStore.isAuthenticated && !authStore.user) {
+    authStore.fetchProfile();
+  }
+});
+
+const handleLogout = () => {
+  authStore.logout();
+  router.push("/login");
+};
 </script>
 
 <template>
@@ -27,9 +41,30 @@ const authStore = useAuthStore();
           </a-menu-item>
         </a-menu>
       </div>
-      <div class="auth-links">
-        <router-link to="/login">Sign in</router-link>
-        <router-link to="/register">Sign up</router-link>
+      
+      <div class="auth-actions">
+        <div v-if="!authStore.isAuthenticated" class="auth-links">
+          <router-link to="/login">Sign in</router-link>
+          <router-link to="/register">Sign up</router-link>
+        </div>
+        
+        <div v-else class="user-menu">
+          <a-dropdown trigger="click">
+            <a-avatar style="background-color: #87d068; cursor: pointer">
+              {{ authStore.user?.name?.[0]?.toUpperCase() || 'U' }}
+            </a-avatar>
+            <template #overlay>
+              <a-menu>
+                <a-menu-item key="profile">
+                  <router-link to="/profile">Profile</router-link>
+                </a-menu-item>
+                <a-menu-item key="logout" @click="handleLogout">
+                  Log out
+                </a-menu-item>
+              </a-menu>
+            </template>
+          </a-dropdown>
+        </div>
       </div>
     </a-layout-header>
 
@@ -45,18 +80,21 @@ const authStore = useAuthStore();
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px; /* Ensure padding matches typical Ant Design header */
+  padding: 0 24px;
 }
 
 .menu-container {
   flex: 1;
-  min-width: 0; /* Prevent overflow */
+  min-width: 0;
+}
+
+.auth-actions {
+  margin-left: 20px;
 }
 
 .auth-links {
   display: flex;
   gap: 20px;
-  margin-left: 20px;
 }
 
 .auth-links a {
@@ -68,5 +106,10 @@ const authStore = useAuthStore();
 
 .auth-links a:hover {
   color: #fff;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
 }
 </style>
