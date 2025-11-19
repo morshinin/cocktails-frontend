@@ -14,6 +14,12 @@ const routes = [
   { path: "/login", component: Login },
   { path: "/register", component: () => import("../views/Register.vue") },
   { path: "/select-venue", component: SelectVenue },
+  {
+    path: "/profile",
+    name: "Profile",
+    component: () => import("../views/Profile.vue"),
+    meta: { requiresAuth: true },
+  },
   { path: '/cocktails', name: 'Cocktails', component: Cocktails },
   { path: '/cocktails/new', component: AddCocktail },
   { path: "/cocktails/:id", component: CocktailDetails },
