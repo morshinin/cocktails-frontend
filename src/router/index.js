@@ -68,7 +68,7 @@ router.beforeEach((to) => {
   }
 
   // user logged in but no venue selected
-  if (to.meta.requiresAuth && !auth.selectedVenue) {
+  if (to.meta.requiresAuth && !auth.selectedVenue && to.name !== 'Profile') {
     return "/select-venue";
   }
 });
