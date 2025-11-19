@@ -6,11 +6,15 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+
+    "devremote": "vite --mode development",
+    "prodserver": "vite --mode production"
   },
   "dependencies": {
     "ant-design-vue": "^4.2.6",
     "axios": "^1.12.2",
+    "pinia": "^3.0.4",
     "vue": "^3.5.22",
     "vue-router": "^4.5.1"
   },
