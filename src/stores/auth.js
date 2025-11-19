@@ -18,7 +18,7 @@ export const useAuthStore = defineStore("auth", {
 
   actions: {
     async login(email, password) {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/login`, {
         email,
         password,
       });
@@ -30,7 +30,7 @@ export const useAuthStore = defineStore("auth", {
     },
 
     async register(email, password, name) {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/register`, {
         email,
         password,
         name,
@@ -43,7 +43,7 @@ export const useAuthStore = defineStore("auth", {
     },
 
     async fetchProfile() {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/auth/me`, {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/me`, {
         headers: { Authorization: `Bearer ${this.token}` }
       });
 
@@ -55,6 +55,13 @@ export const useAuthStore = defineStore("auth", {
     selectVenue(venue) {
       this.selectedVenue = venue;
       localStorage.setItem("venue", JSON.stringify(venue));
+    },
+
+    async updateProfile(userData) {
+      const res = await axios.put(`${import.meta.env.VITE_API_URL}/me`, userData, {
+        headers: { Authorization: `Bearer ${this.token}` }
+      });
+      this.user = res.data.user;
     },
 
     logout() {
