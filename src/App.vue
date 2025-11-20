@@ -58,6 +58,9 @@ const handleLogout = () => {
                 <a-menu-item key="profile">
                   <router-link to="/profile">Profile</router-link>
                 </a-menu-item>
+                <a-menu-item key="organizations">
+                  <router-link to="/organizations">Organizations</router-link>
+                </a-menu-item>
                 <a-menu-item key="logout" @click="handleLogout">
                   Log out
                 </a-menu-item>
