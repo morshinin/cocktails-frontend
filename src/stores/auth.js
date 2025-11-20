@@ -7,7 +7,7 @@ export const useAuthStore = defineStore("auth", {
     user: null,
     organization: null,
     venues: [],
-    selectedVenue: null,
+    selectedVenue: JSON.parse(localStorage.getItem("venue")) || null,
   }),
 
   getters: {
@@ -50,6 +50,17 @@ export const useAuthStore = defineStore("auth", {
       this.user = res.data.user;
       this.organization = res.data.organization;
       this.venues = res.data.venues;
+
+      if (this.selectedVenue) {
+        const venueExists = this.venues.find(v => v._id === this.selectedVenue._id);
+        if (!venueExists) {
+          this.selectedVenue = null;
+          localStorage.removeItem("venue");
+        } else {
+          this.selectedVenue = venueExists;
+          localStorage.setItem("venue", JSON.stringify(venueExists));
+        }
+      }
     },
 
     selectVenue(venue) {
