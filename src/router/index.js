@@ -5,6 +5,7 @@ import Cocktails from '../views/Cocktails.vue'
 import AddCocktail from '../views/AddCocktail.vue'
 import CocktailComponents from '../views/CocktailComponents.vue'
 import CocktailMethods from '../views/CocktailMethods.vue'
+import CocktailGlasses from '../views/CocktailGlasses.vue'
 import CocktailDetails from "../views/CocktailDetails.vue"
 import Login from "../views/Login.vue";
 import SelectVenue from "../views/SelectVenue.vue";
@@ -37,6 +38,7 @@ const routes = [
   { path: "/cocktails/:id", component: CocktailDetails },
   { path: '/cocktailComponents', name: 'CocktailComponents', component: CocktailComponents },
   { path: '/cocktailMethods', name: 'CocktailMethods', component: CocktailMethods },
+  { path: '/cocktailGlasses', name: 'CocktailGlasses', component: CocktailGlasses },
   {
     path: "/cocktails/:id/edit",
     name: "EditRecipe",

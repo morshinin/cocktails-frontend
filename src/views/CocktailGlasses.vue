@@ -1,12 +1,12 @@
 <template>
   <div>
-    <!-- Добавление нового метода -->
-    <a-card class="mb-4" title="Добавить новый метод приготовления">
-      <a-form layout="vertical" @submit.prevent="addMethod">
+    <!-- Добавление нового бокала -->
+    <a-card class="mb-4" title="Добавить новый бокал">
+      <a-form layout="vertical" @submit.prevent="addGlass">
         <a-form-item label="Название">
           <a-input
-            v-model:value="newMethod.name"
-            placeholder="Введите название метода (например: Шейк)"
+            v-model:value="newGlass.name"
+            placeholder="Введите название бокала (например: Хайбол)"
           />
         </a-form-item>
 
@@ -16,9 +16,9 @@
       </a-form>
     </a-card>
 
-    <!-- Список методов -->
-    <a-card title="Список методов приготовления">
-      <a-list bordered :data-source="methods">
+    <!-- Список бокалов -->
+    <a-card title="Список бокалов">
+      <a-list bordered :data-source="glasses">
         <template #renderItem="{ item }">
           <a-list-item class="flex justify-between items-center">
             <div class="flex items-center gap-2">
@@ -51,10 +51,10 @@
             </div>
 
             <a-popconfirm
-              title="Удалить метод?"
+              title="Удалить бокал?"
               ok-text="Да"
               cancel-text="Нет"
-              @confirm="deleteMethod(item._id)"
+              @confirm="deleteGlass(item._id)"
             >
               <a-button type="text" danger>
                 <DeleteOutlined />
@@ -72,74 +72,74 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import { message } from "ant-design-vue";
 import { DeleteOutlined } from "@ant-design/icons-vue";
-import { METHODS_URL} from '../config/api.js';
+import { GLASSES_URL } from '../config/api.js';
 import { useAuthStore } from '../stores/auth';
 
-const methods = ref([]);
-const newMethod = ref({ name: "" });
+const glasses = ref([]);
+const newGlass = ref({ name: "" });
 const editingId = ref(null);
 const editName = ref("");
 
 // ===== Загрузка списка =====
-const fetchMethods = async () => {
+const fetchGlasses = async () => {
   const authStore = useAuthStore();
   if (!authStore.selectedVenue) return;
 
   try {
-    const res = await axios.get(METHODS_URL, {
+    const res = await axios.get(GLASSES_URL, {
       params: { venueId: authStore.selectedVenue._id },
       headers: { Authorization: `Bearer ${authStore.token}` }
     });
-    methods.value = res.data || [];
+    glasses.value = res.data || [];
   } catch (e) {
     console.error(e);
-    message.error("Не удалось загрузить методы");
+    message.error("Не удалось загрузить бокалы");
   }
 };
 
 // ===== Добавление =====
-const addMethod = async () => {
+const addGlass = async () => {
   const authStore = useAuthStore();
   if (!authStore.selectedVenue) return message.error("Venue not selected");
 
-  const name = newMethod.value.name.trim();
+  const name = newGlass.value.name.trim();
   if (!name) return message.warning("Введите название");
 
-  const exists = methods.value.some(
-    (m) => m.name.toLowerCase() === name.toLowerCase()
+  const exists = glasses.value.some(
+    (g) => g.name.toLowerCase() === name.toLowerCase()
   );
-  if (exists) return message.warning("Такой метод уже существует");
+  if (exists) return message.warning("Такой бокал уже существует");
 
   try {
-    await axios.post(METHODS_URL, { 
+    await axios.post(GLASSES_URL, { 
       name,
       venueId: authStore.selectedVenue._id 
     }, {
       headers: { Authorization: `Bearer ${authStore.token}` }
     });
-    message.success("Метод добавлен");
-    newMethod.value.name = "";
-    await fetchMethods();
+    message.success("Бокал добавлен");
+    newGlass.value.name = "";
+    await fetchGlasses();
   } catch (e) {
     console.error(e);
     if (e.response?.status === 409)
-      message.warning("Такой метод уже существует");
-    else message.error("Ошибка при добавлении метода");
+      message.warning("Такой бокал уже существует");
+    else message.error("Ошибка при добавлении бокала");
   }
 };
 
 // ===== Удаление =====
-const deleteMethod = async (id) => {
+const deleteGlass = async (id) => {
   const authStore = useAuthStore();
   try {
-    await axios.delete(`${METHODS_URL}/${id}`, {
+    await axios.delete(`${GLASSES_URL}/${id}`, {
       headers: { Authorization: `Bearer ${authStore.token}` }
     });
-    message.success("Метод удалён");
-    await fetchMethods();
+    message.success("Бокал удалён");
+    await fetchGlasses();
   } catch (e) {
     console.error(e);
-    message.error("Ошибка при удалении метода");
+    message.error("Ошибка при удалении бокала");
   }
 };
 
@@ -158,26 +158,26 @@ const saveEdit = async (id) => {
   const newName = editName.value.trim();
   if (!newName) return message.warning("Введите название");
 
-  const exists = methods.value.some(
-    (m) => m._id !== id && m.name.toLowerCase() === newName.toLowerCase()
+  const exists = glasses.value.some(
+    (g) => g._id !== id && g.name.toLowerCase() === newName.toLowerCase()
   );
-  if (exists) return message.warning("Такой метод уже существует");
+  if (exists) return message.warning("Такой бокал уже существует");
 
   try {
     const authStore = useAuthStore();
-    await axios.put(`${METHODS_URL}/${id}`, { name: newName }, {
+    await axios.put(`${GLASSES_URL}/${id}`, { name: newName }, {
       headers: { Authorization: `Bearer ${authStore.token}` }
     });
     message.success("Изменения сохранены");
     cancelEdit();
-    await fetchMethods();
+    await fetchGlasses();
   } catch (e) {
     console.error(e);
-    message.error("Ошибка при сохранении метода");
+    message.error("Ошибка при сохранении бокала");
   }
 };
 
-onMounted(fetchMethods);
+onMounted(fetchGlasses);
 </script>
 
 <style scoped>

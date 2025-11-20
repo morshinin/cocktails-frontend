@@ -69,7 +69,7 @@
 import { ref, onMounted } from "vue"
 import axios from "axios"
 import { message } from "ant-design-vue"
-import { COMPONENTS_URL, METHODS_URL } from '../config/api.js';
+import { COMPONENTS_URL, METHODS_URL, GLASSES_URL } from '../config/api.js';
 import { useAuthStore } from '../stores/auth';
 
 const filters = ref({
@@ -91,12 +91,18 @@ const fetchFilterData = async () => {
   try {
     const [compRes, glassRes, methodRes] = await Promise.all([
       axios.get(COMPONENTS_URL, { params: { venueId: authStore.selectedVenue._id } }),
-      // axios.get("http://localhost:3000/api/glasses"),
-      // axios.get(METHODS_URL),
+      axios.get(GLASSES_URL, { 
+        params: { venueId: authStore.selectedVenue._id },
+        headers: { Authorization: `Bearer ${authStore.token}` }
+      }),
+      axios.get(METHODS_URL, { 
+        params: { venueId: authStore.selectedVenue._id },
+        headers: { Authorization: `Bearer ${authStore.token}` }
+      }),
     ])
     components.value = compRes.data || []
-    // glasses.value = glassRes.data || []
-    // methods.value = methodRes.data || []
+    glasses.value = glassRes.data || []
+    methods.value = methodRes.data || []
   } catch (err) {
     console.error("Ошибка при загрузке данных фильтра:", err)
     message.error("Не удалось загрузить данные фильтра")
