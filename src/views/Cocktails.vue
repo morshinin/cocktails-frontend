@@ -80,12 +80,18 @@ import axios from "axios"
 import { message } from "ant-design-vue"
 import CocktailFilter from "../components/CocktailFilter.vue"
 import { RECIPES_URL } from '../config/api.js';
+import { useAuthStore } from '../stores/auth';
 
 const recipes = ref([])
 const filteredRecipes = ref([])
 
 const fetchRecipes = async () => {
-  const res = await axios.get(RECIPES_URL)
+  const authStore = useAuthStore();
+  if (!authStore.selectedVenue) return;
+  
+  const res = await axios.get(RECIPES_URL, {
+    params: { venueId: authStore.selectedVenue._id }
+  })
   recipes.value = res.data
   filteredRecipes.value = res.data
 }

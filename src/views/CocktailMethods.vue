@@ -73,6 +73,7 @@ import axios from "axios";
 import { message } from "ant-design-vue";
 import { DeleteOutlined } from "@ant-design/icons-vue";
 import { METHODS_URL} from '../config/api.js';
+import { useAuthStore } from '../stores/auth';
 
 const methods = ref([]);
 const newMethod = ref({ name: "" });
@@ -81,8 +82,13 @@ const editName = ref("");
 
 // ===== Загрузка списка =====
 const fetchMethods = async () => {
+  const authStore = useAuthStore();
+  if (!authStore.selectedVenue) return;
+
   try {
-    const res = await axios.get(METHODS_URL);
+    const res = await axios.get(METHODS_URL, {
+      params: { venueId: authStore.selectedVenue._id }
+    });
     methods.value = res.data || [];
   } catch (e) {
     console.error(e);
@@ -92,6 +98,9 @@ const fetchMethods = async () => {
 
 // ===== Добавление =====
 const addMethod = async () => {
+  const authStore = useAuthStore();
+  if (!authStore.selectedVenue) return message.error("Venue not selected");
+
   const name = newMethod.value.name.trim();
   if (!name) return message.warning("Введите название");
 
@@ -101,7 +110,10 @@ const addMethod = async () => {
   if (exists) return message.warning("Такой метод уже существует");
 
   try {
-    await axios.post(METHODS_URL, { name });
+    await axios.post(METHODS_URL, { 
+      name,
+      venueId: authStore.selectedVenue._id 
+    });
     message.success("Метод добавлен");
     newMethod.value.name = "";
     await fetchMethods();

@@ -66,6 +66,7 @@ import axios from "axios";
 import { message } from "ant-design-vue";
 import { DeleteOutlined } from "@ant-design/icons-vue";
 import { COMPONENTS_URL, UPLOAD_URL } from '../config/api.js';
+import { useAuthStore } from '../stores/auth';
 
 const components = ref([]);
 const newComponent = ref({ name: "", category: "", description: "", image: "" });
@@ -73,7 +74,12 @@ const previewImage = ref(null);
 
 // === Загрузка списка ===
 const fetchComponents = async () => {
-  const res = await axios.get(COMPONENTS_URL);
+  const authStore = useAuthStore();
+  if (!authStore.selectedVenue) return;
+
+  const res = await axios.get(COMPONENTS_URL, {
+    params: { venueId: authStore.selectedVenue._id }
+  });
   components.value = res.data;
 };
 
@@ -100,11 +106,20 @@ const handleImageUpload = async (event) => {
 
 // === Добавление нового компонента ===
 const addComponent = async () => {
+  const authStore = useAuthStore();
+  if (!authStore.selectedVenue) return message.error("Venue not selected");
+
   const { name, category, description, image } = newComponent.value;
   if (!name.trim()) return message.warning("Введите название");
 
   try {
-    await axios.post(COMPONENTS_URL, { name, category, description, image });
+    await axios.post(COMPONENTS_URL, { 
+      name, 
+      category, 
+      description, 
+      image,
+      venueId: authStore.selectedVenue._id 
+    });
     message.success("Компонент добавлен!");
     newComponent.value = { name: "", category: "", description: "", image: "" };
     previewImage.value = null;
