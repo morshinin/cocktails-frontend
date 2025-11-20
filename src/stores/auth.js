@@ -49,7 +49,7 @@ export const useAuthStore = defineStore("auth", {
 
       this.user = res.data.user;
       this.organization = res.data.organization;
-      this.venues = res.data.venues;
+      this.venues = res.data.venues || [];
 
       if (this.selectedVenue) {
         const venueExists = this.venues.find(v => v._id === this.selectedVenue._id);
