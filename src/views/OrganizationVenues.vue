@@ -1,11 +1,13 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useVenuesStore } from '../stores/venues';
+import { useAuthStore } from '../stores/auth';
 import { message } from 'ant-design-vue';
 import { PlusOutlined, ShopOutlined } from '@ant-design/icons-vue';
 
 const route = useRoute();
+const router = useRouter();
 const venuesStore = useVenuesStore();
 const organizationId = route.params.id;
 
@@ -49,6 +51,12 @@ const onFinish = async (values) => {
   } finally {
     loading.value = false;
   }
+};
+
+const selectVenue = (venue) => {
+  const authStore = useAuthStore();
+  authStore.selectVenue(venue);
+  router.push('/cocktails');
 };
 </script>
 
@@ -105,7 +113,7 @@ const onFinish = async (values) => {
     <div v-else class="list-section">
       <a-row :gutter="[16, 16]">
         <a-col :xs="24" :sm="12" :md="8" v-for="venue in venuesStore.venues" :key="venue._id">
-          <a-card :title="venue.name" hoverable>
+          <a-card :title="venue.name" hoverable @click="selectVenue(venue)" style="cursor: pointer">
              <template #extra>
                 <!-- Future: Edit/Delete actions -->
              </template>

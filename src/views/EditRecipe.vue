@@ -103,6 +103,7 @@ import { useRoute, useRouter } from "vue-router"
 import axios from "axios"
 import { message } from "ant-design-vue"
 import { RECIPES_URL, COMPONENTS_URL, METHODS_URL, UPLOAD_URL } from '../config/api.js';
+import { useAuthStore } from '../stores/auth';
 
 const route = useRoute()
 const router = useRouter()
@@ -128,12 +129,20 @@ const fetchRecipe = async () => {
 }
 
 const fetchComponents = async () => {
-  const res = await axios.get(COMPONENTS_URL)
+  const authStore = useAuthStore();
+  if (!authStore.selectedVenue) return;
+  const res = await axios.get(COMPONENTS_URL, {
+    params: { venueId: authStore.selectedVenue._id }
+  })
   components.value = res.data
 }
 
 const fetchMethods = async () => {
-  const res = await axios.get(METHODS_URL)
+  const authStore = useAuthStore();
+  if (!authStore.selectedVenue) return;
+  const res = await axios.get(METHODS_URL, {
+    params: { venueId: authStore.selectedVenue._id }
+  })
   methods.value = res.data
 }
 

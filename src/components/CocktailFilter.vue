@@ -70,6 +70,7 @@ import { ref, onMounted } from "vue"
 import axios from "axios"
 import { message } from "ant-design-vue"
 import { COMPONENTS_URL, METHODS_URL } from '../config/api.js';
+import { useAuthStore } from '../stores/auth';
 
 const filters = ref({
   category: "",
@@ -84,9 +85,12 @@ const methods = ref([])
 
 // Подгружаем данные для селектов
 const fetchFilterData = async () => {
+  const authStore = useAuthStore();
+  if (!authStore.selectedVenue) return;
+
   try {
     const [compRes, glassRes, methodRes] = await Promise.all([
-      axios.get(COMPONENTS_URL),
+      axios.get(COMPONENTS_URL, { params: { venueId: authStore.selectedVenue._id } }),
       // axios.get("http://localhost:3000/api/glasses"),
       // axios.get(METHODS_URL),
     ])

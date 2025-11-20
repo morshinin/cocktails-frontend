@@ -105,6 +105,7 @@ import axios from "axios"
 import { message } from "ant-design-vue"
 import { useRouter } from "vue-router"
 import { RECIPES_URL, COMPONENTS_URL, METHODS_URL } from "../config/api"
+import { useAuthStore } from '../stores/auth';
 
 const router = useRouter()
 
@@ -122,12 +123,20 @@ const newRecipe = ref({
 })
 
 const fetchComponents = async () => {
-  const res = await axios.get(COMPONENTS_URL)
+  const authStore = useAuthStore();
+  if (!authStore.selectedVenue) return;
+  const res = await axios.get(COMPONENTS_URL, {
+    params: { venueId: authStore.selectedVenue._id }
+  })
   components.value = res.data
 }
 
 const fetchMethods = async () => {
-  const res = await axios.get(METHODS_URL)
+  const authStore = useAuthStore();
+  if (!authStore.selectedVenue) return;
+  const res = await axios.get(METHODS_URL, {
+    params: { venueId: authStore.selectedVenue._id }
+  })
   methods.value = res.data
 }
 
@@ -140,10 +149,16 @@ const removeComponent = (i) => {
 }
 
 const addRecipe = async () => {
+  const authStore = useAuthStore();
+  if (!authStore.selectedVenue) return message.error("Venue not selected");
+
   if (!newRecipe.value.name) return message.warning("Введите название")
 
   try {
-    await axios.post(RECIPES_URL, newRecipe.value)
+    await axios.post(RECIPES_URL, {
+      ...newRecipe.value,
+      venueId: authStore.selectedVenue._id
+    })
     message.success("Коктейль добавлен")
     router.push("/cocktails")
   } catch (e) {

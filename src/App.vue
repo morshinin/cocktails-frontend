@@ -27,16 +27,16 @@ const handleLogout = () => {
           <a-menu-item key="home">
             <router-link to="/">Главная</router-link>
           </a-menu-item>
-          <a-menu-item key="cocktails" v-if="authStore.isAuthenticated">
+          <a-menu-item key="cocktails" v-if="authStore.selectedVenue">
             <router-link to="/cocktails">Коктейли</router-link>
           </a-menu-item>
-          <a-menu-item key="cocktailComponents" v-if="authStore.isAuthenticated">
+          <a-menu-item key="cocktailComponents" v-if="authStore.selectedVenue">
             <router-link to="/cocktailComponents">Компоненты</router-link>
           </a-menu-item>
-          <a-menu-item key="cocktailMethods" v-if="authStore.isAuthenticated">
+          <a-menu-item key="cocktailMethods" v-if="authStore.selectedVenue">
             <router-link to="/cocktailMethods">Методы</router-link>
           </a-menu-item>
-          <a-menu-item key="cocktailGame" v-if="authStore.isAuthenticated">
+          <a-menu-item key="cocktailGame" v-if="authStore.selectedVenue">
             <router-link to="/cocktail-game">Коктейль-игра</router-link>
           </a-menu-item>
         </a-menu>
