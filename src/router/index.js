@@ -20,6 +20,18 @@ const routes = [
     component: () => import("../views/Profile.vue"),
     meta: { requiresAuth: true },
   },
+  {
+    path: "/organizations",
+    name: "Organizations",
+    component: () => import("../views/Organizations.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/organizations/:id/venues",
+    name: "OrganizationVenues",
+    component: () => import("../views/OrganizationVenues.vue"),
+    meta: { requiresAuth: true },
+  },
   { path: '/cocktails', name: 'Cocktails', component: Cocktails },
   { path: '/cocktails/new', component: AddCocktail },
   { path: "/cocktails/:id", component: CocktailDetails },
@@ -68,7 +80,7 @@ router.beforeEach((to) => {
   }
 
   // user logged in but no venue selected
-  if (to.meta.requiresAuth && !auth.selectedVenue && to.name !== 'Profile') {
+  if (to.meta.requiresAuth && !auth.selectedVenue && !['Profile', 'Organizations', 'OrganizationVenues'].includes(to.name)) {
     return "/select-venue";
   }
 });
