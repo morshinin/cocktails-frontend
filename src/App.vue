@@ -24,8 +24,11 @@ const handleLogout = () => {
     <a-layout-header class="header">
       <div class="menu-container">
         <a-menu mode="horizontal" theme="dark">
-          <a-menu-item key="home">
-            <router-link to="/">Главная</router-link>
+          <a-menu-item key="home" class="logo-item">
+            <router-link to="/" class="logo-link">
+              <img src="./assets/logo.png" alt="Logo" class="app-logo" />
+              Главная
+            </router-link>
           </a-menu-item>
           <a-menu-item key="cocktails" v-if="authStore.selectedVenue">
             <router-link to="/cocktails">Коктейли</router-link>
@@ -117,5 +120,16 @@ const handleLogout = () => {
 .user-menu {
   display: flex;
   align-items: center;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-logo {
+  height: 32px;
+  width: auto;
 }
 </style>
