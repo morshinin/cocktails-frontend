@@ -68,7 +68,11 @@
         </a-form-item>
 
         <a-form-item label="Бокал">
-          <a-input v-model:value="recipe.glass" />
+          <a-select
+            v-model:value="recipe.glass"
+            placeholder="Выберите бокал"
+            :options="glasses.map(g => ({ label: g.name, value: g.name }))"
+          />
         </a-form-item>
 
         <a-form-item label="Украшение">
@@ -102,7 +106,7 @@ import { ref, onMounted } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import axios from "axios"
 import { message } from "ant-design-vue"
-import { RECIPES_URL, COMPONENTS_URL, METHODS_URL, UPLOAD_URL } from '../config/api.js';
+import { RECIPES_URL, COMPONENTS_URL, METHODS_URL, UPLOAD_URL, GLASSES_URL } from '../config/api.js';
 import { useAuthStore } from '../stores/auth';
 
 const route = useRoute()
@@ -122,6 +126,7 @@ const recipe = ref({
 
 const components = ref([])
 const methods = ref([])
+const glasses = ref([])
 
 const fetchRecipe = async () => {
   const res = await axios.get(`${RECIPES_URL}/${id}`)
@@ -141,9 +146,20 @@ const fetchMethods = async () => {
   const authStore = useAuthStore();
   if (!authStore.selectedVenue) return;
   const res = await axios.get(METHODS_URL, {
-    params: { venueId: authStore.selectedVenue._id }
+    params: { venueId: authStore.selectedVenue._id },
+    headers: { Authorization: `Bearer ${authStore.token}` }
   })
   methods.value = res.data
+}
+
+const fetchGlasses = async () => {
+  const authStore = useAuthStore();
+  if (!authStore.selectedVenue) return;
+  const res = await axios.get(GLASSES_URL, {
+    params: { venueId: authStore.selectedVenue._id },
+    headers: { Authorization: `Bearer ${authStore.token}` }
+  })
+  glasses.value = res.data
 }
 
 const addEmptyComponent = () => {
@@ -185,6 +201,6 @@ const updateRecipe = async () => {
 }
 
 onMounted(async () => {
-  await Promise.all([fetchRecipe(), fetchComponents(), fetchMethods()])
+  await Promise.all([fetchRecipe(), fetchComponents(), fetchMethods(), fetchGlasses()])
 })
 </script>
