@@ -72,6 +72,7 @@ import { ref, onMounted } from "vue"
 import axios from "axios"
 import { message } from "ant-design-vue"
 import { RECIPES_URL, COMPONENTS_URL } from '../config/api.js';
+import { useAuthStore } from '../stores/auth';
 
 const gameStarted = ref(false)
 const gameEnded = ref(false)
@@ -94,10 +95,13 @@ const wrongCount = ref(0)
 
 // Загрузка данных
 const fetchData = async () => {
+  const authStore = useAuthStore();
+  if (!authStore.selectedVenue) return;
+
   try {
     const [cocktailsRes, componentsRes] = await Promise.all([
-      axios.get(RECIPES_URL),
-      axios.get(COMPONENTS_URL)
+      axios.get(RECIPES_URL, { params: { venueId: authStore.selectedVenue._id } }),
+      axios.get(COMPONENTS_URL, { params: { venueId: authStore.selectedVenue._id } })
     ])
     cocktails.value = cocktailsRes.data
     components.value = componentsRes.data
