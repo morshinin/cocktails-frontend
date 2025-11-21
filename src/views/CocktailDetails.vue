@@ -37,7 +37,13 @@
         <span v-else>{{ cocktail.method }}</span>
       </div>
       <p><strong>Бокал:</strong> {{ cocktail.glass }}</p>
-      <p><strong>Украшение:</strong> {{ cocktail.decoration }}</p>
+      <div class="mt-2">
+        <strong>Украшение:</strong>
+        <template v-if="Array.isArray(cocktail.decoration)">
+          <a-tag v-for="d in cocktail.decoration" :key="d" color="green">{{ d }}</a-tag>
+        </template>
+        <span v-else>{{ cocktail.decoration }}</span>
+      </div>
       <p>{{ cocktail.description }}</p>
 
       <div class="mt-4 flex gap-2 justify-end">
