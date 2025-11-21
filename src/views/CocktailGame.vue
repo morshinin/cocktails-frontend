@@ -22,9 +22,26 @@
     <div v-else>
       <!-- Поля ввода для бокала, метода и украшения -->
       <a-space class="mb-4">
-        <a-input v-model:value="playerGlass" placeholder="Бокал" style="width: 150px"/>
-        <a-input v-model:value="playerMethod" placeholder="Метод" style="width: 150px"/>
-        <a-input v-model:value="playerDecoration" placeholder="Украшение" style="width: 150px"/>
+        <a-select
+          v-model:value="playerGlass"
+          placeholder="Бокал"
+          style="width: 200px"
+          :options="glasses.map(g => ({ label: g.name, value: g.name }))"
+        />
+        <a-select
+          v-model:value="playerMethod"
+          mode="multiple"
+          placeholder="Метод"
+          style="width: 200px"
+          :options="methods.map(m => ({ label: m.name, value: m.name }))"
+        />
+        <a-select
+          v-model:value="playerDecoration"
+          mode="multiple"
+          placeholder="Украшение"
+          style="width: 200px"
+          :options="decorations.map(d => ({ label: d.name, value: d.name }))"
+        />
       </a-space>
 
       <!-- Кнопки ингредиентов -->
@@ -71,7 +88,7 @@
 import { ref, onMounted } from "vue"
 import axios from "axios"
 import { message } from "ant-design-vue"
-import { RECIPES_URL, COMPONENTS_URL } from '../config/api.js';
+import { RECIPES_URL, COMPONENTS_URL, GLASSES_URL, METHODS_URL, DECORATIONS_URL } from '../config/api.js';
 import { useAuthStore } from '../stores/auth';
 
 const gameStarted = ref(false)
@@ -81,11 +98,14 @@ const cocktails = ref([])
 const currentIndex = ref(0)
 const currentCocktail = ref(null)
 const components = ref([])
+const glasses = ref([])
+const methods = ref([])
+const decorations = ref([])
 
 // Поля игрока
-const playerGlass = ref("")
-const playerMethod = ref("")
-const playerDecoration = ref("")
+const playerGlass = ref(undefined)
+const playerMethod = ref([])
+const playerDecoration = ref([])
 const selectedIngredients = ref([])
 
 // Счетчики
@@ -99,12 +119,18 @@ const fetchData = async () => {
   if (!authStore.selectedVenue) return;
 
   try {
-    const [cocktailsRes, componentsRes] = await Promise.all([
+    const [cocktailsRes, componentsRes, glassesRes, methodsRes, decorationsRes] = await Promise.all([
       axios.get(RECIPES_URL, { params: { venueId: authStore.selectedVenue._id } }),
-      axios.get(COMPONENTS_URL, { params: { venueId: authStore.selectedVenue._id } })
+      axios.get(COMPONENTS_URL, { params: { venueId: authStore.selectedVenue._id } }),
+      axios.get(GLASSES_URL, { params: { venueId: authStore.selectedVenue._id }, headers: { Authorization: `Bearer ${authStore.token}` } }),
+      axios.get(METHODS_URL, { params: { venueId: authStore.selectedVenue._id }, headers: { Authorization: `Bearer ${authStore.token}` } }),
+      axios.get(DECORATIONS_URL, { params: { venueId: authStore.selectedVenue._id }, headers: { Authorization: `Bearer ${authStore.token}` } })
     ])
     cocktails.value = cocktailsRes.data
     components.value = componentsRes.data
+    glasses.value = glassesRes.data
+    methods.value = methodsRes.data
+    decorations.value = decorationsRes.data
   } catch (err) {
     console.error(err)
     message.error("Ошибка загрузки данных")
@@ -160,11 +186,23 @@ const submitCocktail = () => {
   let correct = true
 
   // Проверка бокала, метода, украшения
-  if (
-    (playerGlass.value?.trim().toLowerCase() || "") !== (currentCocktail.value.glass?.toLowerCase() || "") ||
-    (playerMethod.value?.trim().toLowerCase() || "") !== (currentCocktail.value.method?.toLowerCase() || "") ||
-    (playerDecoration.value?.trim().toLowerCase() || "") !== (currentCocktail.value.decoration?.toLowerCase() || "")
-  ) {
+  // Проверка бокала
+  if ((playerGlass.value || "") !== (currentCocktail.value.glass || "")) {
+    correct = false
+  }
+
+  // Проверка метода (сравнение массивов)
+  const sortArr = (arr) => (Array.isArray(arr) ? [...arr].sort() : [arr].sort())
+  const currentMethods = sortArr(currentCocktail.value.method || [])
+  const playerMethods = sortArr(playerMethod.value || [])
+  if (JSON.stringify(currentMethods) !== JSON.stringify(playerMethods)) {
+    correct = false
+  }
+
+  // Проверка украшения (сравнение массивов)
+  const currentDecorations = sortArr(currentCocktail.value.decoration || [])
+  const playerDecorations = sortArr(playerDecoration.value || [])
+  if (JSON.stringify(currentDecorations) !== JSON.stringify(playerDecorations)) {
     correct = false
   }
 
