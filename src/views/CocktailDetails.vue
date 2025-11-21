@@ -29,7 +29,13 @@
         bordered
       />
 
-      <p class="mt-2"><strong>Метод:</strong> {{ cocktail.method }}</p>
+      <div class="mt-2">
+        <strong>Метод:</strong>
+        <template v-if="Array.isArray(cocktail.method)">
+          <a-tag v-for="m in cocktail.method" :key="m" color="blue">{{ m }}</a-tag>
+        </template>
+        <span v-else>{{ cocktail.method }}</span>
+      </div>
       <p><strong>Бокал:</strong> {{ cocktail.glass }}</p>
       <p><strong>Украшение:</strong> {{ cocktail.decoration }}</p>
       <p>{{ cocktail.description }}</p>
