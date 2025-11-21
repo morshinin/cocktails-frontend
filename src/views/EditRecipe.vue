@@ -62,7 +62,8 @@
         <a-form-item label="Метод">
           <a-select
             v-model:value="recipe.method"
-            placeholder="Выберите метод"
+            mode="multiple"
+            placeholder="Выберите методы"
             :options="methods.map(m => ({ label: m.name, value: m.name }))"
           />
         </a-form-item>
@@ -121,7 +122,7 @@ const recipe = ref({
   name: "",
   category: "Signature",
   components: [],
-  method: "",
+  method: [],
   glass: "",
   decoration: "",
   description: "",
