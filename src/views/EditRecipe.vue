@@ -76,7 +76,11 @@
         </a-form-item>
 
         <a-form-item label="Украшение">
-          <a-input v-model:value="recipe.decoration" />
+          <a-select
+            v-model:value="recipe.decoration"
+            placeholder="Выберите украшение"
+            :options="decorations.map(d => ({ label: d.name, value: d.name }))"
+          />
         </a-form-item>
 
         <a-form-item label="Описание">
@@ -106,7 +110,7 @@ import { ref, onMounted } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import axios from "axios"
 import { message } from "ant-design-vue"
-import { RECIPES_URL, COMPONENTS_URL, METHODS_URL, UPLOAD_URL, GLASSES_URL } from '../config/api.js';
+import { RECIPES_URL, COMPONENTS_URL, METHODS_URL, UPLOAD_URL, GLASSES_URL, DECORATIONS_URL } from '../config/api.js';
 import { useAuthStore } from '../stores/auth';
 
 const route = useRoute()
@@ -127,6 +131,7 @@ const recipe = ref({
 const components = ref([])
 const methods = ref([])
 const glasses = ref([])
+const decorations = ref([])
 
 const fetchRecipe = async () => {
   const res = await axios.get(`${RECIPES_URL}/${id}`)
@@ -160,6 +165,16 @@ const fetchGlasses = async () => {
     headers: { Authorization: `Bearer ${authStore.token}` }
   })
   glasses.value = res.data
+}
+
+const fetchDecorations = async () => {
+  const authStore = useAuthStore();
+  if (!authStore.selectedVenue) return;
+  const res = await axios.get(DECORATIONS_URL, {
+    params: { venueId: authStore.selectedVenue._id },
+    headers: { Authorization: `Bearer ${authStore.token}` }
+  })
+  decorations.value = res.data
 }
 
 const addEmptyComponent = () => {
@@ -201,6 +216,6 @@ const updateRecipe = async () => {
 }
 
 onMounted(async () => {
-  await Promise.all([fetchRecipe(), fetchComponents(), fetchMethods(), fetchGlasses()])
+  await Promise.all([fetchRecipe(), fetchComponents(), fetchMethods(), fetchGlasses(), fetchDecorations()])
 })
 </script>

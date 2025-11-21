@@ -39,6 +39,7 @@ const routes = [
   { path: '/cocktailComponents', name: 'CocktailComponents', component: CocktailComponents },
   { path: '/cocktailMethods', name: 'CocktailMethods', component: CocktailMethods },
   { path: '/cocktailGlasses', name: 'CocktailGlasses', component: CocktailGlasses },
+  { path: '/cocktailDecorations', name: 'CocktailDecorations', component: () => import('../views/CocktailDecorations.vue') },
   {
     path: "/cocktails/:id/edit",
     name: "EditRecipe",

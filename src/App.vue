@@ -42,6 +42,9 @@ const handleLogout = () => {
           <a-menu-item key="glasses" v-if="authStore.selectedVenue">
             <router-link to="/cocktailGlasses">Бокалы</router-link>
           </a-menu-item>
+          <a-menu-item key="decorations" v-if="authStore.selectedVenue">
+            <router-link to="/cocktailDecorations">Украшения</router-link>
+          </a-menu-item>
           <a-menu-item key="game" v-if="authStore.selectedVenue">
             <router-link to="/cocktail-game">Коктейль-игра</router-link>
           </a-menu-item>
