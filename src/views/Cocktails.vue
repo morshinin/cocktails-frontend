@@ -45,7 +45,13 @@
             bordered
           />
 
-          <p class="mt-2"><strong>Метод:</strong> {{ r.method }}</p>
+          <div class="mt-2">
+            <strong>Метод:</strong>
+            <template v-if="Array.isArray(r.method)">
+              <a-tag v-for="m in r.method" :key="m" color="blue">{{ m }}</a-tag>
+            </template>
+            <span v-else>{{ r.method }}</span>
+          </div>
           <p><strong>Бокал:</strong> {{ r.glass }}</p>
           <p><strong>Украшение:</strong> {{ r.decoration }}</p>
           <p>{{ r.description }}</p>
@@ -103,7 +109,7 @@ const applyFilters = (filters) => {
       !filters.component ||
       r.components.some((c) => c.name === filters.component)
     const matchGlass = !filters.glass || r.glass === filters.glass
-    const matchMethod = !filters.method || r.method === filters.method
+    const matchMethod = !filters.method || (Array.isArray(r.method) ? r.method.includes(filters.method) : r.method === filters.method)
     return matchCategory && matchComponent && matchGlass && matchMethod
   })
 }
