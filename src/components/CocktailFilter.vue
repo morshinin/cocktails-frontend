@@ -59,6 +59,22 @@
       </a-select-option>
     </a-select>
 
+    <!-- Фильтр по украшению -->
+    <a-select
+      v-model:value="filters.decoration"
+      placeholder="Украшение"
+      style="min-width: 150px"
+      allow-clear
+    >
+      <a-select-option
+        v-for="d in decorations"
+        :key="d._id"
+        :value="d.name"
+      >
+        {{ d.name }}
+      </a-select-option>
+    </a-select>
+
     <!-- Кнопки -->
     <a-button type="primary" @click="applyFilters">Применить</a-button>
     <a-button @click="resetFilters">Сбросить</a-button>
@@ -69,7 +85,7 @@
 import { ref, onMounted } from "vue"
 import axios from "axios"
 import { message } from "ant-design-vue"
-import { COMPONENTS_URL, METHODS_URL, GLASSES_URL } from '../config/api.js';
+import { COMPONENTS_URL, METHODS_URL, GLASSES_URL, DECORATIONS_URL } from '../config/api.js';
 import { useAuthStore } from '../stores/auth';
 
 const filters = ref({
@@ -77,11 +93,13 @@ const filters = ref({
   component: "",
   glass: "",
   method: "",
+  decoration: "",
 })
 
 const components = ref([])
 const glasses = ref([])
 const methods = ref([])
+const decorations = ref([])
 
 // Подгружаем данные для селектов
 const fetchFilterData = async () => {
@@ -89,7 +107,7 @@ const fetchFilterData = async () => {
   if (!authStore.selectedVenue) return;
 
   try {
-    const [compRes, glassRes, methodRes] = await Promise.all([
+    const [compRes, glassRes, methodRes, decorationRes] = await Promise.all([
       axios.get(COMPONENTS_URL, { params: { venueId: authStore.selectedVenue._id } }),
       axios.get(GLASSES_URL, { 
         params: { venueId: authStore.selectedVenue._id },
@@ -99,10 +117,15 @@ const fetchFilterData = async () => {
         params: { venueId: authStore.selectedVenue._id },
         headers: { Authorization: `Bearer ${authStore.token}` }
       }),
+      axios.get(DECORATIONS_URL, { 
+        params: { venueId: authStore.selectedVenue._id },
+        headers: { Authorization: `Bearer ${authStore.token}` }
+      }),
     ])
     components.value = compRes.data || []
     glasses.value = glassRes.data || []
     methods.value = methodRes.data || []
+    decorations.value = decorationRes.data || []
   } catch (err) {
     console.error("Ошибка при загрузке данных фильтра:", err)
     message.error("Не удалось загрузить данные фильтра")
@@ -118,7 +141,7 @@ const applyFilters = () => {
 }
 
 const resetFilters = () => {
-  filters.value = { category: "", component: "", glass: "", method: "" }
+  filters.value = { category: "", component: "", glass: "", method: "", decoration: "" }
   applyFilters()
 }
 
