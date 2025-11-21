@@ -53,7 +53,13 @@
             <span v-else>{{ r.method }}</span>
           </div>
           <p><strong>Бокал:</strong> {{ r.glass }}</p>
-          <p><strong>Украшение:</strong> {{ r.decoration }}</p>
+          <div class="mt-2">
+            <strong>Украшение:</strong>
+            <template v-if="Array.isArray(r.decoration)">
+              <a-tag v-for="d in r.decoration" :key="d" color="green">{{ d }}</a-tag>
+            </template>
+            <span v-else>{{ r.decoration }}</span>
+          </div>
           <p>{{ r.description }}</p>
 
           <div class="mt-2 flex justify-end gap-2">
@@ -110,7 +116,8 @@ const applyFilters = (filters) => {
       r.components.some((c) => c.name === filters.component)
     const matchGlass = !filters.glass || r.glass === filters.glass
     const matchMethod = !filters.method || (Array.isArray(r.method) ? r.method.includes(filters.method) : r.method === filters.method)
-    return matchCategory && matchComponent && matchGlass && matchMethod
+    const matchDecoration = !filters.decoration || (Array.isArray(r.decoration) ? r.decoration.includes(filters.decoration) : r.decoration === filters.decoration)
+    return matchCategory && matchComponent && matchGlass && matchMethod && matchDecoration
   })
 }
 
