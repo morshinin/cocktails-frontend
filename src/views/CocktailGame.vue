@@ -69,9 +69,66 @@
         </div>
       </div>
 
-      <!-- Кнопка сдачи коктейля -->
-      <a-button type="primary" @click="submitCocktail">Отдать коктейль</a-button>
+      <!-- Кнопка сдачи коктейля и подсказка -->
+      <div class="flex gap-4">
+        <a-button type="primary" @click="submitCocktail">Отдать коктейль</a-button>
+        <a-button @click="showHint = true">Показать подсказку</a-button>
+      </div>
     </div>
+
+    <!-- Модальное окно с подсказкой -->
+    <a-modal v-model:visible="showHint" title="Подсказка" :footer="null">
+      <div v-if="currentCocktail">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-bold">{{ currentCocktail.name }}</h3>
+          <a-tag :color="currentCocktail.category === 'Classic' ? 'blue' : 'purple'">
+            {{ currentCocktail.category }}
+          </a-tag>
+        </div>
+
+        <div v-if="currentCocktail.image" class="mb-4">
+          <img
+            :src="currentCocktail.image"
+            alt="cocktail image"
+            class="w-full h-48 object-cover rounded"
+          />
+        </div>
+
+        <a-table
+          :columns="[
+            { title: 'Ингредиент', dataIndex: 'name', key: 'name' },
+            { title: 'Количество (мл)', dataIndex: 'amount', key: 'amount' }
+          ]"
+          :data-source="currentCocktail.components"
+          size="small"
+          :pagination="false"
+          bordered
+          class="mb-4"
+        />
+
+        <div class="mb-2">
+          <strong>Метод:</strong>
+          <template v-if="Array.isArray(currentCocktail.method)">
+            <a-tag v-for="m in currentCocktail.method" :key="m" color="blue">{{ m }}</a-tag>
+          </template>
+          <span v-else>{{ currentCocktail.method }}</span>
+        </div>
+
+        <div class="mb-2">
+          <strong>Бокал:</strong> {{ currentCocktail.glass }}
+        </div>
+
+        <div class="mb-2">
+          <strong>Украшение:</strong>
+          <template v-if="Array.isArray(currentCocktail.decoration)">
+            <a-tag v-for="d in currentCocktail.decoration" :key="d" color="green">{{ d }}</a-tag>
+          </template>
+          <span v-else>{{ currentCocktail.decoration }}</span>
+        </div>
+
+        <p>{{ currentCocktail.description }}</p>
+      </div>
+    </a-modal>
 
     <!-- Результаты после завершения игры -->
     <div v-if="gameEnded" class="mt-6">
@@ -93,6 +150,7 @@ import { useAuthStore } from '../stores/auth';
 
 const gameStarted = ref(false)
 const gameEnded = ref(false)
+const showHint = ref(false)
 
 const cocktails = ref([])
 const currentIndex = ref(0)
