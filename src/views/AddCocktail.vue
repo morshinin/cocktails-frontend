@@ -85,7 +85,8 @@
         <a-form-item label="Украшение">
           <a-select
             v-model:value="newRecipe.decoration"
-            placeholder="Выберите украшение"
+            mode="multiple"
+            placeholder="Выберите украшения"
             :options="decorations.map(d => ({ label: d.name, value: d.name }))"
           />
         </a-form-item>
@@ -128,7 +129,7 @@ const newRecipe = ref({
   components: [],
   method: [],
   glass: "",
-  decoration: "",
+  decoration: [],
   description: "",
 })
 
