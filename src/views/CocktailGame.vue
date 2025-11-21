@@ -15,6 +15,10 @@
 
     <!-- Кнопка начала игры -->
     <div v-if="!gameStarted" class="text-center">
+      <div class="mb-4">
+        <span class="mr-2">Количество коктейлей:</span>
+        <a-input-number v-model:value="gameCount" :min="1" :max="allCocktails.length" />
+      </div>
       <a-button type="primary" size="large" @click="startGame">Начать игру</a-button>
     </div>
 
@@ -152,7 +156,10 @@ const gameStarted = ref(false)
 const gameEnded = ref(false)
 const showHint = ref(false)
 
-const cocktails = ref([])
+const allCocktails = ref([]) // Store all fetched cocktails
+const cocktails = ref([]) // Store cocktails for the current game
+const gameCount = ref(5) // Default number of cocktails per game
+
 const currentIndex = ref(0)
 const currentCocktail = ref(null)
 const components = ref([])
@@ -184,7 +191,11 @@ const fetchData = async () => {
       axios.get(METHODS_URL, { params: { venueId: authStore.selectedVenue._id }, headers: { Authorization: `Bearer ${authStore.token}` } }),
       axios.get(DECORATIONS_URL, { params: { venueId: authStore.selectedVenue._id }, headers: { Authorization: `Bearer ${authStore.token}` } })
     ])
-    cocktails.value = cocktailsRes.data
+    allCocktails.value = cocktailsRes.data
+    // Initialize gameCount max if needed or just default
+    if (allCocktails.value.length < gameCount.value) {
+      gameCount.value = allCocktails.value.length
+    }
     components.value = componentsRes.data
     glasses.value = glassesRes.data
     methods.value = methodsRes.data
@@ -195,9 +206,23 @@ const fetchData = async () => {
   }
 }
 
+// Функция перемешивания (Fisher-Yates)
+const shuffleArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 // Игра
 const startGame = () => {
-  if (!cocktails.value.length) return message.warning("Нет коктейлей для игры")
+  if (!allCocktails.value.length) return message.warning("Нет коктейлей для игры")
+  
+  // Перемешиваем все коктейли и берем нужное количество
+  const shuffled = shuffleArray([...allCocktails.value])
+  cocktails.value = shuffled.slice(0, gameCount.value)
+  
   gameStarted.value = true
   gameEnded.value = false
   currentIndex.value = 0
@@ -280,12 +305,15 @@ const submitCocktail = () => {
   // Переход к следующему коктейлю
   if (currentIndex.value < cocktails.value.length - 1) {
     currentIndex.value++
-    currentCocktail.value = cocktails.value[currentIndex.value]
-    resetPlayerInputs()
   } else {
-    endGame()
-    message.info("Игра завершена")
+    // Если прошли все, начинаем заново этот же набор, но перемешиваем
+    shuffleArray(cocktails.value)
+    currentIndex.value = 0
+    message.success("Круг пройден! Продолжаем...")
   }
+  
+  currentCocktail.value = cocktails.value[currentIndex.value]
+  resetPlayerInputs()
 }
 
 onMounted(fetchData)
