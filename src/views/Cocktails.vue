@@ -50,10 +50,10 @@
           </template>
           <template #title>
             <router-link :to="`/cocktails/${r._id}`" class="flex items-center gap-2">
-              <span>{{ r.name }}</span>
-              <a-tag :color="r.category === 'Classic' ? 'blue' : 'purple'">
-                {{ r.category }}
+              <a-tag :color="r.category === 'Classic' ? 'blue' : 'purple'" :title="r.category">
+                {{ r.category[0] }}
               </a-tag>
+              <span>{{ r.name }}</span>
             </router-link>
           </template>
 
