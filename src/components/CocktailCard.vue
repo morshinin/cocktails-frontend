@@ -1,5 +1,5 @@
 <template>
-  <a-badge-ribbon :text="recipe.category" :color="recipe.category === 'Classic' ? 'blue' : 'purple'">
+  <a-badge-ribbon :text="recipe.category" :color="recipe.category === 'Classic' ? 'blue' : 'purple'" :style="{ top: '71px' }">
     <a-card class="h-full flex flex-col" :bodyStyle="{ flex: '1', display: 'flex', flexDirection: 'column' }">
       <template #extra>
         <a-dropdown trigger="click">
