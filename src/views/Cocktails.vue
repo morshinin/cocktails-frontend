@@ -91,7 +91,7 @@
             </template>
             <span v-else>{{ r.decoration }}</span>
           </div>
-          <p>{{ r.description }}</p>
+
         </a-card>
       </a-col>
     </a-row>
