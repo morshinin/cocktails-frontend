@@ -76,13 +76,13 @@
     </a-select>
 
     <!-- Кнопки -->
-    <a-button type="primary" @click="applyFilters">Применить</a-button>
+    <!-- Кнопки -->
     <a-button @click="resetFilters">Сбросить</a-button>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue"
+import { ref, onMounted, watch } from "vue"
 import axios from "axios"
 import { message } from "ant-design-vue"
 import { COMPONENTS_URL, METHODS_URL, GLASSES_URL, DECORATIONS_URL } from '../config/api.js';
@@ -142,8 +142,12 @@ const applyFilters = () => {
 
 const resetFilters = () => {
   filters.value = { category: undefined, component: undefined, glass: undefined, method: undefined, decoration: undefined }
-  applyFilters()
 }
+
+// Автоматическое применение фильтров
+watch(filters, () => {
+  applyFilters()
+}, { deep: true })
 
 // Объявляем emit для script setup
 const emit = defineEmits(["filter"])
