@@ -17,8 +17,39 @@
     <a-row :gutter="[16, 16]">
       <a-col v-for="r in filteredRecipes" :key="r._id" :xs="24" :sm="12" :md="8">
         <a-card>
+          <template #extra>
+            <a-dropdown trigger="click">
+              <a class="ant-dropdown-link" @click.prevent>
+                <MoreOutlined style="font-size: 20px; cursor: pointer" />
+              </a>
+              <template #overlay>
+                <a-menu>
+                  <a-menu-item>
+                    <router-link :to="`/cocktails/${r._id}/edit`">
+                      <EditOutlined /> Редактировать
+                    </router-link>
+                  </a-menu-item>
+                  <a-menu-item>
+                    <router-link :to="`/instruction/${r._id}`">
+                      <ReadOutlined /> Инструкция
+                    </router-link>
+                  </a-menu-item>
+                  <a-menu-item danger>
+                    <a-popconfirm
+                      title="Удалить этот рецепт?"
+                      ok-text="Да"
+                      cancel-text="Нет"
+                      @confirm="deleteRecipe(r._id)"
+                    >
+                      <span><DeleteOutlined /> Удалить</span>
+                    </a-popconfirm>
+                  </a-menu-item>
+                </a-menu>
+              </template>
+            </a-dropdown>
+          </template>
           <template #title>
-            <router-link :to="`/cocktails/${r._id}`" class="flex justify-between items-center">
+            <router-link :to="`/cocktails/${r._id}`" class="flex items-center gap-2">
               <span>{{ r.name }}</span>
               <a-tag :color="r.category === 'Classic' ? 'blue' : 'purple'">
                 {{ r.category }}
@@ -61,25 +92,6 @@
             <span v-else>{{ r.decoration }}</span>
           </div>
           <p>{{ r.description }}</p>
-
-          <div class="mt-2 flex justify-end gap-2">
-            <router-link :to="`/cocktails/${r._id}/edit`">
-              <a-button type="text">✏️</a-button>
-            </router-link>
-
-            <router-link :to="`/instruction/${r._id}`">
-              <a-button type="text">📖</a-button>
-            </router-link>
-
-            <a-popconfirm
-              title="Удалить этот рецепт?"
-              ok-text="Да"
-              cancel-text="Нет"
-              @confirm="deleteRecipe(r._id)"
-            >
-              <a-button danger type="text">🗑</a-button>
-            </a-popconfirm>
-          </div>
         </a-card>
       </a-col>
     </a-row>
@@ -90,6 +102,7 @@
 import { ref, onMounted } from "vue"
 import axios from "axios"
 import { message } from "ant-design-vue"
+import { MoreOutlined, EditOutlined, ReadOutlined, DeleteOutlined } from "@ant-design/icons-vue"
 import CocktailFilter from "../components/CocktailFilter.vue"
 import { RECIPES_URL } from '../config/api.js';
 import { useAuthStore } from '../stores/auth';
