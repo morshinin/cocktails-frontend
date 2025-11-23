@@ -75,7 +75,6 @@
               size="small"
               :pagination="false"
               :showHeader="false"
-              bordered
             />
           </div>
 
