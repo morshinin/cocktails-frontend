@@ -67,6 +67,7 @@
             </div>
 
             <a-table
+              class="ingredients-table"
               :columns="[
                 { title: 'Ингредиент', dataIndex: 'name', key: 'name' },
                 { title: 'Количество (мл)', dataIndex: 'amount', key: 'amount' }
@@ -146,3 +147,9 @@ const deleteRecipe = async (id) => {
 
 onMounted(fetchRecipes)
 </script>
+
+<style scoped>
+.ingredients-table :deep(.ant-table-tbody > tr:last-child > td) {
+  border-bottom: none !important;
+}
+</style>
