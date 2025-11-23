@@ -89,11 +89,11 @@ import { COMPONENTS_URL, METHODS_URL, GLASSES_URL, DECORATIONS_URL } from '../co
 import { useAuthStore } from '../stores/auth';
 
 const filters = ref({
-  category: "",
-  component: "",
-  glass: "",
-  method: "",
-  decoration: "",
+  category: undefined,
+  component: undefined,
+  glass: undefined,
+  method: undefined,
+  decoration: undefined,
 })
 
 const components = ref([])
@@ -141,7 +141,7 @@ const applyFilters = () => {
 }
 
 const resetFilters = () => {
-  filters.value = { category: "", component: "", glass: "", method: "", decoration: "" }
+  filters.value = { category: undefined, component: undefined, glass: undefined, method: undefined, decoration: undefined }
   applyFilters()
 }
 
