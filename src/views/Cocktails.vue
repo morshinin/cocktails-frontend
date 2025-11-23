@@ -57,9 +57,9 @@
             </router-link>
           </template>
 
-          <div v-if="r.image" class="mb-3">
+          <div class="mb-3">
             <img
-              :src="r.image"
+              :src="r.image || placeholderImage"
               alt="cocktail image"
               class="w-full h-48 object-cover rounded"
             />
@@ -106,6 +106,7 @@ import { MoreOutlined, EditOutlined, ReadOutlined, DeleteOutlined } from "@ant-d
 import CocktailFilter from "../components/CocktailFilter.vue"
 import { RECIPES_URL } from '../config/api.js';
 import { useAuthStore } from '../stores/auth';
+import placeholderImage from '../assets/cocktail_placeholder.png';
 
 const recipes = ref([])
 const filteredRecipes = ref([])
