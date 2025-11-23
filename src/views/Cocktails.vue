@@ -12,7 +12,11 @@
       </template>
     </a-page-header>
 
-    <CocktailFilter @filter="applyFilters" />
+    <CocktailFilter @filter="handleFilter" />
+    
+    <div class="mb-4 text-gray-600">
+      {{ getCocktailCountText(filteredRecipes.length) }}
+    </div>
 
     <a-row :gutter="[16, 16]">
       <a-col v-for="r in filteredRecipes" :key="r._id" :xs="24" :sm="12" :md="8">
@@ -126,7 +130,7 @@ const fetchRecipes = async () => {
   filteredRecipes.value = res.data
 }
 
-const applyFilters = (filters) => {
+const handleFilter = (filters) => {
   filteredRecipes.value = recipes.value.filter((r) => {
     const matchCategory = !filters.category || r.category === filters.category
     const matchComponent =
@@ -137,6 +141,25 @@ const applyFilters = (filters) => {
     const matchDecoration = !filters.decoration || (Array.isArray(r.decoration) ? r.decoration.includes(filters.decoration) : r.decoration === filters.decoration)
     return matchCategory && matchComponent && matchGlass && matchMethod && matchDecoration
   })
+}
+
+const getCocktailCountText = (count) => {
+  const lastDigit = count % 10;
+  const lastTwoDigits = count % 100;
+
+  if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+    return `${count} коктейлей`;
+  }
+
+  if (lastDigit === 1) {
+    return `${count} коктейль`;
+  }
+
+  if (lastDigit >= 2 && lastDigit <= 4) {
+    return `${count} коктейля`;
+  }
+
+  return `${count} коктейлей`;
 }
 
 const deleteRecipe = async (id) => {
