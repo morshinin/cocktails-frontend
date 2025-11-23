@@ -73,6 +73,7 @@
             :data-source="r.components"
             size="small"
             :pagination="false"
+            :showHeader="false"
             bordered
           />
 
