@@ -16,7 +16,7 @@
 
     <a-row :gutter="[16, 16]">
       <a-col v-for="r in filteredRecipes" :key="r._id" :xs="24" :sm="12" :md="8">
-        <a-card>
+        <a-card class="h-full">
           <template #extra>
             <a-dropdown trigger="click">
               <a class="ant-dropdown-link" @click.prevent>
