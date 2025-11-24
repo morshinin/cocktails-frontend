@@ -1,132 +1,130 @@
 <template>
-  <div>
-    <!-- Добавление нового компонента -->
-    <a-card class="mb-4" title="Добавить новый компонент">
-      <a-form layout="vertical" @submit.prevent="addComponent">
-        <a-form-item label="Название">
-          <a-input v-model:value="newComponent.name" placeholder="Введите название" />
-        </a-form-item>
-
-        <a-form-item label="Категория">
-          <a-input v-model:value="newComponent.category" placeholder="Например: алкоголь, сироп, сок..." />
-        </a-form-item>
-
-        <a-form-item label="Описание">
-          <a-textarea v-model:value="newComponent.description" rows="3" placeholder="Введите описание компонента" />
-        </a-form-item>
-
-        <a-form-item label="Изображение">
-          <input type="file" @change="handleImageUpload" accept="image/*" />
-          <div v-if="previewImage" class="mt-2">
-            <img :src="previewImage" class="w-32 h-32 object-cover rounded border" />
-          </div>
-        </a-form-item>
-
-        <a-form-item>
-          <a-button type="primary" html-type="submit">Добавить</a-button>
-        </a-form-item>
-      </a-form>
-    </a-card>
+  <div class="p-6 max-w-5xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold">Компоненты</h1>
+      <a-button type="primary" @click="handleAdd">
+        <template #icon><PlusOutlined /></template>
+        Добавить компонент
+      </a-button>
+    </div>
 
     <!-- Список компонентов -->
-    <a-card title="Список компонентов">
-      <a-list bordered :data-source="components">
-        <template #renderItem="{ item }">
-          <a-list-item class="flex justify-between items-center">
-            <div class="flex items-center gap-2">
-              <router-link
-                :to="`/components/${item._id}`"
-                class="cursor-pointer hover:underline"
-              >
-                {{ item.name }}
+    <a-row :gutter="[16, 16]">
+      <a-col v-for="item in components" :key="item._id" :xs="24" :sm="12" :md="8">
+        <a-badge-ribbon :text="item.category || 'Other'" :color="item.category === 'Alcohol' ? 'blue' : 'purple'" :style="{ top: '71px' }">
+          <a-card class="h-full flex flex-col" :bodyStyle="{ flex: '1', display: 'flex', flexDirection: 'column' }">
+            <template #extra>
+              <a-dropdown trigger="click">
+                <a class="ant-dropdown-link" @click.prevent>
+                  <MoreOutlined style="font-size: 20px; cursor: pointer" />
+                </a>
+                <template #overlay>
+                  <a-menu>
+                    <a-menu-item @click="handleEdit(item)">
+                      <EditOutlined /> Редактировать
+                    </a-menu-item>
+                    <a-menu-item danger>
+                      <a-popconfirm
+                        title="Удалить компонент?"
+                        ok-text="Да"
+                        cancel-text="Нет"
+                        @confirm="deleteComponent(item._id)"
+                      >
+                        <span><DeleteOutlined /> Удалить</span>
+                      </a-popconfirm>
+                    </a-menu-item>
+                  </a-menu>
+                </template>
+              </a-dropdown>
+            </template>
+            <template #title>
+              <router-link :to="`/components/${item._id}`" class="flex items-center gap-2">
+                <span>{{ item.name }}</span>
               </router-link>
+            </template>
+
+            <div class="flex-1">
+              <div class="mb-3">
+                <img
+                  :src="item.image || placeholderImage"
+                  :alt="item.name"
+                  class="w-full h-48 object-cover rounded"
+                  @error="e => e.target.src = placeholderImage"
+                />
+              </div>
+              
+              <div class="text-sm text-gray-600 line-clamp-3">
+                {{ item.description || 'Нет описания' }}
+              </div>
             </div>
+          </a-card>
+        </a-badge-ribbon>
+      </a-col>
+    </a-row>
 
-
-            <a-popconfirm
-              title="Удалить компонент?"
-              ok-text="Да"
-              cancel-text="Нет"
-              @confirm="deleteComponent(item._id)"
-            >
-              <a-button type="text" danger>
-                <DeleteOutlined />
-              </a-button>
-            </a-popconfirm>
-          </a-list-item>
-        </template>
-      </a-list>
-    </a-card>
+    <AddComponentDrawer
+      v-model:open="showAddDrawer"
+      :width="drawerWidth"
+      :componentToEdit="editingComponent"
+      @componentAdded="fetchComponents"
+      @componentUpdated="fetchComponents"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import axios from "axios";
 import { message } from "ant-design-vue";
-import { DeleteOutlined } from "@ant-design/icons-vue";
-import { COMPONENTS_URL, UPLOAD_URL } from '../config/api.js';
+import { PlusOutlined, DeleteOutlined, MoreOutlined, EditOutlined } from "@ant-design/icons-vue";
+import { COMPONENTS_URL } from '../config/api.js';
 import { useAuthStore } from '../stores/auth';
+import AddComponentDrawer from '../components/AddComponentDrawer.vue';
+import placeholderImage from '../assets/cocktail_placeholder.png';
 
 const components = ref([]);
-const newComponent = ref({ name: "", category: "", description: "", image: "" });
-const previewImage = ref(null);
+const showAddDrawer = ref(false);
+const drawerWidth = ref('600px');
+const editingComponent = ref(null);
+
+// Responsive drawer width
+const updateDrawerWidth = () => {
+  drawerWidth.value = window.innerWidth < 640 ? '100%' : '600px';
+};
+
+const handleAdd = () => {
+  editingComponent.value = null;
+  showAddDrawer.value = true;
+};
+
+const handleEdit = (item) => {
+  editingComponent.value = item;
+  showAddDrawer.value = true;
+};
+
+onMounted(() => {
+  updateDrawerWidth();
+  window.addEventListener('resize', updateDrawerWidth);
+  fetchComponents();
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateDrawerWidth);
+});
 
 // === Загрузка списка ===
 const fetchComponents = async () => {
   const authStore = useAuthStore();
   if (!authStore.selectedVenue) return;
 
-  const res = await axios.get(COMPONENTS_URL, {
-    params: { venueId: authStore.selectedVenue._id }
-  });
-  components.value = res.data;
-};
-
-// === Загрузка изображения ===
-const handleImageUpload = async (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const formData = new FormData();
-  formData.append("image", file);
-
   try {
-    const res = await axios.post(UPLOAD_URL, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
+    const res = await axios.get(COMPONENTS_URL, {
+      params: { venueId: authStore.selectedVenue._id }
     });
-    newComponent.value.image = res.data.url;
-    previewImage.value = res.data.url;
-    message.success("Изображение загружено!");
+    components.value = res.data;
   } catch (e) {
     console.error(e);
-    message.error("Ошибка при загрузке изображения");
-  }
-};
-
-// === Добавление нового компонента ===
-const addComponent = async () => {
-  const authStore = useAuthStore();
-  if (!authStore.selectedVenue) return message.error("Venue not selected");
-
-  const { name, category, description, image } = newComponent.value;
-  if (!name.trim()) return message.warning("Введите название");
-
-  try {
-    await axios.post(COMPONENTS_URL, { 
-      name, 
-      category, 
-      description, 
-      image,
-      venueId: authStore.selectedVenue._id 
-    });
-    message.success("Компонент добавлен!");
-    newComponent.value = { name: "", category: "", description: "", image: "" };
-    previewImage.value = null;
-    await fetchComponents();
-  } catch (e) {
-    console.error(e);
-    message.error("Ошибка при добавлении компонента");
+    message.error("Ошибка при загрузке компонентов");
   }
 };
 
@@ -141,6 +139,4 @@ const deleteComponent = async (id) => {
     message.error("Ошибка при удалении");
   }
 };
-
-onMounted(fetchComponents);
 </script>
