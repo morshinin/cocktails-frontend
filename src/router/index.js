@@ -59,14 +59,15 @@ const routes = [
     component: () => import('../views/CreateInstruction.vue')
   },
   {
-    path: '/cocktail-game',
-    name: 'CocktailGame',
-    component: () => import('../views/CocktailGame.vue')
-  },
-  {
     path: "/components/:id",
     name: "ComponentView",
     component: () => import("../views/ComponentView.vue"),
+  },
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    component: () => import("../views/Dashboard.vue"),
+    meta: { requiresAuth: true },
   },
 ]
 
@@ -78,12 +79,17 @@ const router = createRouter({
 router.beforeEach((to) => {
   const auth = useAuthStore();
 
+  // Redirect authenticated users from home to dashboard
+  if (to.path === '/' && auth.isAuthenticated) {
+    return "/dashboard";
+  }
+
   if (to.meta.requiresAuth && !auth.isAuthenticated) {
     return "/login";
   }
 
   // user logged in but no venue selected
-  if (to.meta.requiresAuth && !auth.selectedVenue && !['Profile', 'Organizations', 'OrganizationVenues'].includes(to.name)) {
+  if (to.meta.requiresAuth && !auth.selectedVenue && !['Profile', 'Organizations', 'OrganizationVenues', 'Dashboard'].includes(to.name)) {
     return "/select-venue";
   }
 });
