@@ -64,6 +64,12 @@ const routes = [
     component: () => import("../views/ComponentView.vue"),
   },
   {
+    path: "/bar",
+    name: "Bar",
+    component: () => import("../views/Bar.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
     path: "/dashboard",
     name: "Dashboard",
     component: () => import("../views/Dashboard.vue"),
