@@ -100,6 +100,17 @@
           />
         </a-form-item>
 
+        <!-- Изображение -->
+        <a-form-item label="Изображение">
+          <div class="flex gap-4 items-center">
+            <input type="file" accept="image/*" @change="onImageChange" />
+
+            <div v-if="newRecipe.image">
+              <img :src="newRecipe.image" alt="Preview" class="w-24 h-24 object-cover rounded" />
+            </div>
+          </div>
+        </a-form-item>
+
         <!-- Кнопка -->
         <a-form-item>
           <a-button type="primary" html-type="submit">Добавить</a-button>
@@ -114,7 +125,7 @@ import { ref, onMounted } from "vue"
 import axios from "axios"
 import { message } from "ant-design-vue"
 import { useRouter } from "vue-router"
-import { RECIPES_URL, COMPONENTS_URL, METHODS_URL, GLASSES_URL, DECORATIONS_URL } from "../config/api"
+import { RECIPES_URL, COMPONENTS_URL, METHODS_URL, GLASSES_URL, DECORATIONS_URL, UPLOAD_URL } from "../config/api"
 import { useAuthStore } from '../stores/auth';
 
 const router = useRouter()
@@ -132,6 +143,7 @@ const newRecipe = ref({
   glass: "",
   decoration: [],
   description: "",
+  image: "",
 })
 
 const fetchComponents = async () => {
@@ -179,6 +191,25 @@ const addEmptyComponent = () => {
 
 const removeComponent = (i) => {
   newRecipe.value.components.splice(i, 1)
+}
+
+const onImageChange = async (e) => {
+  const file = e.target.files[0]
+  if (!file) return
+
+  const formData = new FormData()
+  formData.append("image", file)
+
+  try {
+    const res = await axios.post(UPLOAD_URL, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    newRecipe.value.image = res.data.url
+    message.success("Изображение загружено!")
+  } catch (err) {
+    console.error(err)
+    message.error("Ошибка при загрузке изображения")
+  }
 }
 
 const addRecipe = async () => {
