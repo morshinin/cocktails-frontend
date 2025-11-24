@@ -40,8 +40,10 @@ const handleLogout = () => {
               Дашборд
             </router-link>
           </a-menu-item>
-          <a-sub-menu key="bar" v-if="authStore.selectedVenue">
-            <template #title>Бар</template>
+          <a-sub-menu key="bar" v-if="authStore.selectedVenue" @titleClick="router.push('/bar')">
+            <template #title>
+              <span class="cursor-pointer">Бар</span>
+            </template>
             <a-menu-item key="cocktails">
               <router-link to="/cocktails">Коктейли</router-link>
             </a-menu-item>
