@@ -1,12 +1,13 @@
 <script setup>
 import EnvBadge from "./components/EnvBadge.vue";
 import { useAuthStore } from "./stores/auth";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { onMounted, ref } from "vue";
 import { ShopOutlined } from '@ant-design/icons-vue';
 
 const authStore = useAuthStore();
 const router = useRouter();
+const route = useRoute();
 const openKeys = ref(['organization']);
 const collapsed = ref(true);
 
@@ -85,7 +86,7 @@ const handleLogout = () => {
 
     <a-layout>
       <a-layout-sider
-        v-if="authStore.isAuthenticated"
+        v-if="authStore.isAuthenticated && route.path !== '/'"
         collapsible
         v-model:collapsed="collapsed"
         theme="light"
