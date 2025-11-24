@@ -3,7 +3,7 @@
     :visible="visible"
     title="➕ Новый коктейль"
     @close="$emit('update:visible', false)"
-    width="600"
+    :width="isMobile ? '100%' : '600px'"
     placement="right"
   >
     <a-form layout="vertical" class="pb-16">
@@ -109,7 +109,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue"
+import { ref, onMounted, onUnmounted, watch } from "vue"
 import axios from "axios"
 import { message } from "ant-design-vue"
 import { RECIPES_URL, COMPONENTS_URL, METHODS_URL, GLASSES_URL, DECORATIONS_URL, UPLOAD_URL } from "../config/api"
@@ -120,6 +120,20 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:visible', 'success'])
+
+const isMobile = ref(window.innerWidth < 640)
+
+const handleResize = () => {
+  isMobile.value = window.innerWidth < 640
+}
+
+onMounted(() => {
+  window.addEventListener('resize', handleResize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+})
 
 const components = ref([])
 const methods = ref([])
