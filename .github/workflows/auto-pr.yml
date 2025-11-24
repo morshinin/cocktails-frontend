@@ -1,0 +1,39 @@
+name: Auto Assign, Label and Organize PRs
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  pr_automation:
+    runs-on: ubuntu-latest
+
+    steps:
+      # -------------------------
+      # ASSIGN PR AUTHOR
+      # -------------------------
+      - name: Assign PR author
+        uses: actions-ecosystem/action-assign@v1
+        with:
+          assignees: ${{ github.actor }}
+
+      # -------------------------
+      # AUTO-LABEL BASED ON BRANCH NAME
+      # -------------------------
+      - name: Add "enhancement" label for feat/*
+        if: startsWith(github.head_ref, 'feat/')
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: enhancement
+
+      - name: Add "bug" label for fix/*
+        if: startsWith(github.head_ref, 'fix/')
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: bug
+
+      - name: Add "refactor" label for refactor/*
+        if: startsWith(github.head_ref, 'refactor/')
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: refactor
