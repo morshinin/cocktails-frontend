@@ -2,10 +2,13 @@
 import EnvBadge from "./components/EnvBadge.vue";
 import { useAuthStore } from "./stores/auth";
 import { useRouter } from "vue-router";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
+import { ShopOutlined } from '@ant-design/icons-vue';
 
 const authStore = useAuthStore();
 const router = useRouter();
+const openKeys = ref(['organization']);
+const collapsed = ref(true);
 
 onMounted(() => {
   if (authStore.isAuthenticated && !authStore.user) {
@@ -20,7 +23,7 @@ const handleLogout = () => {
 </script>
 
 <template>
-  <a-layout>
+  <a-layout style="min-height: 100vh">
     <a-layout-header class="header">
       <div class="menu-container">
         <a-menu mode="horizontal" theme="dark">
@@ -80,10 +83,42 @@ const handleLogout = () => {
       </div>
     </a-layout-header>
 
-    <a-layout-content style="padding: 24px">
-      <env-badge />
-      <router-view />
-    </a-layout-content>
+    <a-layout>
+      <a-layout-sider
+        v-if="authStore.isAuthenticated"
+        collapsible
+        v-model:collapsed="collapsed"
+        theme="light"
+      >
+        <a-menu
+          theme="light"
+          mode="inline"
+          v-model:openKeys="openKeys"
+          :selectedKeys="authStore.selectedVenue ? [authStore.selectedVenue._id] : []"
+        >
+          <a-sub-menu key="organization">
+            <template #title>
+              <span>
+                <ShopOutlined />
+                <span>Организация</span>
+              </span>
+            </template>
+            <a-menu-item
+              v-for="venue in authStore.venues"
+              :key="venue._id"
+              @click="authStore.selectVenue(venue)"
+            >
+              {{ venue.name }}
+            </a-menu-item>
+          </a-sub-menu>
+        </a-menu>
+      </a-layout-sider>
+
+      <a-layout-content style="padding: 24px">
+        <env-badge />
+        <router-view :key="authStore.selectedVenue?._id" />
+      </a-layout-content>
+    </a-layout>
   </a-layout>
 </template>
 
