@@ -121,6 +121,7 @@ const router = useRouter()
 
 const components = ref([])
 const methods = ref([])
+const glasses = ref([])
 const decorations = ref([])
 
 const newRecipe = ref({
