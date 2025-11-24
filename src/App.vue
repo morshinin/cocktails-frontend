@@ -40,24 +40,27 @@ const handleLogout = () => {
               Дашборд
             </router-link>
           </a-menu-item>
-          <a-menu-item key="cocktails" v-if="authStore.selectedVenue">
-            <router-link to="/cocktails">Коктейли</router-link>
-          </a-menu-item>
-          <a-menu-item key="cocktailComponents" v-if="authStore.selectedVenue">
-            <router-link to="/cocktailComponents">Компоненты</router-link>
-          </a-menu-item>
-          <a-menu-item key="methods" v-if="authStore.selectedVenue">
-            <router-link to="/cocktailMethods">Методы</router-link>
-          </a-menu-item>
-          <a-menu-item key="glasses" v-if="authStore.selectedVenue">
-            <router-link to="/cocktailGlasses">Бокалы</router-link>
-          </a-menu-item>
-          <a-menu-item key="decorations" v-if="authStore.selectedVenue">
-            <router-link to="/cocktailDecorations">Украшения</router-link>
-          </a-menu-item>
-          <a-menu-item key="game" v-if="authStore.selectedVenue">
-            <router-link to="/cocktail-game">Коктейль-игра</router-link>
-          </a-menu-item>
+          <a-sub-menu key="bar" v-if="authStore.selectedVenue">
+            <template #title>Бар</template>
+            <a-menu-item key="cocktails">
+              <router-link to="/cocktails">Коктейли</router-link>
+            </a-menu-item>
+            <a-menu-item key="cocktailComponents">
+              <router-link to="/cocktailComponents">Компоненты</router-link>
+            </a-menu-item>
+            <a-menu-item key="methods">
+              <router-link to="/cocktailMethods">Методы</router-link>
+            </a-menu-item>
+            <a-menu-item key="glasses">
+              <router-link to="/cocktailGlasses">Бокалы</router-link>
+            </a-menu-item>
+            <a-menu-item key="decorations">
+              <router-link to="/cocktailDecorations">Украшения</router-link>
+            </a-menu-item>
+            <a-menu-item key="game">
+              <router-link to="/cocktail-game">Коктейль-игра</router-link>
+            </a-menu-item>
+          </a-sub-menu>
         </a-menu>
       </div>
       
