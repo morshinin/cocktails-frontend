@@ -1,84 +1,96 @@
 <template>
-  <div>
-    <!-- Добавление нового метода -->
-    <a-card class="mb-4" title="Добавить новый метод приготовления">
-      <a-form layout="vertical" @submit.prevent="addMethod">
-        <a-form-item label="Название">
-          <a-input
-            v-model:value="newMethod.name"
-            placeholder="Введите название метода (например: Шейк)"
-          />
-        </a-form-item>
-
-        <a-form-item>
-          <a-button type="primary" html-type="submit">Добавить</a-button>
-        </a-form-item>
-      </a-form>
-    </a-card>
+  <div class="p-6 max-w-5xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold">Методы приготовления</h1>
+      <a-button type="primary" @click="handleAdd">
+        <template #icon><PlusOutlined /></template>
+        Добавить метод
+      </a-button>
+    </div>
 
     <!-- Список методов -->
-    <a-card title="Список методов приготовления">
-      <a-list bordered :data-source="methods">
-        <template #renderItem="{ item }">
-          <a-list-item class="flex justify-between items-center">
-            <div class="flex items-center gap-2">
-              <template v-if="editingId === item._id">
-                <a-input
-                  v-model:value="editName"
-                  size="small"
-                  style="width: 200px"
-                  @pressEnter="saveEdit(item._id)"
-                  @blur="cancelEdit"
-                />
-                <a-button
-                  size="small"
-                  type="primary"
-                  @click="saveEdit(item._id)"
-                >
-                  OK
-                </a-button>
-                <a-button size="small" @click="cancelEdit">Отмена</a-button>
+    <a-row :gutter="[16, 16]">
+      <a-col v-for="item in methods" :key="item._id" :xs="24" :sm="12" :md="8">
+        <a-card class="h-full flex flex-col" hoverable>
+          <template #extra>
+            <a-dropdown trigger="click">
+              <a class="ant-dropdown-link" @click.prevent>
+                <MoreOutlined style="font-size: 20px; cursor: pointer" />
+              </a>
+              <template #overlay>
+                <a-menu>
+                  <a-menu-item @click="handleEdit(item)">
+                    <EditOutlined /> Редактировать
+                  </a-menu-item>
+                  <a-menu-item danger>
+                    <a-popconfirm
+                      title="Удалить метод?"
+                      ok-text="Да"
+                      cancel-text="Нет"
+                      @confirm="deleteMethod(item._id)"
+                    >
+                      <span><DeleteOutlined /> Удалить</span>
+                    </a-popconfirm>
+                  </a-menu-item>
+                </a-menu>
               </template>
+            </a-dropdown>
+          </template>
+          <template #title>
+            <span class="text-lg">{{ item.name }}</span>
+          </template>
+        </a-card>
+      </a-col>
+    </a-row>
 
-              <template v-else>
-                <span
-                  class="cursor-pointer hover:underline"
-                  @click="startEdit(item)"
-                >
-                  {{ item.name }}
-                </span>
-              </template>
-            </div>
-
-            <a-popconfirm
-              title="Удалить метод?"
-              ok-text="Да"
-              cancel-text="Нет"
-              @confirm="deleteMethod(item._id)"
-            >
-              <a-button type="text" danger>
-                <DeleteOutlined />
-              </a-button>
-            </a-popconfirm>
-          </a-list-item>
-        </template>
-      </a-list>
-    </a-card>
+    <AddMethodDrawer
+      v-model:open="showAddDrawer"
+      :width="drawerWidth"
+      :methodToEdit="editingMethod"
+      @methodAdded="fetchMethods"
+      @methodUpdated="fetchMethods"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import axios from "axios";
 import { message } from "ant-design-vue";
-import { DeleteOutlined } from "@ant-design/icons-vue";
-import { METHODS_URL} from '../config/api.js';
+import { PlusOutlined, DeleteOutlined, MoreOutlined, EditOutlined } from "@ant-design/icons-vue";
+import { METHODS_URL } from '../config/api.js';
 import { useAuthStore } from '../stores/auth';
+import AddMethodDrawer from '../components/AddMethodDrawer.vue';
 
 const methods = ref([]);
-const newMethod = ref({ name: "" });
-const editingId = ref(null);
-const editName = ref("");
+const showAddDrawer = ref(false);
+const drawerWidth = ref('600px');
+const editingMethod = ref(null);
+
+// Responsive drawer width
+const updateDrawerWidth = () => {
+  drawerWidth.value = window.innerWidth < 640 ? '100%' : '600px';
+};
+
+const handleAdd = () => {
+  editingMethod.value = null;
+  showAddDrawer.value = true;
+};
+
+const handleEdit = (item) => {
+  editingMethod.value = item;
+  showAddDrawer.value = true;
+};
+
+onMounted(() => {
+  updateDrawerWidth();
+  window.addEventListener('resize', updateDrawerWidth);
+  fetchMethods();
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateDrawerWidth);
+});
 
 // ===== Загрузка списка =====
 const fetchMethods = async () => {
@@ -97,37 +109,6 @@ const fetchMethods = async () => {
   }
 };
 
-// ===== Добавление =====
-const addMethod = async () => {
-  const authStore = useAuthStore();
-  if (!authStore.selectedVenue) return message.error("Venue not selected");
-
-  const name = newMethod.value.name.trim();
-  if (!name) return message.warning("Введите название");
-
-  const exists = methods.value.some(
-    (m) => m.name.toLowerCase() === name.toLowerCase()
-  );
-  if (exists) return message.warning("Такой метод уже существует");
-
-  try {
-    await axios.post(METHODS_URL, { 
-      name,
-      venueId: authStore.selectedVenue._id 
-    }, {
-      headers: { Authorization: `Bearer ${authStore.token}` }
-    });
-    message.success("Метод добавлен");
-    newMethod.value.name = "";
-    await fetchMethods();
-  } catch (e) {
-    console.error(e);
-    if (e.response?.status === 409)
-      message.warning("Такой метод уже существует");
-    else message.error("Ошибка при добавлении метода");
-  }
-};
-
 // ===== Удаление =====
 const deleteMethod = async (id) => {
   const authStore = useAuthStore();
@@ -142,52 +123,4 @@ const deleteMethod = async (id) => {
     message.error("Ошибка при удалении метода");
   }
 };
-
-// ===== Редактирование =====
-const startEdit = (item) => {
-  editingId.value = item._id;
-  editName.value = item.name;
-};
-
-const cancelEdit = () => {
-  editingId.value = null;
-  editName.value = "";
-};
-
-const saveEdit = async (id) => {
-  const newName = editName.value.trim();
-  if (!newName) return message.warning("Введите название");
-
-  const exists = methods.value.some(
-    (m) => m._id !== id && m.name.toLowerCase() === newName.toLowerCase()
-  );
-  if (exists) return message.warning("Такой метод уже существует");
-
-  try {
-    const authStore = useAuthStore();
-    await axios.put(`${METHODS_URL}/${id}`, { name: newName }, {
-      headers: { Authorization: `Bearer ${authStore.token}` }
-    });
-    message.success("Изменения сохранены");
-    cancelEdit();
-    await fetchMethods();
-  } catch (e) {
-    console.error(e);
-    message.error("Ошибка при сохранении метода");
-  }
-};
-
-onMounted(fetchMethods);
 </script>
-
-<style scoped>
-.mb-4 {
-  margin-bottom: 16px;
-}
-.cursor-pointer {
-  cursor: pointer;
-}
-.hover\:underline:hover {
-  text-decoration: underline;
-}
-</style>
