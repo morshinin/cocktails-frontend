@@ -61,21 +61,17 @@
       </div>
 
       <div class="mt-auto pt-4 border-t border-gray-200">
-        <div class="mb-2">
-          <strong>Метод:</strong>
-          <template v-if="Array.isArray(recipe.method)">
-            <a-tag v-for="m in recipe.method" :key="m" color="blue">{{ m }}</a-tag>
-          </template>
-          <span v-else>{{ recipe.method }}</span>
-        </div>
-        <div class="mb-2"><strong>Бокал:</strong> {{ recipe.glass }}</div>
-        <div>
-          <strong>Украшение:</strong>
-          <template v-if="Array.isArray(recipe.decoration)">
-            <a-tag v-for="d in recipe.decoration" :key="d" color="green">{{ d }}</a-tag>
-          </template>
-          <span v-else>{{ recipe.decoration }}</span>
-        </div>
+        <a-descriptions size="small" :column="1" bordered>
+          <a-descriptions-item label="Метод">
+            {{ Array.isArray(recipe.method) ? recipe.method.join(', ') : recipe.method }}
+          </a-descriptions-item>
+          <a-descriptions-item label="Бокал">
+            {{ recipe.glass }}
+          </a-descriptions-item>
+          <a-descriptions-item label="Украшение">
+            {{ Array.isArray(recipe.decoration) ? recipe.decoration.join(', ') : recipe.decoration }}
+          </a-descriptions-item>
+        </a-descriptions>
       </div>
     </a-card>
   </a-badge-ribbon>
