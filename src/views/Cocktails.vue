@@ -6,11 +6,16 @@
       :breadcrumb="{ routes: [{ path: '/cocktails', breadcrumbName: 'Коктейли' }] }"
     >
       <template #extra>
-        <router-link to="/cocktails/new">
-          <a-button type="primary">➕ Добавить коктейль</a-button>
-        </router-link>
+        <a-button type="primary" @click="showAddModal = true">
+          ➕ Добавить коктейль
+        </a-button>
       </template>
     </a-page-header>
+
+    <AddCocktailDrawer
+      v-model:visible="showAddModal"
+      @success="fetchRecipes"
+    />
 
     <CocktailFilter @filter="handleFilter" />
     
@@ -32,10 +37,12 @@ import axios from "axios"
 import { message } from "ant-design-vue"
 import CocktailFilter from "../components/CocktailFilter.vue"
 import CocktailCard from "../components/CocktailCard.vue"
+import AddCocktailDrawer from "../components/AddCocktailDrawer.vue"
 import { RECIPES_URL } from '../config/api.js';
 import { useAuthStore } from '../stores/auth';
 
 const recipes = ref([])
+const showAddModal = ref(false)
 const filteredRecipes = ref([])
 
 const fetchRecipes = async () => {
