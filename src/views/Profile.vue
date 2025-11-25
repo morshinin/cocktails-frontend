@@ -1,74 +1,86 @@
-<script setup>
-import { ref, onMounted } from 'vue';
-import { useAuthStore } from '../stores/auth';
-import { message } from 'ant-design-vue';
-
-const authStore = useAuthStore();
-const loading = ref(false);
-
-const formState = ref({
-  name: '',
-  email: '',
-});
-
-onMounted(() => {
-  if (authStore.user) {
-    formState.value.name = authStore.user.name;
-    formState.value.email = authStore.user.email;
-  }
-});
-
-const onFinish = async (values) => {
-  loading.value = true;
-  try {
-    await authStore.updateProfile(values);
-    message.success('Profile updated successfully');
-  } catch (error) {
-    message.error('Failed to update profile');
-    console.error(error);
-  } finally {
-    loading.value = false;
-  }
-};
-</script>
-
 <template>
-  <div class="profile-container">
-    <a-card title="User Profile" style="max-width: 600px; margin: 0 auto">
-      <a-form
-        :model="formState"
-        name="profile"
-        layout="vertical"
-        @finish="onFinish"
-      >
-        <a-form-item
-          label="Name"
-          name="name"
-          :rules="[{ required: true, message: 'Please input your name!' }]"
-        >
-          <a-input v-model:value="formState.name" />
-        </a-form-item>
-
-        <a-form-item
-          label="Email"
-          name="email"
-          :rules="[{ required: true, type: 'email', message: 'Please input a valid email!' }]"
-        >
-          <a-input v-model:value="formState.email" />
-        </a-form-item>
-
-        <a-form-item>
-          <a-button type="primary" html-type="submit" :loading="loading">
-            Save Changes
+  <div class="p-6 max-w-4xl mx-auto">
+    <a-card :bordered="false" class="shadow-sm">
+      <template #title>
+        <div class="flex justify-between items-center">
+          <span class="text-xl font-bold">Профиль пользователя</span>
+          <a-button type="primary" @click="showDrawer = true">
+            <template #icon><EditOutlined /></template>
+            Редактировать
           </a-button>
-        </a-form-item>
-      </a-form>
+        </div>
+      </template>
+
+      <div class="flex flex-col md:flex-row gap-8">
+        <!-- Avatar Section -->
+        <div class="flex flex-col items-center justify-center md:w-1/3">
+          <a-avatar :size="120" class="mb-4 bg-green-500 text-4xl">
+            {{ authStore.user?.name?.[0]?.toUpperCase() || 'U' }}
+          </a-avatar>
+          <a-tag :color="getRoleColor(authStore.user?.role)" class="text-lg py-1 px-3">
+            {{ getRoleName(authStore.user?.role) }}
+          </a-tag>
+        </div>
+
+        <!-- Details Section -->
+        <div class="flex-1">
+          <a-descriptions :column="1" bordered>
+            <a-descriptions-item label="Имя">
+              {{ authStore.user?.name || 'Не указано' }}
+            </a-descriptions-item>
+            <a-descriptions-item label="Email">
+              {{ authStore.user?.email }}
+            </a-descriptions-item>
+            <a-descriptions-item label="Организация" v-if="authStore.organization">
+              {{ authStore.organization.name }}
+            </a-descriptions-item>
+            <a-descriptions-item label="Текущее заведение" v-if="authStore.selectedVenue">
+              {{ authStore.selectedVenue.name }}
+            </a-descriptions-item>
+          </a-descriptions>
+        </div>
+      </div>
     </a-card>
+
+    <EditProfileDrawer
+      v-model:open="showDrawer"
+      :user="authStore.user"
+      @profileUpdated="authStore.fetchProfile"
+    />
   </div>
 </template>
 
-<style scoped>
-.profile-container {
-  padding: 24px;
-}
-</style>
+<script setup>
+import { ref } from 'vue';
+import { useAuthStore } from '../stores/auth';
+import { EditOutlined } from '@ant-design/icons-vue';
+import EditProfileDrawer from '../components/EditProfileDrawer.vue';
+
+const authStore = useAuthStore();
+const showDrawer = ref(false);
+
+const roleNames = {
+  developer: 'Разработчик',
+  owner: 'Владелец',
+  manager: 'Управляющий',
+  head_bartender: 'Старший бармен',
+  bartender: 'Бармен',
+  head_chef: 'Шеф-повар',
+  cook: 'Повар',
+  cleaner: 'Клинер',
+  guest: 'Гость'
+};
+
+const getRoleName = (role) => roleNames[role] || role;
+
+const getRoleColor = (role) => {
+  switch (role) {
+    case 'developer': return 'purple';
+    case 'owner': return 'gold';
+    case 'manager': return 'cyan';
+    case 'head_bartender': return 'blue';
+    case 'bartender': return 'geekblue';
+    default: return 'default';
+  }
+};
+</script>
