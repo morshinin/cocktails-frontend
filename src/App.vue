@@ -75,6 +75,17 @@ const roleNames = {
               <router-link to="/cocktail-game">Коктейль-игра</router-link>
             </a-menu-item>
           </a-sub-menu>
+          <a-sub-menu key="kitchen" v-if="authStore.selectedVenue" @titleClick="router.push('/kitchen')">
+            <template #title>
+              <span class="cursor-pointer">Кухня</span>
+            </template>
+            <a-menu-item key="dishes">
+              <router-link to="/dishes">Блюда</router-link>
+            </a-menu-item>
+            <a-menu-item key="ingredients">
+              <router-link to="/ingredients">Ингредиенты</router-link>
+            </a-menu-item>
+          </a-sub-menu>
         </a-menu>
       </div>
       
