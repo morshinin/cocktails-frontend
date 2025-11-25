@@ -119,6 +119,36 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: "/housekeeping",
+    name: "Housekeeping",
+    component: () => import("../views/Housekeeping.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/housekeeping/zones",
+    name: "Zones",
+    component: () => import("../views/Zones.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/housekeeping/equipment",
+    name: "Equipment",
+    component: () => import("../views/Equipment.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/housekeeping/lost-and-found",
+    name: "LostAndFound",
+    component: () => import("../views/LostAndFound.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/housekeeping/schedule",
+    name: "CleaningSchedule",
+    component: () => import("../views/CleaningSchedule.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
     path: "/dashboard",
     name: "Dashboard",
     component: () => import("../views/Dashboard.vue"),
