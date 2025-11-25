@@ -27,6 +27,7 @@
           <a-select-option value="head_chef">Шеф-повар</a-select-option>
           <a-select-option value="cook">Повар</a-select-option>
           <a-select-option value="cleaner">Клинер</a-select-option>
+          <a-select-option value="waiter">Официант</a-select-option>
           <a-select-option value="guest">Гость</a-select-option>
         </a-select>
       </a-form-item>
