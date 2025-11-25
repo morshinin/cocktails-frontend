@@ -13,7 +13,16 @@
       </a-form-item>
 
       <a-form-item label="Категория">
-        <a-input v-model:value="newComponent.category" placeholder="Например: алкоголь, сироп, сок..." />
+        <a-select
+          v-model:value="newComponent.category"
+          placeholder="Выберите категорию"
+          show-search
+          allow-clear
+        >
+          <a-select-option v-for="cat in categories" :key="cat._id" :value="cat.name">
+            {{ cat.name }}
+          </a-select-option>
+        </a-select>
       </a-form-item>
 
       <a-form-item label="Описание">
@@ -46,10 +55,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch } from 'vue';
+import { ref, reactive, watch, onMounted } from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
-import { COMPONENTS_URL, UPLOAD_URL } from '../config/api.js';
+import { COMPONENTS_URL, UPLOAD_URL, CATEGORIES_URL } from '../config/api.js';
 import { useAuthStore } from '../stores/auth';
 
 const props = defineProps({
@@ -67,6 +76,7 @@ const props = defineProps({
 const emit = defineEmits(['update:open', 'componentAdded', 'componentUpdated']);
 
 const loading = ref(false);
+const categories = ref([]);
 const newComponent = reactive({
   name: "",
   category: "",
@@ -74,6 +84,29 @@ const newComponent = reactive({
   image: ""
 });
 const previewImage = ref(null);
+
+const fetchCategories = async () => {
+  const authStore = useAuthStore();
+  if (!authStore.selectedVenue) return;
+  try {
+    const res = await axios.get(CATEGORIES_URL, {
+      params: { venueId: authStore.selectedVenue._id }
+    });
+    categories.value = res.data;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+onMounted(() => {
+  fetchCategories();
+});
+
+watch(() => props.open, (newVal) => {
+  if (newVal) {
+    fetchCategories();
+  }
+});
 
 watch(() => props.componentToEdit, (newVal) => {
   if (newVal) {
