@@ -2,10 +2,15 @@
   <div class="p-6 max-w-5xl mx-auto">
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold">Компоненты</h1>
-      <a-button type="primary" @click="handleAdd">
-        <template #icon><PlusOutlined /></template>
-        Добавить компонент
-      </a-button>
+      <a-space>
+        <router-link to="/categories">
+          <a-button>Управление категориями</a-button>
+        </router-link>
+        <a-button type="primary" @click="handleAdd">
+          <template #icon><PlusOutlined /></template>
+          Добавить компонент
+        </a-button>
+      </a-space>
     </div>
 
     <!-- Список компонентов -->

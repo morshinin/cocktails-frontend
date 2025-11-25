@@ -7,3 +7,4 @@ export const GLASSES_URL = `${API_URL}/glasses`;
 export const DECORATIONS_URL = `${API_URL}/decorations`;
 export const UPLOAD_URL = `${API_URL}/upload`;
 export const INSTRUCTIONS_URL = `${API_URL}/instructions`;
+export const CATEGORIES_URL = `${API_URL}/categories`;
