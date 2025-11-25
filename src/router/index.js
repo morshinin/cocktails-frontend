@@ -94,6 +94,30 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: "/ingredients",
+    name: "Ingredients",
+    component: () => import("../views/Ingredients.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/staff",
+    name: "Staff",
+    component: () => import("../views/Staff.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/employees",
+    name: "Employees",
+    component: () => import("../views/Employees.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/schedule",
+    name: "Schedule",
+    component: () => import("../views/Schedule.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
     path: "/dashboard",
     name: "Dashboard",
     component: () => import("../views/Dashboard.vue"),
