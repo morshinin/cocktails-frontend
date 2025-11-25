@@ -63,6 +63,7 @@ const roleNames = {
   head_chef: 'Шеф-повар',
   cook: 'Повар',
   cleaner: 'Клинер',
+  waiter: 'Официант',
   guest: 'Гость'
 };
 
@@ -75,6 +76,7 @@ const getRoleColor = (role) => {
     case 'manager': return 'cyan';
     case 'head_bartender': return 'blue';
     case 'bartender': return 'geekblue';
+    case 'waiter': return 'orange';
     default: return 'default';
   }
 };

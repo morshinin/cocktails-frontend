@@ -31,6 +31,7 @@ const roleNames = {
   head_chef: 'Шеф-повар',
   cook: 'Повар',
   cleaner: 'Клинер',
+  waiter: 'Официант',
   guest: 'Гость'
 };
 </script>
