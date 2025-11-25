@@ -149,6 +149,18 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: "/service",
+    name: "Service",
+    component: () => import("../views/Service.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/service/reservations",
+    name: "Reservations",
+    component: () => import("../views/Reservations.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
     path: "/dashboard",
     name: "Dashboard",
     component: () => import("../views/Dashboard.vue"),

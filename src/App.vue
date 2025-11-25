@@ -115,6 +115,14 @@ const roleNames = {
               <router-link to="/housekeeping/lost-and-found">Потеряшки</router-link>
             </a-menu-item>
           </a-sub-menu>
+          <a-sub-menu key="service" v-if="authStore.selectedVenue" @titleClick="router.push('/service')">
+            <template #title>
+              <span class="cursor-pointer">Сервис</span>
+            </template>
+            <a-menu-item key="reservations">
+              <router-link to="/service/reservations">Резерв столов</router-link>
+            </a-menu-item>
+          </a-sub-menu>
         </a-menu>
       </div>
       
