@@ -40,6 +40,7 @@ const routes = [
   { path: '/cocktailMethods', name: 'CocktailMethods', component: CocktailMethods },
   { path: '/cocktailGlasses', name: 'CocktailGlasses', component: CocktailGlasses },
   { path: '/cocktailDecorations', name: 'CocktailDecorations', component: () => import('../views/CocktailDecorations.vue') },
+  { path: '/categories', name: 'Categories', component: () => import('../views/Categories.vue') },
   {
     path: "/cocktails/:id/edit",
     name: "EditRecipe",
