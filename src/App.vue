@@ -21,6 +21,18 @@ const handleLogout = () => {
   authStore.logout();
   router.push("/login");
 };
+
+const roleNames = {
+  developer: 'Разработчик',
+  owner: 'Владелец',
+  manager: 'Управляющий',
+  head_bartender: 'Старший бармен',
+  bartender: 'Бармен',
+  head_chef: 'Шеф-повар',
+  cook: 'Повар',
+  cleaner: 'Клинер',
+  guest: 'Гость'
+};
 </script>
 
 <template>
@@ -79,6 +91,10 @@ const handleLogout = () => {
             </a-avatar>
             <template #overlay>
               <a-menu>
+                <a-menu-item disabled style="color: rgba(0, 0, 0, 0.85); cursor: default;">
+                  Вы вошли как {{ roleNames[authStore.user?.role] || authStore.user?.role }}
+                </a-menu-item>
+                <a-menu-divider />
                 <a-menu-item key="profile">
                   <router-link to="/profile">Profile</router-link>
                 </a-menu-item>
