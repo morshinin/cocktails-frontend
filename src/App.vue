@@ -9,7 +9,7 @@ const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 const openKeys = ref(['organization']);
-const collapsed = ref(true);
+const collapsed = ref(false);
 
 onMounted(() => {
   if (authStore.isAuthenticated && !authStore.user) {
