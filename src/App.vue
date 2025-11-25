@@ -97,6 +97,23 @@ const roleNames = {
               <router-link to="/schedule">График смен</router-link>
             </a-menu-item>
           </a-sub-menu>
+          <a-sub-menu key="housekeeping" v-if="authStore.selectedVenue" @titleClick="router.push('/housekeeping')">
+            <template #title>
+              <span class="cursor-pointer">Хозяйство</span>
+            </template>
+            <a-menu-item key="schedule-cleaning">
+              <router-link to="/housekeeping/schedule">График уборки</router-link>
+            </a-menu-item>
+            <a-menu-item key="zones">
+              <router-link to="/housekeeping/zones">Зоны</router-link>
+            </a-menu-item>
+            <a-menu-item key="equipment">
+              <router-link to="/housekeeping/equipment">Оборудование</router-link>
+            </a-menu-item>
+            <a-menu-item key="lost-and-found">
+              <router-link to="/housekeeping/lost-and-found">Потеряшки</router-link>
+            </a-menu-item>
+          </a-sub-menu>
         </a-menu>
       </div>
       
