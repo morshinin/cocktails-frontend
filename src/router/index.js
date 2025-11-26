@@ -179,6 +179,30 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: "/marketing",
+    name: "Marketing",
+    component: () => import("../views/Marketing.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/marketing/reviews",
+    name: "Reviews",
+    component: () => import("../views/Reviews.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/marketing/guests",
+    name: "RegularGuests",
+    component: () => import("../views/RegularGuests.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/marketing/merch",
+    name: "Merch",
+    component: () => import("../views/Merch.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
     path: "/dashboard",
     name: "Dashboard",
     component: () => import("../views/Dashboard.vue"),
