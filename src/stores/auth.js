@@ -43,23 +43,30 @@ export const useAuthStore = defineStore("auth", {
     },
 
     async fetchProfile() {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/me`, {
-        headers: { Authorization: `Bearer ${this.token}` }
-      });
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/me`, {
+          headers: { Authorization: `Bearer ${this.token}` }
+        });
 
-      this.user = res.data.user;
-      this.organization = res.data.organization;
-      this.venues = res.data.venues || [];
+        this.user = res.data.user;
+        this.organization = res.data.organization;
+        this.venues = res.data.venues || [];
 
-      if (this.selectedVenue) {
-        const venueExists = this.venues.find(v => v._id === this.selectedVenue._id);
-        if (!venueExists) {
-          this.selectedVenue = null;
-          localStorage.removeItem("venue");
-        } else {
-          this.selectedVenue = venueExists;
-          localStorage.setItem("venue", JSON.stringify(venueExists));
+        if (this.selectedVenue) {
+          const venueExists = this.venues.find(v => v._id === this.selectedVenue._id);
+          if (!venueExists) {
+            this.selectedVenue = null;
+            localStorage.removeItem("venue");
+          } else {
+            this.selectedVenue = venueExists;
+            localStorage.setItem("venue", JSON.stringify(venueExists));
+          }
         }
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          this.logout();
+        }
+        throw error;
       }
     },
 
