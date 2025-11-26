@@ -161,6 +161,24 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: "/events",
+    name: "Events",
+    component: () => import("../views/Events.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/events/djs",
+    name: "DJs",
+    component: () => import("../views/DJs.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/events/schedule",
+    name: "EventSchedule",
+    component: () => import("../views/EventSchedule.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
     path: "/dashboard",
     name: "Dashboard",
     component: () => import("../views/Dashboard.vue"),
