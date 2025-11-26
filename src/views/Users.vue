@@ -1,30 +1,32 @@
 <template>
   <div class="p-6 max-w-7xl mx-auto">
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold">Пользователи</h1>
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold text-white">Пользователи</h1>
       <a-button type="primary" @click="handleAdd">
         <template #icon><PlusOutlined /></template>
         Создать пользователя
       </a-button>
     </div>
 
-    <a-table :columns="columns" :data-source="users" :loading="loading" row-key="_id">
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'role'">
-          <a-tag :color="getRoleColor(record.role)">
-            {{ getRoleName(record.role) }}
-          </a-tag>
+    <div class="bg-gray-800 rounded-xl p-6 border border-gray-700">
+      <a-table :columns="columns" :data-source="users" :loading="loading" row-key="_id">
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'role'">
+            <a-tag :color="getRoleColor(record.role)">
+              {{ getRoleName(record.role) }}
+            </a-tag>
+          </template>
+          <template v-if="column.key === 'actions'">
+            <a-space>
+              <a-button type="link" @click="handleEdit(record)">Редактировать</a-button>
+              <a-popconfirm title="Удалить пользователя?" @confirm="handleDelete(record._id)">
+                <a-button type="link" danger>Удалить</a-button>
+              </a-popconfirm>
+            </a-space>
+          </template>
         </template>
-        <template v-if="column.key === 'actions'">
-          <a-space>
-            <a-button type="link" @click="handleEdit(record)">Редактировать</a-button>
-            <a-popconfirm title="Удалить пользователя?" @confirm="handleDelete(record._id)">
-              <a-button type="link" danger>Удалить</a-button>
-            </a-popconfirm>
-          </a-space>
-        </template>
-      </template>
-    </a-table>
+      </a-table>
+    </div>
 
     <AddUserDrawer
       v-model:open="showDrawer"
