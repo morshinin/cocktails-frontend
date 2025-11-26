@@ -12,8 +12,10 @@ const openKeys = ref(['organization']);
 const collapsed = ref(false);
 
 onMounted(() => {
-  if (authStore.isAuthenticated && !authStore.user) {
-    authStore.fetchProfile();
+  if (authStore.isAuthenticated) {
+    if (!authStore.user || !authStore.venues || authStore.venues.length === 0) {
+      authStore.fetchProfile();
+    }
   }
 });
 
@@ -37,7 +39,7 @@ const roleNames = {
 </script>
 
 <template>
-  <a-layout style="min-height: 100vh">
+  <a-layout style="min-height: 100vh; display: flex; flex-direction: column;">
     <a-layout-header class="header">
       <div class="menu-container">
         <a-menu mode="horizontal" theme="dark">
@@ -187,7 +189,7 @@ const roleNames = {
       </div>
     </a-layout-header>
 
-    <a-layout>
+    <a-layout style="flex: 1">
       <a-layout-sider
         v-if="authStore.isAuthenticated && route.path !== '/'"
         collapsible
@@ -223,6 +225,21 @@ const roleNames = {
         <router-view :key="authStore.selectedVenue?._id" />
       </a-layout-content>
     </a-layout>
+      
+    <a-layout-footer style="text-align: center; background: #f0f2f5; position: relative; z-index: 100;">
+      <div class="flex flex-col items-center gap-4">
+        <div class="flex gap-8 text-gray-500">
+          <span>© 2024 Cocktails App</span>
+          <span>v1.2.0</span>
+        </div>
+        
+        <div class="flex gap-8">
+          <a href="#" class="text-gray-500 hover:text-blue-500">Помощь / Инструкции</a>
+          <a href="#" class="text-gray-500 hover:text-blue-500">Сообщить об ошибке</a>
+          <a href="#" class="text-gray-500 hover:text-blue-500">Политика конфиденциальности</a>
+        </div>
+      </div>
+    </a-layout-footer>
   </a-layout>
 </template>
 
@@ -273,5 +290,11 @@ const roleNames = {
 .app-logo {
   height: 32px;
   width: auto;
+}
+</style>
+
+<style>
+.ant-layout-sider-trigger {
+  z-index: 50 !important;
 }
 </style>
