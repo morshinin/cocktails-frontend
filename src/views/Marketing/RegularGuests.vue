@@ -52,7 +52,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined, SendOutlined, PhoneOutlined
 import { message } from 'ant-design-vue';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import AddRegularGuestDrawer from '../components/marketing/AddRegularGuestDrawer.vue';
+import AddRegularGuestDrawer from '../../components/marketing/AddRegularGuestDrawer.vue';
 
 const guests = ref([]);
 const drawerVisible = ref(false);

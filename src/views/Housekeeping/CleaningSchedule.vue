@@ -77,7 +77,7 @@ import { PlusOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import AddCleaningTaskDrawer from '../components/housekeeping/AddCleaningTaskDrawer.vue';
+import AddCleaningTaskDrawer from '../../components/housekeeping/AddCleaningTaskDrawer.vue';
 
 const selectedDate = ref(dayjs());
 const schedule = ref({ tasks: [], notes: '' });

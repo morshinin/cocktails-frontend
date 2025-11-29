@@ -76,7 +76,7 @@ import { ref, onMounted } from 'vue';
 import { PlusOutlined, MoreOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import axios from 'axios';
-import AddLostItemDrawer from '../components/housekeeping/AddLostItemDrawer.vue';
+import AddLostItemDrawer from '../../components/housekeeping/AddLostItemDrawer.vue';
 
 const items = ref([]);
 const drawerVisible = ref(false);
