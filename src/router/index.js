@@ -213,6 +213,11 @@ const routes = [
     component: () => import("../views/Dashboard.vue"),
     meta: { requiresAuth: true },
   },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "NotFound",
+    component: () => import("../views/NotFound.vue"),
+  },
 ]
 
 const router = createRouter({
