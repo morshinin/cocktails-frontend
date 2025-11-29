@@ -84,25 +84,25 @@ const routes = [
   {
     path: "/kitchen",
     name: "Kitchen",
-    component: () => import("../views/Kitchen.vue"),
+    component: () => import("../views/Kitchen/Kitchen.vue"),
     meta: { requiresAuth: true },
   },
   {
     path: "/dishes",
     name: "Dishes",
-    component: () => import("../views/Dishes.vue"),
+    component: () => import("../views/Kitchen/Dishes.vue"),
     meta: { requiresAuth: true },
   },
   {
     path: "/ingredients",
     name: "Ingredients",
-    component: () => import("../views/Ingredients.vue"),
+    component: () => import("../views/Kitchen/Ingredients.vue"),
     meta: { requiresAuth: true },
   },
   {
     path: "/ingredients",
     name: "Ingredients",
-    component: () => import("../views/Ingredients.vue"),
+    component: () => import("../views/Kitchen/Ingredients.vue"),
     meta: { requiresAuth: true },
   },
   {
