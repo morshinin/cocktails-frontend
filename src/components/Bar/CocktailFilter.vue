@@ -85,8 +85,8 @@
 import { ref, onMounted, watch } from "vue"
 import axios from "axios"
 import { message } from "ant-design-vue"
-import { COMPONENTS_URL, METHODS_URL, GLASSES_URL, DECORATIONS_URL } from '../config/api.js';
-import { useAuthStore } from '../stores/auth';
+import { COMPONENTS_URL, METHODS_URL, GLASSES_URL, DECORATIONS_URL } from '../../config/api.js';
+import { useAuthStore } from '../../stores/auth';
 
 const filters = ref({
   category: undefined,

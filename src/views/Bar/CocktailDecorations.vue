@@ -60,7 +60,7 @@ import { message } from "ant-design-vue";
 import { PlusOutlined, DeleteOutlined, MoreOutlined, EditOutlined } from "@ant-design/icons-vue";
 import { DECORATIONS_URL } from '../../config/api.js';
 import { useAuthStore } from '../../stores/auth';
-import AddDecorationDrawer from '../../components/AddDecorationDrawer.vue';
+import AddDecorationDrawer from '../../components/Bar/AddDecorationDrawer.vue';
 
 const decorations = ref([]);
 const showAddDrawer = ref(false);

@@ -43,7 +43,7 @@ import axios from 'axios';
 import { message } from 'ant-design-vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
 import { useAuthStore } from '../../stores/auth';
-import AddUserDrawer from '../../components/AddUserDrawer.vue';
+import AddUserDrawer from '../../components/Staff/AddUserDrawer.vue';
 
 const users = ref([]);
 const loading = ref(false);

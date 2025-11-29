@@ -60,7 +60,7 @@ import { message } from "ant-design-vue";
 import { PlusOutlined, DeleteOutlined, MoreOutlined, EditOutlined } from "@ant-design/icons-vue";
 import { METHODS_URL } from '../../config/api.js';
 import { useAuthStore } from '../../stores/auth';
-import AddMethodDrawer from '../../components/AddMethodDrawer.vue';
+import AddMethodDrawer from '../../components/Bar/AddMethodDrawer.vue';
 
 const methods = ref([]);
 const showAddDrawer = ref(false);

@@ -48,7 +48,7 @@ import { PlusOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import AddReservationDrawer from '../../components/service/AddReservationDrawer.vue';
+import AddReservationDrawer from '../../components/Service/AddReservationDrawer.vue';
 
 const reservations = ref([]);
 const drawerVisible = ref(false);

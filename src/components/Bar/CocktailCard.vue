@@ -79,7 +79,7 @@
 
 <script setup>
 import { MoreOutlined, EditOutlined, ReadOutlined, DeleteOutlined } from "@ant-design/icons-vue"
-import placeholderImage from '../assets/cocktail_placeholder.png';
+import placeholderImage from '../../assets/cocktail_placeholder.png';
 
 defineProps({
   recipe: {
