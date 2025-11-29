@@ -8,7 +8,8 @@
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
     "devremote": "vite --mode development",
-    "prodserver": "vite --mode production"
+    "prodserver": "vite --mode production",
+    "lint": "eslint . --fix"
   },
   "dependencies": {
     "ant-design-vue": "^4.2.6",
@@ -20,8 +21,13 @@
   "devDependencies": {
     "@types/node": "^24.10.1",
     "@vitejs/plugin-vue": "^6.0.1",
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "@vue/eslint-config-typescript": "^14.6.0",
     "autoprefixer": "^10.4.21",
+    "eslint": "^9.39.1",
+    "eslint-plugin-vue": "^10.6.2",
     "postcss": "^8.5.6",
+    "prettier": "^3.7.3",
     "tailwindcss": "^3.4.13",
     "typescript": "^5.9.3",
     "vite": "^7.1.7",
