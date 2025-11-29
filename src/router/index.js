@@ -1,36 +1,36 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from "../stores/auth";
-import Home from '../views/Home.vue'
+import Home from '../views/Core/Home.vue'
 import Cocktails from '../views/Bar/Cocktails.vue'
 import AddCocktail from '../views/Bar/AddCocktail.vue'
 import CocktailComponents from '../views/Bar/CocktailComponents.vue'
 import CocktailMethods from '../views/Bar/CocktailMethods.vue'
 import CocktailGlasses from '../views/Bar/CocktailGlasses.vue'
 import CocktailDetails from "../views/Bar/CocktailDetails.vue"
-import Login from "../views/Login.vue";
-import SelectVenue from "../views/SelectVenue.vue";
+import Login from "../views/Auth/Login.vue";
+import SelectVenue from "../views/Organization/SelectVenue.vue";
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
   { path: "/login", component: Login },
-  { path: "/register", component: () => import("../views/Register.vue") },
+  { path: "/register", component: () => import("../views/Auth/Register.vue") },
   { path: "/select-venue", component: SelectVenue },
   {
     path: "/profile",
     name: "Profile",
-    component: () => import("../views/Profile.vue"),
+    component: () => import("../views/User/Profile.vue"),
     meta: { requiresAuth: true },
   },
   {
     path: "/organizations",
     name: "Organizations",
-    component: () => import("../views/Organizations.vue"),
+    component: () => import("../views/Organization/Organizations.vue"),
     meta: { requiresAuth: true },
   },
   {
     path: "/organizations/:id/venues",
     name: "OrganizationVenues",
-    component: () => import("../views/OrganizationVenues.vue"),
+    component: () => import("../views/Organization/OrganizationVenues.vue"),
     meta: { requiresAuth: true },
   },
   { path: '/cocktails', name: 'Cocktails', component: Cocktails, meta: { requiresAuth: true } },
@@ -78,7 +78,7 @@ const routes = [
   {
     path: "/users",
     name: "Users",
-    component: () => import("../views/Users.vue"),
+    component: () => import("../views/Staff/Users.vue"),
     meta: { requiresAuth: true },
   },
   {
@@ -210,13 +210,13 @@ const routes = [
   {
     path: "/dashboard",
     name: "Dashboard",
-    component: () => import("../views/Dashboard.vue"),
+    component: () => import("../views/Core/Dashboard.vue"),
     meta: { requiresAuth: true },
   },
   {
     path: "/:pathMatch(.*)*",
     name: "NotFound",
-    component: () => import("../views/NotFound.vue"),
+    component: () => import("../views/Core/NotFound.vue"),
   },
 ]
 

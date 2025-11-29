@@ -32,7 +32,7 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import { useAuthStore } from "../stores/auth.js";
+import { useAuthStore } from "../../stores/auth.js";
 import { message } from "ant-design-vue";
 import { useRouter } from "vue-router";
 
