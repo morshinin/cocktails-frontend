@@ -60,7 +60,7 @@ import { message } from "ant-design-vue";
 import { PlusOutlined, DeleteOutlined, MoreOutlined, EditOutlined } from "@ant-design/icons-vue";
 import { GLASSES_URL } from '../../config/api.js';
 import { useAuthStore } from '../../stores/auth';
-import AddGlassDrawer from '../../components/AddGlassDrawer.vue';
+import AddGlassDrawer from '../../components/Bar/AddGlassDrawer.vue';
 
 const glasses = ref([]);
 const showAddDrawer = ref(false);

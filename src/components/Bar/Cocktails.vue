@@ -124,7 +124,7 @@
 import { ref, onMounted, h } from "vue";
 import axios from "axios";
 import { message, Popconfirm } from "ant-design-vue";
-import { RECIPES_URL, COMPONENTS_URL, METHODS_URL } from '../config/api.js';
+import { RECIPES_URL, COMPONENTS_URL, METHODS_URL } from '../../config/api.js';
 
 const recipes = ref([]);
 const components = ref([]);

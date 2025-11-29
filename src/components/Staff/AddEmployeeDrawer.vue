@@ -44,7 +44,7 @@
 import { ref, onMounted, onUnmounted, watch } from "vue"
 import axios from "axios"
 import { message } from "ant-design-vue"
-import { useAuthStore } from '../stores/auth';
+import { useAuthStore } from '../../stores/auth';
 
 const props = defineProps({
   visible: Boolean
