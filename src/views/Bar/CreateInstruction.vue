@@ -52,7 +52,7 @@
 import { ref, onMounted } from "vue"
 import axios from "axios"
 import { message } from "ant-design-vue"
-import { RECIPES_URL, INSTRUCTIONS_URL } from '../config/api.js';
+import { RECIPES_URL, INSTRUCTIONS_URL } from '../../config/api.js';
 
 const recipes = ref([])
 const recipeData = ref(null)
