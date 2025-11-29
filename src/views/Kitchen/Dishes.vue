@@ -48,9 +48,9 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import { message } from "ant-design-vue";
 import { DeleteOutlined } from "@ant-design/icons-vue";
-import { useAuthStore } from '../stores/auth';
-import AddDishDrawer from '../components/AddDishDrawer.vue';
-import placeholderImage from '../assets/cocktail_placeholder.png';
+import { useAuthStore } from '../../stores/auth';
+import AddDishDrawer from '../../components/AddDishDrawer.vue';
+import placeholderImage from '../../assets/cocktail_placeholder.png';
 
 const dishes = ref([]);
 const showAddDrawer = ref(false);
