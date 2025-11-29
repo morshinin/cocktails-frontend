@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "devremote": "vite --mode development",
     "prodserver": "vite --mode production",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "test": "vitest"
   },
   "dependencies": {
     "ant-design-vue": "^4.2.6",
@@ -23,14 +24,17 @@
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/eslint-config-typescript": "^14.6.0",
+    "@vue/test-utils": "^2.4.6",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.39.1",
     "eslint-plugin-vue": "^10.6.2",
+    "jsdom": "^27.0.1",
     "postcss": "^8.5.6",
     "prettier": "^3.7.3",
     "tailwindcss": "^3.4.13",
     "typescript": "^5.9.3",
     "vite": "^7.1.7",
+    "vitest": "^3.2.4",
     "vue-tsc": "^3.1.5"
   }
 }
