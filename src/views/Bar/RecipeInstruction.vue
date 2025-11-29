@@ -35,7 +35,7 @@
 import { ref, onMounted } from "vue"
 import axios from "axios"
 import { useRoute } from "vue-router"
-import { RECIPES_URL, INSTRUCTIONS_URL } from '../config/api.js';
+import { RECIPES_URL, INSTRUCTIONS_URL } from '../../config/api.js';
 
 const route = useRoute()
 const cocktailId = route.params.id

@@ -46,8 +46,8 @@ import { ref, reactive, onMounted } from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
-import { CATEGORIES_URL } from '../config/api.js';
-import { useAuthStore } from '../stores/auth';
+import { CATEGORIES_URL } from '../../config/api.js';
+import { useAuthStore } from '../../stores/auth';
 
 const categories = ref([]);
 const loading = ref(false);
