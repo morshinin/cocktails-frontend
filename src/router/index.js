@@ -33,36 +33,41 @@ const routes = [
     component: () => import("../views/OrganizationVenues.vue"),
     meta: { requiresAuth: true },
   },
-  { path: '/cocktails', name: 'Cocktails', component: Cocktails },
-  { path: '/cocktails/new', component: AddCocktail },
-  { path: "/cocktails/:id", component: CocktailDetails },
-  { path: '/cocktailComponents', name: 'CocktailComponents', component: CocktailComponents },
-  { path: '/cocktailMethods', name: 'CocktailMethods', component: CocktailMethods },
-  { path: '/cocktailGlasses', name: 'CocktailGlasses', component: CocktailGlasses },
-  { path: '/cocktailDecorations', name: 'CocktailDecorations', component: () => import('../views/CocktailDecorations.vue') },
-  { path: '/categories', name: 'Categories', component: () => import('../views/Categories.vue') },
+  { path: '/cocktails', name: 'Cocktails', component: Cocktails, meta: { requiresAuth: true } },
+  { path: '/cocktails/new', component: AddCocktail, meta: { requiresAuth: true } },
+  { path: "/cocktails/:id", component: CocktailDetails, meta: { requiresAuth: true } },
+  { path: '/cocktailComponents', name: 'CocktailComponents', component: CocktailComponents, meta: { requiresAuth: true } },
+  { path: '/cocktailMethods', name: 'CocktailMethods', component: CocktailMethods, meta: { requiresAuth: true } },
+  { path: '/cocktailGlasses', name: 'CocktailGlasses', component: CocktailGlasses, meta: { requiresAuth: true } },
+  { path: '/cocktailDecorations', name: 'CocktailDecorations', component: () => import('../views/CocktailDecorations.vue'), meta: { requiresAuth: true } },
+  { path: '/categories', name: 'Categories', component: () => import('../views/Categories.vue'), meta: { requiresAuth: true } },
   {
     path: "/cocktails/:id/edit",
     name: "EditRecipe",
     component: () => import("../views/EditRecipe.vue"),
+    meta: { requiresAuth: true },
   },
   {
     path: "/instruction/new",
-    component: () => import("../views/CreateInstruction.vue")
+    component: () => import("../views/CreateInstruction.vue"),
+    meta: { requiresAuth: true }
   },
   {
     path: "/instruction/:id",
-    component: () => import("../views/RecipeInstruction.vue")
+    component: () => import("../views/RecipeInstruction.vue"),
+    meta: { requiresAuth: true }
   },
   {
     path: '/create-instruction',
     name: 'CreateInstruction',
-    component: () => import('../views/CreateInstruction.vue')
+    component: () => import('../views/CreateInstruction.vue'),
+    meta: { requiresAuth: true }
   },
   {
     path: "/components/:id",
     name: "ComponentView",
     component: () => import("../views/ComponentView.vue"),
+    meta: { requiresAuth: true },
   },
   {
     path: "/bar",
