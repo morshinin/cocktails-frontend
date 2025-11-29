@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from "../stores/auth";
 import Home from '../views/Home.vue'
-import Cocktails from '../views/Cocktails.vue'
-import AddCocktail from '../views/AddCocktail.vue'
-import CocktailComponents from '../views/CocktailComponents.vue'
-import CocktailMethods from '../views/CocktailMethods.vue'
-import CocktailGlasses from '../views/CocktailGlasses.vue'
-import CocktailDetails from "../views/CocktailDetails.vue"
+import Cocktails from '../views/Bar/Cocktails.vue'
+import AddCocktail from '../views/Bar/AddCocktail.vue'
+import CocktailComponents from '../views/Bar/CocktailComponents.vue'
+import CocktailMethods from '../views/Bar/CocktailMethods.vue'
+import CocktailGlasses from '../views/Bar/CocktailGlasses.vue'
+import CocktailDetails from "../views/Bar/CocktailDetails.vue"
 import Login from "../views/Login.vue";
 import SelectVenue from "../views/SelectVenue.vue";
 
@@ -39,40 +39,40 @@ const routes = [
   { path: '/cocktailComponents', name: 'CocktailComponents', component: CocktailComponents, meta: { requiresAuth: true } },
   { path: '/cocktailMethods', name: 'CocktailMethods', component: CocktailMethods, meta: { requiresAuth: true } },
   { path: '/cocktailGlasses', name: 'CocktailGlasses', component: CocktailGlasses, meta: { requiresAuth: true } },
-  { path: '/cocktailDecorations', name: 'CocktailDecorations', component: () => import('../views/CocktailDecorations.vue'), meta: { requiresAuth: true } },
-  { path: '/categories', name: 'Categories', component: () => import('../views/Categories.vue'), meta: { requiresAuth: true } },
+  { path: '/cocktailDecorations', name: 'CocktailDecorations', component: () => import('../views/Bar/CocktailDecorations.vue'), meta: { requiresAuth: true } },
+  { path: '/categories', name: 'Categories', component: () => import('../views/Bar/Categories.vue'), meta: { requiresAuth: true } },
   {
     path: "/cocktails/:id/edit",
     name: "EditRecipe",
-    component: () => import("../views/EditRecipe.vue"),
+    component: () => import("../views/Bar/EditRecipe.vue"),
     meta: { requiresAuth: true },
   },
   {
     path: "/instruction/new",
-    component: () => import("../views/CreateInstruction.vue"),
+    component: () => import("../views/Bar/CreateInstruction.vue"),
     meta: { requiresAuth: true }
   },
   {
     path: "/instruction/:id",
-    component: () => import("../views/RecipeInstruction.vue"),
+    component: () => import("../views/Bar/RecipeInstruction.vue"),
     meta: { requiresAuth: true }
   },
   {
     path: '/create-instruction',
     name: 'CreateInstruction',
-    component: () => import('../views/CreateInstruction.vue'),
+    component: () => import('../views/Bar/CreateInstruction.vue'),
     meta: { requiresAuth: true }
   },
   {
     path: "/components/:id",
     name: "ComponentView",
-    component: () => import("../views/ComponentView.vue"),
+    component: () => import("../views/Bar/ComponentView.vue"),
     meta: { requiresAuth: true },
   },
   {
     path: "/bar",
     name: "Bar",
-    component: () => import("../views/Bar.vue"),
+    component: () => import("../views/Bar/Bar.vue"),
     meta: { requiresAuth: true },
   },
   {

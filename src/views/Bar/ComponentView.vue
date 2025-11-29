@@ -29,7 +29,7 @@
 import { ref, onMounted } from "vue"
 import { useRoute } from "vue-router"
 import axios from "axios"
-import { COMPONENTS_URL } from '../config/api.js';
+import { COMPONENTS_URL } from '../../config/api.js';
 
 const route = useRoute()
 const component = ref(null)

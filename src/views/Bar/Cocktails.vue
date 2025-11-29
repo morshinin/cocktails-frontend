@@ -35,11 +35,11 @@
 import { ref, onMounted } from "vue"
 import axios from "axios"
 import { message } from "ant-design-vue"
-import CocktailFilter from "../components/CocktailFilter.vue"
-import CocktailCard from "../components/CocktailCard.vue"
-import AddCocktailDrawer from "../components/AddCocktailDrawer.vue"
-import { RECIPES_URL } from '../config/api.js';
-import { useAuthStore } from '../stores/auth';
+import CocktailFilter from "../../components/CocktailFilter.vue"
+import CocktailCard from "../../components/CocktailCard.vue"
+import AddCocktailDrawer from "../../components/AddCocktailDrawer.vue"
+import { RECIPES_URL } from '../../config/api.js';
+import { useAuthStore } from '../../stores/auth';
 
 const recipes = ref([])
 const showAddModal = ref(false)

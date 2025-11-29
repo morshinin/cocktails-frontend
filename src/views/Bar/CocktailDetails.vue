@@ -73,7 +73,7 @@ import { ref, onMounted } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import axios from "axios"
 import { message } from "ant-design-vue"
-import { RECIPES_URL } from '../config/api.js';
+import { RECIPES_URL } from '../../config/api.js';
 
 const route = useRoute()
 const router = useRouter()

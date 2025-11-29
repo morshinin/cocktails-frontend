@@ -1,16 +1,16 @@
 <template>
   <div class="p-6 max-w-5xl mx-auto">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold">Бокалы</h1>
+      <h1 class="text-2xl font-bold">Методы приготовления</h1>
       <a-button type="primary" @click="handleAdd">
         <template #icon><PlusOutlined /></template>
-        Добавить бокал
+        Добавить метод
       </a-button>
     </div>
 
-    <!-- Список бокалов -->
+    <!-- Список методов -->
     <a-row :gutter="[16, 16]">
-      <a-col v-for="item in glasses" :key="item._id" :xs="24" :sm="12" :md="8">
+      <a-col v-for="item in methods" :key="item._id" :xs="24" :sm="12" :md="8">
         <a-card class="h-full flex flex-col" hoverable>
           <template #extra>
             <a-dropdown trigger="click">
@@ -24,10 +24,10 @@
                   </a-menu-item>
                   <a-menu-item danger>
                     <a-popconfirm
-                      title="Удалить бокал?"
+                      title="Удалить метод?"
                       ok-text="Да"
                       cancel-text="Нет"
-                      @confirm="deleteGlass(item._id)"
+                      @confirm="deleteMethod(item._id)"
                     >
                       <span><DeleteOutlined /> Удалить</span>
                     </a-popconfirm>
@@ -43,12 +43,12 @@
       </a-col>
     </a-row>
 
-    <AddGlassDrawer
+    <AddMethodDrawer
       v-model:open="showAddDrawer"
       :width="drawerWidth"
-      :glassToEdit="editingGlass"
-      @glassAdded="fetchGlasses"
-      @glassUpdated="fetchGlasses"
+      :methodToEdit="editingMethod"
+      @methodAdded="fetchMethods"
+      @methodUpdated="fetchMethods"
     />
   </div>
 </template>
@@ -58,14 +58,14 @@ import { ref, onMounted, onUnmounted } from "vue";
 import axios from "axios";
 import { message } from "ant-design-vue";
 import { PlusOutlined, DeleteOutlined, MoreOutlined, EditOutlined } from "@ant-design/icons-vue";
-import { GLASSES_URL } from '../config/api.js';
-import { useAuthStore } from '../stores/auth';
-import AddGlassDrawer from '../components/AddGlassDrawer.vue';
+import { METHODS_URL } from '../../config/api.js';
+import { useAuthStore } from '../../stores/auth';
+import AddMethodDrawer from '../../components/AddMethodDrawer.vue';
 
-const glasses = ref([]);
+const methods = ref([]);
 const showAddDrawer = ref(false);
 const drawerWidth = ref('600px');
-const editingGlass = ref(null);
+const editingMethod = ref(null);
 
 // Responsive drawer width
 const updateDrawerWidth = () => {
@@ -73,19 +73,19 @@ const updateDrawerWidth = () => {
 };
 
 const handleAdd = () => {
-  editingGlass.value = null;
+  editingMethod.value = null;
   showAddDrawer.value = true;
 };
 
 const handleEdit = (item) => {
-  editingGlass.value = item;
+  editingMethod.value = item;
   showAddDrawer.value = true;
 };
 
 onMounted(() => {
   updateDrawerWidth();
   window.addEventListener('resize', updateDrawerWidth);
-  fetchGlasses();
+  fetchMethods();
 });
 
 onUnmounted(() => {
@@ -93,34 +93,34 @@ onUnmounted(() => {
 });
 
 // ===== Загрузка списка =====
-const fetchGlasses = async () => {
+const fetchMethods = async () => {
   const authStore = useAuthStore();
   if (!authStore.selectedVenue) return;
 
   try {
-    const res = await axios.get(GLASSES_URL, {
+    const res = await axios.get(METHODS_URL, {
       params: { venueId: authStore.selectedVenue._id },
       headers: { Authorization: `Bearer ${authStore.token}` }
     });
-    glasses.value = res.data || [];
+    methods.value = res.data || [];
   } catch (e) {
     console.error(e);
-    message.error("Не удалось загрузить бокалы");
+    message.error("Не удалось загрузить методы");
   }
 };
 
 // ===== Удаление =====
-const deleteGlass = async (id) => {
+const deleteMethod = async (id) => {
   const authStore = useAuthStore();
   try {
-    await axios.delete(`${GLASSES_URL}/${id}`, {
+    await axios.delete(`${METHODS_URL}/${id}`, {
       headers: { Authorization: `Bearer ${authStore.token}` }
     });
-    message.success("Бокал удалён");
-    await fetchGlasses();
+    message.success("Метод удалён");
+    await fetchMethods();
   } catch (e) {
     console.error(e);
-    message.error("Ошибка при удалении бокала");
+    message.error("Ошибка при удалении метода");
   }
 };
 </script>

@@ -125,8 +125,8 @@ import { ref, onMounted } from "vue"
 import axios from "axios"
 import { message } from "ant-design-vue"
 import { useRouter } from "vue-router"
-import { RECIPES_URL, COMPONENTS_URL, METHODS_URL, GLASSES_URL, DECORATIONS_URL, UPLOAD_URL } from "../config/api"
-import { useAuthStore } from '../stores/auth';
+import { RECIPES_URL, COMPONENTS_URL, METHODS_URL, GLASSES_URL, DECORATIONS_URL, UPLOAD_URL } from "../../config/api"
+import { useAuthStore } from '../../stores/auth';
 
 const router = useRouter()
 

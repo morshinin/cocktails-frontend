@@ -82,10 +82,10 @@ import { ref, onMounted, onUnmounted } from "vue";
 import axios from "axios";
 import { message } from "ant-design-vue";
 import { PlusOutlined, DeleteOutlined, MoreOutlined, EditOutlined } from "@ant-design/icons-vue";
-import { COMPONENTS_URL } from '../config/api.js';
-import { useAuthStore } from '../stores/auth';
-import AddComponentDrawer from '../components/AddComponentDrawer.vue';
-import placeholderImage from '../assets/cocktail_placeholder.png';
+import { COMPONENTS_URL } from '../../config/api.js';
+import { useAuthStore } from '../../stores/auth';
+import AddComponentDrawer from '../../components/AddComponentDrawer.vue';
+import placeholderImage from '../../assets/cocktail_placeholder.png';
 
 const components = ref([]);
 const showAddDrawer = ref(false);

@@ -149,8 +149,8 @@
 import { ref, onMounted } from "vue"
 import axios from "axios"
 import { message } from "ant-design-vue"
-import { RECIPES_URL, COMPONENTS_URL, GLASSES_URL, METHODS_URL, DECORATIONS_URL } from '../config/api.js';
-import { useAuthStore } from '../stores/auth';
+import { RECIPES_URL, COMPONENTS_URL, GLASSES_URL, METHODS_URL, DECORATIONS_URL } from '../../config/api.js';
+import { useAuthStore } from '../../stores/auth';
 
 const gameStarted = ref(false)
 const gameEnded = ref(false)

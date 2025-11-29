@@ -1,16 +1,16 @@
 <template>
   <div class="p-6 max-w-5xl mx-auto">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold">Методы приготовления</h1>
+      <h1 class="text-2xl font-bold">Украшения</h1>
       <a-button type="primary" @click="handleAdd">
         <template #icon><PlusOutlined /></template>
-        Добавить метод
+        Добавить украшение
       </a-button>
     </div>
 
-    <!-- Список методов -->
+    <!-- Список украшений -->
     <a-row :gutter="[16, 16]">
-      <a-col v-for="item in methods" :key="item._id" :xs="24" :sm="12" :md="8">
+      <a-col v-for="item in decorations" :key="item._id" :xs="24" :sm="12" :md="8">
         <a-card class="h-full flex flex-col" hoverable>
           <template #extra>
             <a-dropdown trigger="click">
@@ -24,10 +24,10 @@
                   </a-menu-item>
                   <a-menu-item danger>
                     <a-popconfirm
-                      title="Удалить метод?"
+                      title="Удалить украшение?"
                       ok-text="Да"
                       cancel-text="Нет"
-                      @confirm="deleteMethod(item._id)"
+                      @confirm="deleteDecoration(item._id)"
                     >
                       <span><DeleteOutlined /> Удалить</span>
                     </a-popconfirm>
@@ -43,12 +43,12 @@
       </a-col>
     </a-row>
 
-    <AddMethodDrawer
+    <AddDecorationDrawer
       v-model:open="showAddDrawer"
       :width="drawerWidth"
-      :methodToEdit="editingMethod"
-      @methodAdded="fetchMethods"
-      @methodUpdated="fetchMethods"
+      :decorationToEdit="editingDecoration"
+      @decorationAdded="fetchDecorations"
+      @decorationUpdated="fetchDecorations"
     />
   </div>
 </template>
@@ -58,14 +58,14 @@ import { ref, onMounted, onUnmounted } from "vue";
 import axios from "axios";
 import { message } from "ant-design-vue";
 import { PlusOutlined, DeleteOutlined, MoreOutlined, EditOutlined } from "@ant-design/icons-vue";
-import { METHODS_URL } from '../config/api.js';
-import { useAuthStore } from '../stores/auth';
-import AddMethodDrawer from '../components/AddMethodDrawer.vue';
+import { DECORATIONS_URL } from '../../config/api.js';
+import { useAuthStore } from '../../stores/auth';
+import AddDecorationDrawer from '../../components/AddDecorationDrawer.vue';
 
-const methods = ref([]);
+const decorations = ref([]);
 const showAddDrawer = ref(false);
 const drawerWidth = ref('600px');
-const editingMethod = ref(null);
+const editingDecoration = ref(null);
 
 // Responsive drawer width
 const updateDrawerWidth = () => {
@@ -73,19 +73,19 @@ const updateDrawerWidth = () => {
 };
 
 const handleAdd = () => {
-  editingMethod.value = null;
+  editingDecoration.value = null;
   showAddDrawer.value = true;
 };
 
 const handleEdit = (item) => {
-  editingMethod.value = item;
+  editingDecoration.value = item;
   showAddDrawer.value = true;
 };
 
 onMounted(() => {
   updateDrawerWidth();
   window.addEventListener('resize', updateDrawerWidth);
-  fetchMethods();
+  fetchDecorations();
 });
 
 onUnmounted(() => {
@@ -93,34 +93,34 @@ onUnmounted(() => {
 });
 
 // ===== Загрузка списка =====
-const fetchMethods = async () => {
+const fetchDecorations = async () => {
   const authStore = useAuthStore();
   if (!authStore.selectedVenue) return;
 
   try {
-    const res = await axios.get(METHODS_URL, {
+    const res = await axios.get(DECORATIONS_URL, {
       params: { venueId: authStore.selectedVenue._id },
       headers: { Authorization: `Bearer ${authStore.token}` }
     });
-    methods.value = res.data || [];
+    decorations.value = res.data || [];
   } catch (e) {
     console.error(e);
-    message.error("Не удалось загрузить методы");
+    message.error("Не удалось загрузить украшения");
   }
 };
 
 // ===== Удаление =====
-const deleteMethod = async (id) => {
+const deleteDecoration = async (id) => {
   const authStore = useAuthStore();
   try {
-    await axios.delete(`${METHODS_URL}/${id}`, {
+    await axios.delete(`${DECORATIONS_URL}/${id}`, {
       headers: { Authorization: `Bearer ${authStore.token}` }
     });
-    message.success("Метод удалён");
-    await fetchMethods();
+    message.success("Украшение удалено");
+    await fetchDecorations();
   } catch (e) {
     console.error(e);
-    message.error("Ошибка при удалении метода");
+    message.error("Ошибка при удалении украшения");
   }
 };
 </script>
