@@ -52,9 +52,9 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useAuthStore } from '../stores/auth';
+import { useAuthStore } from '../../stores/auth';
 import { EditOutlined } from '@ant-design/icons-vue';
-import EditProfileDrawer from '../components/EditProfileDrawer.vue';
+import EditProfileDrawer from '../../components/EditProfileDrawer.vue';
 
 const authStore = useAuthStore();
 const showDrawer = ref(false);

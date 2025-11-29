@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useVenuesStore } from '../stores/venues';
-import { useAuthStore } from '../stores/auth';
+import { useVenuesStore } from '../../stores/venues';
+import { useAuthStore } from '../../stores/auth';
 import { message } from 'ant-design-vue';
 import { PlusOutlined, ShopOutlined } from '@ant-design/icons-vue';
 
