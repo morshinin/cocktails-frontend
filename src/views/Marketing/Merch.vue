@@ -50,7 +50,7 @@ import { ref, onMounted } from 'vue';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import axios from 'axios';
-import AddMerchItemDrawer from '../components/marketing/AddMerchItemDrawer.vue';
+import AddMerchItemDrawer from '../../components/marketing/AddMerchItemDrawer.vue';
 
 const merch = ref([]);
 const drawerVisible = ref(false);

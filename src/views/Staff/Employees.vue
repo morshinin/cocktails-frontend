@@ -39,9 +39,9 @@
 import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
-import { useAuthStore } from '../stores/auth';
-import EmployeeCard from '../components/EmployeeCard.vue';
-import AddEmployeeDrawer from '../components/AddEmployeeDrawer.vue';
+import { useAuthStore } from '../../stores/auth';
+import EmployeeCard from '../../components/EmployeeCard.vue';
+import AddEmployeeDrawer from '../../components/AddEmployeeDrawer.vue';
 
 const users = ref([]);
 const loading = ref(false);

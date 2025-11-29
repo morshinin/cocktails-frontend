@@ -66,7 +66,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined, UserOutlined } from '@ant-d
 import { message } from 'ant-design-vue';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import AddEventDrawer from '../components/events/AddEventDrawer.vue';
+import AddEventDrawer from '../../components/events/AddEventDrawer.vue';
 
 const events = ref([]);
 const drawerVisible = ref(false);
