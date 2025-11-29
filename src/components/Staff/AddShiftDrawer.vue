@@ -54,7 +54,7 @@
 import { ref, reactive, onMounted, watch } from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
-import { useAuthStore } from '../stores/auth';
+import { useAuthStore } from '../../stores/auth';
 import dayjs from 'dayjs';
 
 const props = defineProps({

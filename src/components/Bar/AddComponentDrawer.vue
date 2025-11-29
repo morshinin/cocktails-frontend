@@ -58,8 +58,8 @@
 import { ref, reactive, watch, onMounted } from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
-import { COMPONENTS_URL, UPLOAD_URL, CATEGORIES_URL } from '../config/api.js';
-import { useAuthStore } from '../stores/auth';
+import { COMPONENTS_URL, UPLOAD_URL, CATEGORIES_URL } from '../../config/api.js';
+import { useAuthStore } from '../../stores/auth';
 
 const props = defineProps({
   open: Boolean,

@@ -41,7 +41,7 @@ import { ref, onMounted } from 'vue';
 import { PlusOutlined, MoreOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import axios from 'axios';
-import AddZoneDrawer from '../../components/housekeeping/AddZoneDrawer.vue';
+import AddZoneDrawer from '../../components/Housekeeping/AddZoneDrawer.vue';
 
 const zones = ref([]);
 const drawerVisible = ref(false);

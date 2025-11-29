@@ -54,7 +54,7 @@
 
 <script setup>
 import { MoreOutlined, EditOutlined, DeleteOutlined, MailOutlined } from "@ant-design/icons-vue"
-import placeholderImage from '../assets/employee_placeholder.png';
+import placeholderImage from '../../assets/employee_placeholder.png';
 
 defineProps({
   employee: {

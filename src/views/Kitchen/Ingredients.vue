@@ -45,7 +45,7 @@ import axios from "axios";
 import { message } from "ant-design-vue";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons-vue";
 import { useAuthStore } from '../../stores/auth';
-import AddIngredientDrawer from '../../components/AddIngredientDrawer.vue';
+import AddIngredientDrawer from '../../components/Kitchen/AddIngredientDrawer.vue';
 import placeholderImage from '../../assets/cocktail_placeholder.png';
 
 const ingredients = ref([]);

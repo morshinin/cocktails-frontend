@@ -1,15 +1,15 @@
 <template>
   <a-drawer
-    :title="glassToEdit ? 'Редактировать бокал' : 'Добавить новый бокал'"
+    :title="decorationToEdit ? 'Редактировать украшение' : 'Добавить новое украшение'"
     :width="width"
     :open="open"
     :body-style="{ paddingBottom: '80px' }"
     :footer-style="{ textAlign: 'right' }"
     @close="onClose"
   >
-    <a-form layout="vertical" :model="newGlass">
+    <a-form layout="vertical" :model="newDecoration">
       <a-form-item label="Название" required>
-        <a-input v-model:value="newGlass.name" placeholder="Введите название бокала (например: Хайбол)" />
+        <a-input v-model:value="newDecoration.name" placeholder="Введите название украшения (например: Долька лимона)" />
       </a-form-item>
     </a-form>
 
@@ -17,7 +17,7 @@
       <a-space>
         <a-button @click="onClose">Отмена</a-button>
         <a-button type="primary" @click="handleSubmit" :loading="loading">
-          {{ glassToEdit ? 'Сохранить' : 'Добавить' }}
+          {{ decorationToEdit ? 'Сохранить' : 'Добавить' }}
         </a-button>
       </a-space>
     </template>
@@ -28,8 +28,8 @@
 import { ref, reactive, watch } from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
-import { GLASSES_URL } from '../config/api.js';
-import { useAuthStore } from '../stores/auth';
+import { DECORATIONS_URL } from '../../config/api.js';
+import { useAuthStore } from '../../stores/auth';
 
 const props = defineProps({
   open: Boolean,
@@ -37,24 +37,24 @@ const props = defineProps({
     type: [String, Number],
     default: 600
   },
-  glassToEdit: {
+  decorationToEdit: {
     type: Object,
     default: null
   }
 });
 
-const emit = defineEmits(['update:open', 'glassAdded', 'glassUpdated']);
+const emit = defineEmits(['update:open', 'decorationAdded', 'decorationUpdated']);
 
 const loading = ref(false);
-const newGlass = reactive({
+const newDecoration = reactive({
   name: ""
 });
 
-watch(() => props.glassToEdit, (newVal) => {
+watch(() => props.decorationToEdit, (newVal) => {
   if (newVal) {
-    newGlass.name = newVal.name;
+    newDecoration.name = newVal.name;
   } else {
-    newGlass.name = "";
+    newDecoration.name = "";
   }
 }, { immediate: true });
 
@@ -66,38 +66,38 @@ const handleSubmit = async () => {
   const authStore = useAuthStore();
   if (!authStore.selectedVenue) return message.error("Venue not selected");
   
-  if (!newGlass.name.trim()) {
+  if (!newDecoration.name.trim()) {
     return message.warning("Введите название");
   }
 
   loading.value = true;
   try {
-    if (props.glassToEdit) {
-      await axios.put(`${GLASSES_URL}/${props.glassToEdit._id}`, {
-        name: newGlass.name
+    if (props.decorationToEdit) {
+      await axios.put(`${DECORATIONS_URL}/${props.decorationToEdit._id}`, {
+        name: newDecoration.name
       }, {
         headers: { Authorization: `Bearer ${authStore.token}` }
       });
-      message.success("Бокал обновлен!");
-      emit('glassUpdated');
+      message.success("Украшение обновлено!");
+      emit('decorationUpdated');
     } else {
-      await axios.post(GLASSES_URL, {
-        name: newGlass.name,
+      await axios.post(DECORATIONS_URL, {
+        name: newDecoration.name,
         venueId: authStore.selectedVenue._id
       }, {
         headers: { Authorization: `Bearer ${authStore.token}` }
       });
-      message.success("Бокал добавлен!");
-      emit('glassAdded');
+      message.success("Украшение добавлено!");
+      emit('decorationAdded');
     }
     
     onClose();
   } catch (e) {
     console.error(e);
     if (e.response?.status === 409) {
-      message.warning("Такой бокал уже существует");
+      message.warning("Такое украшение уже существует");
     } else {
-      message.error("Ошибка при сохранении бокала");
+      message.error("Ошибка при сохранении украшения");
     }
   } finally {
     loading.value = false;

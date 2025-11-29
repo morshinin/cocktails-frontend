@@ -1,5 +1,5 @@
 <script setup>
-import EnvBadge from "./components/EnvBadge.vue";
+import EnvBadge from "./components/Common/EnvBadge.vue";
 import { useAuthStore } from "./stores/auth";
 import { useRouter, useRoute } from "vue-router";
 import { onMounted, ref } from "vue";
