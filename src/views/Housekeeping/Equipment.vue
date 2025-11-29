@@ -45,7 +45,7 @@ import { ref, onMounted } from 'vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import axios from 'axios';
-import AddEquipmentDrawer from '../components/housekeeping/AddEquipmentDrawer.vue';
+import AddEquipmentDrawer from '../../components/housekeeping/AddEquipmentDrawer.vue';
 
 const equipmentList = ref([]);
 const drawerVisible = ref(false);

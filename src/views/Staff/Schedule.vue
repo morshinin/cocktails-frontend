@@ -44,8 +44,8 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import { message } from "ant-design-vue";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons-vue";
-import { useAuthStore } from '../stores/auth';
-import AddShiftDrawer from '../components/AddShiftDrawer.vue';
+import { useAuthStore } from '../../stores/auth';
+import AddShiftDrawer from '../../components/AddShiftDrawer.vue';
 import dayjs from 'dayjs';
 
 const shifts = ref([]);

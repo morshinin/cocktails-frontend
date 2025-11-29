@@ -52,7 +52,7 @@ import { ref, onMounted } from 'vue';
 import { PlusOutlined, EditOutlined, DeleteOutlined, InstagramOutlined, SoundOutlined, SendOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import axios from 'axios';
-import AddDJDrawer from '../components/events/AddDJDrawer.vue';
+import AddDJDrawer from '../../components/events/AddDJDrawer.vue';
 
 const djs = ref([]);
 const drawerVisible = ref(false);
