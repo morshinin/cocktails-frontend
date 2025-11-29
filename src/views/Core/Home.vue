@@ -1,6 +1,6 @@
 <script setup>
 import { useRouter } from 'vue-router';
-import heroBg from '../assets/cocktail_hero_bg.png';
+import heroBg from '../../assets/cocktail_hero_bg.png';
 import { 
   BookOutlined, 
   BarChartOutlined, 
