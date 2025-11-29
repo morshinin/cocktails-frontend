@@ -290,7 +290,7 @@ const submitCocktail = () => {
   }
 
   // Проверка ингредиентов
-  for (let ing of currentCocktail.value.components || []) {
+  for (const ing of currentCocktail.value.components || []) {
     const sel = selectedIngredients.value.find(s => s.name === ing.name && Number(s.amount) === Number(ing.amount))
     if (!sel) {
       correct = false
