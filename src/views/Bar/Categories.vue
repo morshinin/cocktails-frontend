@@ -8,7 +8,11 @@
       </a-button>
     </div>
 
-    <a-table :columns="columns" :data-source="categories" :loading="loading" row-key="_id">
+    <div v-if="loading" class="text-center py-12">
+      <a-spin size="large" />
+    </div>
+
+    <a-table v-else :columns="columns" :data-source="categories" row-key="_id">
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <a-space>
@@ -78,9 +82,14 @@ const fetchCategories = async () => {
 
   loading.value = true;
   try {
-    const res = await axios.get(CATEGORIES_URL, {
-      params: { venueId: authStore.selectedVenue._id }
-    });
+    const minLoadTime = new Promise(resolve => setTimeout(resolve, 500));
+    const [res] = await Promise.all([
+      axios.get(CATEGORIES_URL, {
+        params: { venueId: authStore.selectedVenue._id },
+        headers: { Authorization: `Bearer ${authStore.token}` }
+      }),
+      minLoadTime
+    ]);
     categories.value = res.data;
   } catch (e) {
     console.error(e);
@@ -114,12 +123,16 @@ const handleSubmit = async () => {
     if (editingCategory.value) {
       await axios.put(`${CATEGORIES_URL}/${editingCategory.value._id}`, {
         name: formState.name
+      }, {
+        headers: { Authorization: `Bearer ${authStore.token}` }
       });
       message.success("Категория обновлена");
     } else {
       await axios.post(CATEGORIES_URL, {
         name: formState.name,
         venueId: authStore.selectedVenue._id
+      }, {
+        headers: { Authorization: `Bearer ${authStore.token}` }
       });
       message.success("Категория добавлена");
     }
@@ -135,7 +148,10 @@ const handleSubmit = async () => {
 
 const deleteCategory = async (id) => {
   try {
-    await axios.delete(`${CATEGORIES_URL}/${id}`);
+    const authStore = useAuthStore();
+    await axios.delete(`${CATEGORIES_URL}/${id}`, {
+      headers: { Authorization: `Bearer ${authStore.token}` }
+    });
     message.success("Категория удалена");
     fetchCategories();
   } catch (e) {
