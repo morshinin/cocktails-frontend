@@ -9,7 +9,11 @@
     </div>
 
     <!-- Список методов -->
-    <a-row :gutter="[16, 16]">
+    <div v-if="loading" class="text-center py-12">
+      <a-spin size="large" />
+    </div>
+
+    <a-row v-else :gutter="[16, 16]">
       <a-col v-for="item in methods" :key="item._id" :xs="24" :sm="12" :md="8">
         <a-card class="h-full flex flex-col" hoverable>
           <template #extra>
@@ -66,6 +70,7 @@ const methods = ref([]);
 const showAddDrawer = ref(false);
 const drawerWidth = ref('600px');
 const editingMethod = ref(null);
+const loading = ref(false);
 
 // Responsive drawer width
 const updateDrawerWidth = () => {
@@ -97,6 +102,7 @@ const fetchMethods = async () => {
   const authStore = useAuthStore();
   if (!authStore.selectedVenue) return;
 
+  loading.value = true;
   try {
     const res = await axios.get(METHODS_URL, {
       params: { venueId: authStore.selectedVenue._id },
@@ -106,6 +112,8 @@ const fetchMethods = async () => {
   } catch (e) {
     console.error(e);
     message.error("Не удалось загрузить методы");
+  } finally {
+    loading.value = false;
   }
 };
 

@@ -14,7 +14,11 @@
     </div>
 
     <!-- Список компонентов -->
-    <a-row :gutter="[16, 16]">
+    <div v-if="loading" class="text-center py-12">
+      <a-spin size="large" />
+    </div>
+
+    <a-row v-else :gutter="[16, 16]">
       <a-col v-for="item in components" :key="item._id" :xs="24" :sm="12" :md="8">
         <a-badge-ribbon :text="item.category || 'Other'" :color="item.category === 'Alcohol' ? 'blue' : 'purple'" :style="{ top: '71px' }">
           <a-card class="h-full flex flex-col" :bodyStyle="{ flex: '1', display: 'flex', flexDirection: 'column' }">
@@ -91,6 +95,7 @@ const components = ref([]);
 const showAddDrawer = ref(false);
 const drawerWidth = ref('600px');
 const editingComponent = ref(null);
+const loading = ref(false);
 
 // Responsive drawer width
 const updateDrawerWidth = () => {
@@ -122,21 +127,32 @@ const fetchComponents = async () => {
   const authStore = useAuthStore();
   if (!authStore.selectedVenue) return;
 
+  loading.value = true;
   try {
-    const res = await axios.get(COMPONENTS_URL, {
-      params: { venueId: authStore.selectedVenue._id }
-    });
+    const minLoadTime = new Promise(resolve => setTimeout(resolve, 500));
+    const [res] = await Promise.all([
+      axios.get(COMPONENTS_URL, {
+        params: { venueId: authStore.selectedVenue._id },
+        headers: { Authorization: `Bearer ${authStore.token}` }
+      }),
+      minLoadTime
+    ]);
     components.value = res.data;
   } catch (e) {
     console.error(e);
     message.error("Ошибка при загрузке компонентов");
+  } finally {
+    loading.value = false;
   }
 };
 
 // === Удаление ===
 const deleteComponent = async (id) => {
   try {
-    await axios.delete(`${COMPONENTS_URL}/${id}`);
+    const authStore = useAuthStore();
+    await axios.delete(`${COMPONENTS_URL}/${id}`, {
+      headers: { Authorization: `Bearer ${authStore.token}` }
+    });
     message.success("Компонент удалён");
     await fetchComponents();
   } catch (e) {

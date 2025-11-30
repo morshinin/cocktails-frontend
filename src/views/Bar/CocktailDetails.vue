@@ -17,7 +17,11 @@
       </template>
     </a-page-header>
 
-    <a-card v-if="cocktail">
+    <div v-if="loading" class="text-center py-12">
+      <a-spin size="large" />
+    </div>
+
+    <a-card v-else-if="cocktail">
       <a-table
         :columns="[
           { title: 'Ингредиент', dataIndex: 'name', key: 'name' },
@@ -64,7 +68,7 @@
       </div>
     </a-card>
 
-    <a-spin v-else tip="Загрузка..." />
+
   </div>
 </template>
 
@@ -74,25 +78,40 @@ import { useRoute, useRouter } from "vue-router"
 import axios from "axios"
 import { message } from "ant-design-vue"
 import { RECIPES_URL } from '../../config/api.js';
+import { useAuthStore } from '../../stores/auth';
 
 const route = useRoute()
 const router = useRouter()
 const cocktail = ref(null)
+const loading = ref(false)
 
 const fetchCocktail = async () => {
+  const authStore = useAuthStore()
+  loading.value = true
   try {
-    const res = await axios.get(`${RECIPES_URL}/${route.params.id}`)
+    const minLoadTime = new Promise(resolve => setTimeout(resolve, 500));
+    const [res] = await Promise.all([
+      axios.get(`${RECIPES_URL}/${route.params.id}`, {
+        headers: { Authorization: `Bearer ${authStore.token}` }
+      }),
+      minLoadTime
+    ]);
     cocktail.value = res.data
   } catch (err) {
     console.error("Ошибка при загрузке коктейля:", err)
     message.error("Не удалось загрузить коктейль")
+  } finally {
+    loading.value = false
   }
 }
 
 // ===== Удаление =====
 const deleteCocktail = async () => {
+  const authStore = useAuthStore()
   try {
-    await axios.delete(`${RECIPES_URL}/${route.params.id}`)
+    await axios.delete(`${RECIPES_URL}/${route.params.id}`, {
+      headers: { Authorization: `Bearer ${authStore.token}` }
+    })
     message.success("Коктейль удалён")
     router.push("/cocktails")
   } catch (err) {
