@@ -51,14 +51,22 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons-vu
 import { message } from 'ant-design-vue';
 import axios from 'axios';
 import AddMerchItemDrawer from '../../components/Marketing/AddMerchItemDrawer.vue';
+import { MERCH_URL } from '../../config/api.js';
+import { useAuthStore } from '../../stores/auth';
 
 const merch = ref([]);
 const drawerVisible = ref(false);
 const editingMerch = ref(null);
 
 const fetchMerch = async () => {
+  const authStore = useAuthStore();
+  if (!authStore.selectedVenue) return;
+
   try {
-    const response = await axios.get('/api/marketing/merch');
+    const response = await axios.get(MERCH_URL, {
+      params: { venueId: authStore.selectedVenue._id },
+      headers: { Authorization: `Bearer ${authStore.token}` }
+    });
     merch.value = response.data;
   } catch (error) {
     console.error('Error fetching merch:', error);
@@ -77,8 +85,11 @@ const editMerch = (item) => {
 };
 
 const deleteMerch = async (id) => {
+  const authStore = useAuthStore();
   try {
-    await axios.delete(`/api/marketing/merch/${id}`);
+    await axios.delete(`${MERCH_URL}/${id}`, {
+      headers: { Authorization: `Bearer ${authStore.token}` }
+    });
     message.success('Товар удален');
     fetchMerch();
   } catch (error) {
@@ -88,12 +99,20 @@ const deleteMerch = async (id) => {
 };
 
 const handleDrawerSubmit = async (formData) => {
+  const authStore = useAuthStore();
   try {
     if (formData._id) {
-      await axios.put(`/api/marketing/merch/${formData._id}`, formData);
+      await axios.put(`${MERCH_URL}/${formData._id}`, formData, {
+        headers: { Authorization: `Bearer ${authStore.token}` }
+      });
       message.success('Товар обновлен');
     } else {
-      await axios.post('/api/marketing/merch', formData);
+      await axios.post(MERCH_URL, {
+        ...formData,
+        venueId: authStore.selectedVenue._id
+      }, {
+        headers: { Authorization: `Bearer ${authStore.token}` }
+      });
       message.success('Товар добавлен');
     }
     fetchMerch();
