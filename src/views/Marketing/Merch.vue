@@ -1,41 +1,18 @@
 <template>
-  <div class="p-6">
+  <div class="p-6 max-w-7xl mx-auto">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold text-white">Мерч</h1>
+      <h1 class="text-2xl font-bold">Мерч</h1>
       <a-button type="primary" @click="showDrawer">
         <template #icon><PlusOutlined /></template>
         Добавить товар
       </a-button>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      <a-card v-for="item in merch" :key="item._id" hoverable class="bg-gray-800 border-gray-700">
-        <template #cover>
-          <img 
-            :alt="item.name" 
-            :src="item.imageUrl || 'https://via.placeholder.com/300x300?text=No+Photo'" 
-            class="h-64 object-cover"
-          />
-        </template>
-        <template #actions>
-          <EditOutlined key="edit" @click="editMerch(item)" />
-          <a-popconfirm title="Удалить товар?" @confirm="deleteMerch(item._id)">
-            <DeleteOutlined key="delete" class="text-red-500" />
-          </a-popconfirm>
-        </template>
-        <a-card-meta :title="item.name">
-          <template #description>
-            <div class="text-gray-400 text-sm">
-              <div class="font-bold text-lg text-white mb-2">₽ {{ item.price }}</div>
-              <div class="mb-2 line-clamp-2">{{ item.description }}</div>
-              <a-tag :color="item.stock > 0 ? 'green' : 'red'">
-                {{ item.stock > 0 ? `В наличии: ${item.stock}` : 'Нет в наличии' }}
-              </a-tag>
-            </div>
-          </template>
-        </a-card-meta>
-      </a-card>
-    </div>
+    <a-row :gutter="[16, 16]">
+      <a-col v-for="item in merch" :key="item._id" :xs="24" :sm="12" :md="8">
+        <MerchCard :item="item" @delete="deleteMerch" @edit="editMerch" />
+      </a-col>
+    </a-row>
 
     <AddMerchItemDrawer
       v-model:visible="drawerVisible"
@@ -47,10 +24,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
+import { PlusOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import axios from 'axios';
 import AddMerchItemDrawer from '../../components/Marketing/AddMerchItemDrawer.vue';
+import MerchCard from '../../components/Marketing/MerchCard.vue';
 import { MERCH_URL } from '../../config/api.js';
 import { useAuthStore } from '../../stores/auth';
 
