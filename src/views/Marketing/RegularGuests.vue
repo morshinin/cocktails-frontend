@@ -53,6 +53,8 @@ import { message } from 'ant-design-vue';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import AddRegularGuestDrawer from '../../components/Marketing/AddRegularGuestDrawer.vue';
+import { GUESTS_URL } from '../../config/api.js';
+import { useAuthStore } from '../../stores/auth';
 
 const guests = ref([]);
 const drawerVisible = ref(false);
@@ -63,8 +65,14 @@ const formatDate = (date) => {
 };
 
 const fetchGuests = async () => {
+  const authStore = useAuthStore();
+  if (!authStore.selectedVenue) return;
+
   try {
-    const response = await axios.get('/api/marketing/guests');
+    const response = await axios.get(GUESTS_URL, {
+      params: { venueId: authStore.selectedVenue._id },
+      headers: { Authorization: `Bearer ${authStore.token}` }
+    });
     guests.value = response.data;
   } catch (error) {
     console.error('Error fetching guests:', error);
@@ -83,8 +91,11 @@ const editGuest = (guest) => {
 };
 
 const deleteGuest = async (id) => {
+  const authStore = useAuthStore();
   try {
-    await axios.delete(`/api/marketing/guests/${id}`);
+    await axios.delete(`${GUESTS_URL}/${id}`, {
+      headers: { Authorization: `Bearer ${authStore.token}` }
+    });
     message.success('Гость удален');
     fetchGuests();
   } catch (error) {
@@ -94,12 +105,20 @@ const deleteGuest = async (id) => {
 };
 
 const handleDrawerSubmit = async (formData) => {
+  const authStore = useAuthStore();
   try {
     if (formData._id) {
-      await axios.put(`/api/marketing/guests/${formData._id}`, formData);
+      await axios.put(`${GUESTS_URL}/${formData._id}`, formData, {
+        headers: { Authorization: `Bearer ${authStore.token}` }
+      });
       message.success('Гость обновлен');
     } else {
-      await axios.post('/api/marketing/guests', formData);
+      await axios.post(GUESTS_URL, {
+        ...formData,
+        venueId: authStore.selectedVenue._id
+      }, {
+        headers: { Authorization: `Bearer ${authStore.token}` }
+      });
       message.success('Гость добавлен');
     }
     fetchGuests();

@@ -10,3 +10,4 @@ export const INSTRUCTIONS_URL = `${API_URL}/instructions`;
 export const CATEGORIES_URL = `${API_URL}/categories`;
 export const ZONES_URL = `${API_URL}/housekeeping/zones`;
 export const DJS_URL = `${API_URL}/events/djs`;
+export const GUESTS_URL = `${API_URL}/marketing/guests`;
