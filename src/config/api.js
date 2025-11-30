@@ -9,3 +9,4 @@ export const UPLOAD_URL = `${API_URL}/upload`;
 export const INSTRUCTIONS_URL = `${API_URL}/instructions`;
 export const CATEGORIES_URL = `${API_URL}/categories`;
 export const ZONES_URL = `${API_URL}/housekeeping/zones`;
+export const DJS_URL = `${API_URL}/events/djs`;
