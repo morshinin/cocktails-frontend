@@ -17,17 +17,23 @@
       @success="fetchRecipes"
     />
 
-    <CocktailFilter @filter="handleFilter" />
-    
-    <div class="mb-4 text-gray-600">
-      {{ getCocktailCountText(filteredRecipes.length) }}
+    <div v-if="loading" class="text-center py-12">
+      <a-spin size="large" />
     </div>
 
-    <a-row :gutter="[16, 16]">
-      <a-col v-for="r in filteredRecipes" :key="r._id" :xs="24" :sm="12" :md="8">
-        <CocktailCard :recipe="r" @delete="deleteRecipe" />
-      </a-col>
-    </a-row>
+    <div v-else>
+      <CocktailFilter @filter="handleFilter" />
+      
+      <div class="mb-4 text-gray-600">
+        {{ getCocktailCountText(filteredRecipes.length) }}
+      </div>
+
+      <a-row :gutter="[16, 16]">
+        <a-col v-for="r in filteredRecipes" :key="r._id" :xs="24" :sm="12" :md="8">
+          <CocktailCard :recipe="r" @delete="deleteRecipe" />
+        </a-col>
+      </a-row>
+    </div>
   </div>
 </template>
 
@@ -44,16 +50,30 @@ import { useAuthStore } from '../../stores/auth';
 const recipes = ref([])
 const showAddModal = ref(false)
 const filteredRecipes = ref([])
+const loading = ref(false)
 
 const fetchRecipes = async () => {
   const authStore = useAuthStore();
   if (!authStore.selectedVenue) return;
   
-  const res = await axios.get(RECIPES_URL, {
-    params: { venueId: authStore.selectedVenue._id }
-  })
-  recipes.value = res.data
-  filteredRecipes.value = res.data
+  loading.value = true;
+  try {
+    const minLoadTime = new Promise(resolve => setTimeout(resolve, 500));
+    const [res] = await Promise.all([
+      axios.get(RECIPES_URL, {
+        params: { venueId: authStore.selectedVenue._id },
+        headers: { Authorization: `Bearer ${authStore.token}` }
+      }),
+      minLoadTime
+    ]);
+    recipes.value = res.data
+    filteredRecipes.value = res.data
+  } catch (e) {
+    console.error(e);
+    message.error("Не удалось загрузить коктейли");
+  } finally {
+    loading.value = false;
+  }
 }
 
 const handleFilter = (filters) => {
@@ -89,9 +109,17 @@ const getCocktailCountText = (count) => {
 }
 
 const deleteRecipe = async (id) => {
-  await axios.delete(`${RECIPES_URL}/${id}`)
-  message.info("Коктейль удалён")
-  await fetchRecipes()
+  const authStore = useAuthStore();
+  try {
+    await axios.delete(`${RECIPES_URL}/${id}`, {
+      headers: { Authorization: `Bearer ${authStore.token}` }
+    })
+    message.info("Коктейль удалён")
+    await fetchRecipes()
+  } catch (e) {
+    console.error(e);
+    message.error("Ошибка при удалении");
+  }
 }
 
 onMounted(fetchRecipes)
