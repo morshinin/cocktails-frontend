@@ -1,32 +1,18 @@
 <template>
-  <div class="p-6">
+  <div class="p-6 max-w-7xl mx-auto">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-3xl font-bold text-white">Зоны</h1>
+      <h1 class="text-2xl font-bold">Зоны</h1>
       <a-button type="primary" @click="showDrawer">
         <template #icon><PlusOutlined /></template>
         Добавить зону
       </a-button>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div v-for="zone in zones" :key="zone._id" class="bg-gray-800 rounded-xl p-6 border border-gray-700">
-        <div class="flex justify-between items-start mb-4">
-          <h3 class="text-xl font-semibold text-white">{{ zone.name }}</h3>
-          <a-dropdown>
-            <a class="ant-dropdown-link" @click.prevent>
-              <MoreOutlined class="text-xl text-gray-400" />
-            </a>
-            <template #overlay>
-              <a-menu>
-                <a-menu-item @click="editZone(zone)">Редактировать</a-menu-item>
-                <a-menu-item danger @click="deleteZone(zone._id)">Удалить</a-menu-item>
-              </a-menu>
-            </template>
-          </a-dropdown>
-        </div>
-        <p class="text-gray-400">{{ zone.description || 'Нет описания' }}</p>
-      </div>
-    </div>
+    <a-row :gutter="[16, 16]">
+      <a-col v-for="zone in zones" :key="zone._id" :xs="24" :sm="12" :md="8">
+        <ZoneCard :zone="zone" @delete="deleteZone" @edit="editZone" />
+      </a-col>
+    </a-row>
 
     <AddZoneDrawer
       v-model:visible="drawerVisible"
@@ -38,10 +24,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { PlusOutlined, MoreOutlined } from '@ant-design/icons-vue';
+import { PlusOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import axios from 'axios';
 import AddZoneDrawer from '../../components/Housekeeping/AddZoneDrawer.vue';
+import ZoneCard from '../../components/Housekeeping/ZoneCard.vue';
 import { ZONES_URL } from '../../config/api.js';
 import { useAuthStore } from '../../stores/auth';
 
