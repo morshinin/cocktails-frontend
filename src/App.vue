@@ -179,6 +179,9 @@ const roleNames = {
                 <a-menu-item key="users">
                   <router-link to="/users">Users</router-link>
                 </a-menu-item>
+                <a-menu-item key="settings">
+                  <router-link to="/settings">Settings</router-link>
+                </a-menu-item>
                 <a-menu-item key="logout" @click="handleLogout">
                   Log out
                 </a-menu-item>
