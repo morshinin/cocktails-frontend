@@ -44,7 +44,7 @@
 </template>
 
 <script setup>
-import { reactive, watch, toRefs } from 'vue';
+import { reactive, watch, toRefs, ref } from 'vue';
 
 const props = defineProps({
   visible: Boolean,
@@ -84,8 +84,6 @@ const onFinish = () => {
   emit('submit', { ...formState, _id: props.zone?._id });
   onClose();
 };
-
-import { ref } from 'vue';
 </script>
 
 <style scoped>
