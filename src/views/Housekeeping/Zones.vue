@@ -42,14 +42,22 @@ import { PlusOutlined, MoreOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import axios from 'axios';
 import AddZoneDrawer from '../../components/Housekeeping/AddZoneDrawer.vue';
+import { ZONES_URL } from '../../config/api.js';
+import { useAuthStore } from '../../stores/auth';
 
 const zones = ref([]);
 const drawerVisible = ref(false);
 const editingZone = ref(null);
 
 const fetchZones = async () => {
+  const authStore = useAuthStore();
+  if (!authStore.selectedVenue) return;
+
   try {
-    const response = await axios.get('/api/housekeeping/zones');
+    const response = await axios.get(ZONES_URL, {
+      params: { venueId: authStore.selectedVenue._id },
+      headers: { Authorization: `Bearer ${authStore.token}` }
+    });
     zones.value = response.data;
   } catch (error) {
     console.error('Error fetching zones:', error);
@@ -68,8 +76,11 @@ const editZone = (zone) => {
 };
 
 const deleteZone = async (id) => {
+  const authStore = useAuthStore();
   try {
-    await axios.delete(`/api/housekeeping/zones/${id}`);
+    await axios.delete(`${ZONES_URL}/${id}`, {
+      headers: { Authorization: `Bearer ${authStore.token}` }
+    });
     message.success('Зона удалена');
     fetchZones();
   } catch (error) {
@@ -79,12 +90,20 @@ const deleteZone = async (id) => {
 };
 
 const handleDrawerSubmit = async (formData) => {
+  const authStore = useAuthStore();
   try {
     if (formData._id) {
-      await axios.put(`/api/housekeeping/zones/${formData._id}`, formData);
+      await axios.put(`${ZONES_URL}/${formData._id}`, formData, {
+        headers: { Authorization: `Bearer ${authStore.token}` }
+      });
       message.success('Зона обновлена');
     } else {
-      await axios.post('/api/housekeeping/zones', formData);
+      await axios.post(ZONES_URL, {
+        ...formData,
+        venueId: authStore.selectedVenue._id
+      }, {
+        headers: { Authorization: `Bearer ${authStore.token}` }
+      });
       message.success('Зона создана');
     }
     fetchZones();
