@@ -2,14 +2,11 @@
 import EnvBadge from "./components/Common/EnvBadge.vue";
 import { useAuthStore } from "./stores/auth";
 import { useRouter, useRoute } from "vue-router";
-import { onMounted, ref } from "vue";
-import { ShopOutlined } from '@ant-design/icons-vue';
+import { onMounted } from "vue";
 
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
-const openKeys = ref(['organization']);
-const collapsed = ref(false);
 
 onMounted(() => {
   if (authStore.isAuthenticated) {
@@ -160,6 +157,25 @@ const roleNames = {
         </div>
         
         <div v-else class="user-menu">
+          <!-- Venue Selector -->
+          <a-select
+            v-if="authStore.venues && authStore.venues.length > 0"
+            :value="authStore.selectedVenue?._id"
+            @change="(venueId) => authStore.selectVenue(authStore.venues.find(v => v._id === venueId))"
+            placeholder="Выберите заведение"
+            style="width: 200px; margin-right: 16px"
+            class="venue-selector"
+          >
+            <a-select-option
+              v-for="venue in authStore.venues"
+              :key="venue._id"
+              :value="venue._id"
+            >
+              {{ venue.name }}
+            </a-select-option>
+          </a-select>
+          
+          <!-- User Avatar Dropdown -->
           <a-dropdown trigger="click">
             <a-avatar style="background-color: #87d068; cursor: pointer">
               {{ authStore.user?.name?.[0]?.toUpperCase() || 'U' }}
@@ -193,36 +209,6 @@ const roleNames = {
     </a-layout-header>
 
     <a-layout style="flex: 1">
-      <a-layout-sider
-        v-if="authStore.isAuthenticated && route.path !== '/'"
-        collapsible
-        v-model:collapsed="collapsed"
-        theme="light"
-      >
-        <a-menu
-          theme="light"
-          mode="inline"
-          v-model:openKeys="openKeys"
-          :selectedKeys="authStore.selectedVenue ? [authStore.selectedVenue._id] : []"
-        >
-          <a-sub-menu key="organization">
-            <template #title>
-              <span>
-                <ShopOutlined />
-                <span>Организация</span>
-              </span>
-            </template>
-            <a-menu-item
-              v-for="venue in authStore.venues"
-              :key="venue._id"
-              @click="authStore.selectVenue(venue)"
-            >
-              {{ venue.name }}
-            </a-menu-item>
-          </a-sub-menu>
-        </a-menu>
-      </a-layout-sider>
-
       <a-layout-content style="padding: 24px">
         <env-badge />
         <router-view :key="authStore.selectedVenue?._id" />
@@ -297,7 +283,17 @@ const roleNames = {
 </style>
 
 <style>
-.ant-layout-sider-trigger {
-  z-index: 50 !important;
+.venue-selector :deep(.ant-select-selector) {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+.venue-selector :deep(.ant-select-arrow) {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+.venue-selector :deep(.ant-select-selection-placeholder) {
+  color: rgba(255, 255, 255, 0.45) !important;
 }
 </style>
