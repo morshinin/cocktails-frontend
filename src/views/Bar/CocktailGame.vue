@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 max-w-6xl mx-auto">
+  <div class="p-6 max-w-7xl mx-auto">
     <!-- Верхняя панель -->
     <div class="flex justify-between items-center mb-4">
       <div v-if="gameStarted">

@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 max-w-3xl mx-auto">
+  <div class="p-6 max-w-7xl mx-auto">
     <a-page-header
       :title="component?.name || 'Компонент'"
       sub-title="Описание ингредиента"
