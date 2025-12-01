@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 max-w-5xl mx-auto">
+  <div class="p-6 max-w-7xl mx-auto">
     <a-page-header
       title="🍽 Блюда"
       sub-title="Список рецептов"

@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 max-w-4xl mx-auto">
+  <div class="p-6 max-w-7xl mx-auto">
     <a-card :bordered="false" class="shadow-sm">
       <template #title>
         <div class="flex justify-between items-center">
