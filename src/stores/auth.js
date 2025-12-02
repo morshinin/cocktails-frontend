@@ -36,10 +36,8 @@ export const useAuthStore = defineStore("auth", {
         name,
       });
 
-      this.token = res.data.token;
-      localStorage.setItem("token", this.token);
-
-      await this.fetchProfile();
+      // Don't set token or fetch profile - user needs to verify email first
+      return res.data;
     },
 
     async fetchProfile() {
