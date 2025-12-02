@@ -62,17 +62,13 @@ const submit = async () => {
 
   loading.value = true;
   try {
-    await auth.register(email.value, password.value, name.value);
-    message.success("Registration successful!");
+    const response = await auth.register(email.value, password.value, name.value);
+    message.success(response.message || "Registration successful! Please check your email to verify your account.");
     
-    if (auth.venues.length > 1) {
-      router.push("/select-venue");
-    } else if (auth.venues.length === 1) {
-      auth.selectVenue(auth.venues[0]);
-      router.push("/");
-    } else {
-      router.push("/"); // Or maybe to a "Create Venue" page if that exists, but for now root is safe
-    }
+    // Redirect to login page
+    setTimeout(() => {
+      router.push("/login");
+    }, 2000);
   } catch (e) {
     console.error(e);
     message.error(e.response?.data?.message || "Registration failed");

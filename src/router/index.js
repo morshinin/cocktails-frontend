@@ -15,6 +15,7 @@ const routes = [
   { path: '/', name: 'Home', component: Home, meta: { titleKey: 'pages.home' } },
   { path: "/login", component: Login, meta: { titleKey: 'auth.login' } },
   { path: "/register", component: () => import("../views/Auth/Register.vue"), meta: { titleKey: 'auth.register' } },
+  { path: "/verify-email/:token", component: () => import("../views/Auth/VerifyEmail.vue"), meta: { title: 'Email Verification' } },
   { path: "/select-venue", component: SelectVenue, meta: { titleKey: 'auth.selectVenue' } },
   {
     path: "/profile",
