@@ -105,6 +105,9 @@
 import { reactive, watch, ref, onMounted } from 'vue';
 import dayjs from 'dayjs';
 import axios from 'axios';
+import { useAuthStore } from '../../stores/auth.js';
+
+const auth = useAuthStore();
 
 const props = defineProps({
   visible: Boolean,
@@ -130,7 +133,10 @@ const isEditing = ref(false);
 
 const fetchDJs = async () => {
   try {
-    const response = await axios.get('/api/events/djs');
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/events/djs`, {
+      params: { venueId: auth.selectedVenue?._id },
+      headers: { Authorization: `Bearer ${auth.token}` }
+    });
     djs.value = response.data;
   } catch (error) {
     console.error('Error fetching DJs:', error);
