@@ -69,6 +69,9 @@ watch(
     } else if (pathSegments[0] === 'kitchen-methods') {
       selectedKeys.value = ['kitchen-methods'];
       openKeys.value = ['kitchen'];
+    } else if (pathSegments[0] === 'allergens') {
+      selectedKeys.value = ['allergens'];
+      openKeys.value = ['kitchen'];
     } else if (pathSegments[0] === 'employees') {
       selectedKeys.value = ['employees'];
       openKeys.value = ['staff'];
@@ -220,6 +223,9 @@ const roleNames = {
           </a-menu-item>
           <a-menu-item key="kitchen-methods">
             <router-link to="/kitchen-methods">Методы</router-link>
+          </a-menu-item>
+          <a-menu-item key="allergens">
+            <router-link to="/allergens">Аллергены</router-link>
           </a-menu-item>
         </a-sub-menu>
 
