@@ -49,6 +49,8 @@ const routes = [
   { path: '/cocktailGlasses', name: 'CocktailGlasses', component: CocktailGlasses, meta: { requiresAuth: true, titleKey: 'nav.glasses' } },
   { path: '/cocktailDecorations', name: 'CocktailDecorations', component: () => import('../views/Bar/CocktailDecorations.vue'), meta: { requiresAuth: true, titleKey: 'nav.decorations' } },
   { path: '/categories', name: 'Categories', component: () => import('../views/Bar/Categories.vue'), meta: { requiresAuth: true, titleKey: 'nav.categories' } },
+  { path: '/bar-counters', name: 'BarCounters', component: () => import('../views/Bar/BarCounters.vue'), meta: { requiresAuth: true, title: 'Барные стойки' } },
+  { path: '/bar-counters/:id', name: 'BarCounterDetail', component: () => import('../views/Bar/BarCounterDetail.vue'), meta: { requiresAuth: true, title: 'Барная стойка' } },
   {
     path: "/cocktails/:id/edit",
     name: "EditRecipe",
