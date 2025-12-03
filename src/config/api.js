@@ -15,3 +15,4 @@ export const MERCH_URL = `${API_URL}/marketing/merch`;
 export const BAR_COUNTERS_URL = `${API_URL}/bar-counters`;
 export const KITCHEN_METHODS_URL = `${API_URL}/kitchen-methods`;
 export const ALLERGENS_URL = `${API_URL}/allergens`;
+export const DISH_CATEGORIES_URL = `${API_URL}/dish-categories`;
