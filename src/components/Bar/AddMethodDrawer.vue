@@ -28,7 +28,6 @@
 import { ref, reactive, watch } from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
-import { METHODS_URL } from '../../config/api.js';
 import { useAuthStore } from '../../stores/auth';
 
 const props = defineProps({
@@ -40,6 +39,14 @@ const props = defineProps({
   methodToEdit: {
     type: Object,
     default: null
+  },
+  category: {
+    type: String,
+    default: 'bar'
+  },
+  apiUrl: {
+    type: String,
+    required: true
   }
 });
 
@@ -73,7 +80,7 @@ const handleSubmit = async () => {
   loading.value = true;
   try {
     if (props.methodToEdit) {
-      await axios.put(`${METHODS_URL}/${props.methodToEdit._id}`, {
+      await axios.put(`${props.apiUrl}/${props.methodToEdit._id}`, {
         name: newMethod.name
       }, {
         headers: { Authorization: `Bearer ${authStore.token}` }
@@ -81,7 +88,7 @@ const handleSubmit = async () => {
       message.success("Метод обновлен!");
       emit('methodUpdated');
     } else {
-      await axios.post(METHODS_URL, {
+      await axios.post(props.apiUrl, {
         name: newMethod.name,
         venueId: authStore.selectedVenue._id
       }, {
