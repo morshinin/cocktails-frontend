@@ -105,6 +105,12 @@ const routes = [
     component: () => import("../views/Kitchen/KitchenMethods.vue"),
     meta: { requiresAuth: true, titleKey: 'nav.methods' },
   },
+  {
+    path: "/allergens",
+    name: "Allergens",
+    component: () => import("../views/Kitchen/Allergens.vue"),
+    meta: { requiresAuth: true, titleKey: 'nav.allergens' },
+  },
 
 
   {
