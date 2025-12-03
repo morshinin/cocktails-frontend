@@ -1,16 +1,11 @@
 <template>
   <div class="p-6 max-w-7xl mx-auto">
-    <a-page-header
-      title="🍸 Коктейли"
-      sub-title="Список рецептов"
-      :breadcrumb="{ routes: [{ path: '/cocktails', breadcrumbName: 'Коктейли' }] }"
-    >
-      <template #extra>
-        <a-button type="primary" @click="showAddModal = true">
-          ➕ Добавить коктейль
-        </a-button>
-      </template>
-    </a-page-header>
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold">🍸 Коктейли</h1>
+      <a-button type="primary" @click="showAddModal = true">
+        ➕ Добавить коктейль
+      </a-button>
+    </div>
 
     <AddCocktailDrawer
       v-model:visible="showAddModal"

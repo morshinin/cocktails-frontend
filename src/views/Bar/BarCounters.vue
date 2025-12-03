@@ -1,16 +1,11 @@
 <template>
   <div class="p-6 max-w-7xl mx-auto">
-    <a-page-header
-      title="🍺 Барные стойки"
-      sub-title="Управление барными стойками"
-      :breadcrumb="{ routes: [{ path: '/bar-counters', breadcrumbName: 'Барные стойки' }] }"
-    >
-      <template #extra>
-        <a-button type="primary" @click="showDrawer = true">
-          ➕ Добавить стойку
-        </a-button>
-      </template>
-    </a-page-header>
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold">🍺 Барные стойки</h1>
+      <a-button type="primary" @click="showDrawer = true">
+        ➕ Добавить стойку
+      </a-button>
+    </div>
 
     <AddBarCounterDrawer
       v-model:visible="showDrawer"
