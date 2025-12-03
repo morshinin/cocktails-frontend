@@ -1,7 +1,7 @@
 <template>
   <div class="p-6 max-w-7xl mx-auto">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold">Методы приготовления</h1>
+      <h1 class="text-2xl font-bold">Методы приготовления (Кухня)</h1>
       <a-button type="primary" @click="handleAdd">
         <template #icon><PlusOutlined /></template>
         Добавить метод
@@ -51,7 +51,7 @@
       v-model:open="showAddDrawer"
       :width="drawerWidth"
       :methodToEdit="editingMethod"
-      :apiUrl="METHODS_URL"
+      :apiUrl="KITCHEN_METHODS_URL"
       @methodAdded="fetchMethods"
       @methodUpdated="fetchMethods"
     />
@@ -63,7 +63,7 @@ import { ref, onMounted, onUnmounted } from "vue";
 import axios from "axios";
 import { message } from "ant-design-vue";
 import { PlusOutlined, DeleteOutlined, MoreOutlined, EditOutlined } from "@ant-design/icons-vue";
-import { METHODS_URL } from '../../config/api.js';
+import { KITCHEN_METHODS_URL } from '../../config/api.js';
 import { useAuthStore } from '../../stores/auth';
 import AddMethodDrawer from '../../components/Bar/AddMethodDrawer.vue';
 
@@ -105,7 +105,7 @@ const fetchMethods = async () => {
 
   loading.value = true;
   try {
-    const res = await axios.get(METHODS_URL, {
+    const res = await axios.get(KITCHEN_METHODS_URL, {
       params: { venueId: authStore.selectedVenue._id },
       headers: { Authorization: `Bearer ${authStore.token}` }
     });
@@ -122,7 +122,7 @@ const fetchMethods = async () => {
 const deleteMethod = async (id) => {
   const authStore = useAuthStore();
   try {
-    await axios.delete(`${METHODS_URL}/${id}`, {
+    await axios.delete(`${KITCHEN_METHODS_URL}/${id}`, {
       headers: { Authorization: `Bearer ${authStore.token}` }
     });
     message.success("Метод удалён");

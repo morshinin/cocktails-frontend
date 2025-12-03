@@ -100,11 +100,12 @@ const routes = [
     meta: { requiresAuth: true, titleKey: 'nav.ingredients' },
   },
   {
-    path: "/ingredients",
-    name: "Ingredients",
-    component: () => import("../views/Kitchen/Ingredients.vue"),
-    meta: { requiresAuth: true, titleKey: 'nav.ingredients' },
+    path: "/kitchen-methods",
+    name: "KitchenMethods",
+    component: () => import("../views/Kitchen/KitchenMethods.vue"),
+    meta: { requiresAuth: true, titleKey: 'nav.methods' },
   },
+
 
   {
     path: "/employees",
