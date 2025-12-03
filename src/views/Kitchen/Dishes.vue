@@ -2,10 +2,15 @@
   <div class="p-6 max-w-7xl mx-auto">
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold">Блюда</h1>
-      <a-button type="primary" @click="showAddDrawer = true">
-        <template #icon><PlusOutlined /></template>
-        Добавить блюдо
-      </a-button>
+      <a-space>
+        <router-link to="/dish-categories">
+          <a-button>Управление категориями</a-button>
+        </router-link>
+        <a-button type="primary" @click="showAddDrawer = true">
+          <template #icon><PlusOutlined /></template>
+          Добавить блюдо
+        </a-button>
+      </a-space>
     </div>
 
     <a-row :gutter="[16, 16]">
