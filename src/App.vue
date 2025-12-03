@@ -2,11 +2,115 @@
 import EnvBadge from "./components/Common/EnvBadge.vue";
 import { useAuthStore } from "./stores/auth";
 import { useRouter, useRoute } from "vue-router";
-import { onMounted } from "vue";
+import { onMounted, ref, watch } from "vue";
+import {
+  HomeOutlined,
+  CoffeeOutlined,
+  FireOutlined,
+  TeamOutlined,
+  CalendarOutlined,
+  ShopOutlined,
+  ToolOutlined,
+  CustomerServiceOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
+} from "@ant-design/icons-vue";
 
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
+
+// Sidebar state
+const collapsed = ref(false);
+const selectedKeys = ref([]);
+const openKeys = ref([]);
+
+// Auto-select and expand based on current route
+watch(
+  () => route.path,
+  (newPath) => {
+    // Determine selected key from path
+    const pathSegments = newPath.split('/').filter(Boolean);
+    
+    if (pathSegments.length === 0) {
+      selectedKeys.value = ['dashboard'];
+    } else if (pathSegments[0] === 'dashboard') {
+      selectedKeys.value = ['dashboard'];
+    } else if (pathSegments[0] === 'cocktails') {
+      selectedKeys.value = ['cocktails'];
+      openKeys.value = ['bar'];
+    } else if (pathSegments[0] === 'cocktailComponents') {
+      selectedKeys.value = ['cocktailComponents'];
+      openKeys.value = ['bar'];
+    } else if (pathSegments[0] === 'cocktailMethods') {
+      selectedKeys.value = ['cocktailMethods'];
+      openKeys.value = ['bar'];
+    } else if (pathSegments[0] === 'cocktailGlasses') {
+      selectedKeys.value = ['cocktailGlasses'];
+      openKeys.value = ['bar'];
+    } else if (pathSegments[0] === 'cocktailDecorations') {
+      selectedKeys.value = ['cocktailDecorations'];
+      openKeys.value = ['bar'];
+    } else if (pathSegments[0] === 'categories') {
+      selectedKeys.value = ['categories'];
+      openKeys.value = ['bar'];
+    } else if (pathSegments[0] === 'bar-counters') {
+      selectedKeys.value = ['bar-counters'];
+      openKeys.value = ['bar'];
+    } else if (pathSegments[0] === 'cocktail-game') {
+      selectedKeys.value = ['cocktail-game'];
+      openKeys.value = ['bar'];
+    } else if (pathSegments[0] === 'dishes') {
+      selectedKeys.value = ['dishes'];
+      openKeys.value = ['kitchen'];
+    } else if (pathSegments[0] === 'ingredients') {
+      selectedKeys.value = ['ingredients'];
+      openKeys.value = ['kitchen'];
+    } else if (pathSegments[0] === 'employees') {
+      selectedKeys.value = ['employees'];
+      openKeys.value = ['staff'];
+    } else if (pathSegments[0] === 'schedule') {
+      selectedKeys.value = ['schedule'];
+      openKeys.value = ['staff'];
+    } else if (pathSegments[0] === 'users') {
+      selectedKeys.value = ['users'];
+      openKeys.value = ['staff'];
+    } else if (pathSegments[0] === 'events') {
+      if (pathSegments[1] === 'schedule') {
+        selectedKeys.value = ['events-schedule'];
+      } else if (pathSegments[1] === 'djs') {
+        selectedKeys.value = ['djs'];
+      }
+      openKeys.value = ['events'];
+    } else if (pathSegments[0] === 'marketing') {
+      if (pathSegments[1] === 'guests') {
+        selectedKeys.value = ['regular-guests'];
+      } else if (pathSegments[1] === 'merch') {
+        selectedKeys.value = ['merch'];
+      } else if (pathSegments[1] === 'reviews') {
+        selectedKeys.value = ['reviews'];
+      }
+      openKeys.value = ['marketing'];
+    } else if (pathSegments[0] === 'housekeeping') {
+      if (pathSegments[1] === 'zones') {
+        selectedKeys.value = ['zones'];
+      } else if (pathSegments[1] === 'equipment') {
+        selectedKeys.value = ['equipment'];
+      } else if (pathSegments[1] === 'schedule') {
+        selectedKeys.value = ['cleaning-schedule'];
+      } else if (pathSegments[1] === 'lost-and-found') {
+        selectedKeys.value = ['lost-and-found'];
+      }
+      openKeys.value = ['housekeeping'];
+    } else if (pathSegments[0] === 'service') {
+      if (pathSegments[1] === 'reservations') {
+        selectedKeys.value = ['reservations'];
+      }
+      openKeys.value = ['service'];
+    }
+  },
+  { immediate: true }
+);
 
 onMounted(() => {
   if (authStore.isAuthenticated) {
@@ -36,202 +140,271 @@ const roleNames = {
 </script>
 
 <template>
-  <a-layout style="min-height: 100vh; display: flex; flex-direction: column;">
-    <a-layout-header class="header">
-      <div class="menu-container">
-        <a-menu mode="horizontal" theme="dark">
-          <a-menu-item key="home" class="logo-item" v-if="!authStore.isAuthenticated">
-            <router-link to="/" class="logo-link">
-              <img src="./assets/logo.png" alt="Logo" class="app-logo" />
-              Главная
-            </router-link>
-          </a-menu-item>
-          <a-menu-item key="dashboard" class="logo-item" v-else>
-            <router-link to="/dashboard" class="logo-link">
-              <img src="./assets/logo.png" alt="Logo" class="app-logo" />
-              Дашборд
-            </router-link>
-          </a-menu-item>
-          <a-sub-menu key="bar" v-if="authStore.selectedVenue" @titleClick="router.push('/bar')">
-            <template #title>
-              <span class="cursor-pointer">Бар</span>
-            </template>
-            <a-menu-item key="cocktails">
-              <router-link to="/cocktails">Коктейли</router-link>
-            </a-menu-item>
-            <a-menu-item key="cocktailComponents">
-              <router-link to="/cocktailComponents">Компоненты</router-link>
-            </a-menu-item>
-            <a-menu-item key="methods">
-              <router-link to="/cocktailMethods">Методы</router-link>
-            </a-menu-item>
-            <a-menu-item key="glasses">
-              <router-link to="/cocktailGlasses">Бокалы</router-link>
-            </a-menu-item>
-            <a-menu-item key="decorations">
-              <router-link to="/cocktailDecorations">Украшения</router-link>
-            </a-menu-item>
-            <a-menu-item key="bar-counters">
-              <router-link to="/bar-counters">Барные стойки</router-link>
-            </a-menu-item>
-            <a-menu-item key="game">
-              <router-link to="/cocktail-game">Коктейль-игра</router-link>
-            </a-menu-item>
-          </a-sub-menu>
-          <a-sub-menu key="kitchen" v-if="authStore.selectedVenue" @titleClick="router.push('/kitchen')">
-            <template #title>
-              <span class="cursor-pointer">Кухня</span>
-            </template>
-            <a-menu-item key="dishes">
-              <router-link to="/dishes">Блюда</router-link>
-            </a-menu-item>
-            <a-menu-item key="ingredients">
-              <router-link to="/ingredients">Ингредиенты</router-link>
-            </a-menu-item>
-          </a-sub-menu>
-          <a-sub-menu key="staff" v-if="authStore.selectedVenue" @titleClick="router.push('/staff')">
-            <template #title>
-              <span class="cursor-pointer">Персонал</span>
-            </template>
-            <a-menu-item key="employees">
-              <router-link to="/employees">Сотрудники</router-link>
-            </a-menu-item>
-            <a-menu-item key="schedule">
-              <router-link to="/schedule">График смен</router-link>
-            </a-menu-item>
-          </a-sub-menu>
-          <a-sub-menu key="housekeeping" v-if="authStore.selectedVenue" @titleClick="router.push('/housekeeping')">
-            <template #title>
-              <span class="cursor-pointer">Хозяйство</span>
-            </template>
-            <a-menu-item key="schedule-cleaning">
-              <router-link to="/housekeeping/schedule">График уборки</router-link>
-            </a-menu-item>
-            <a-menu-item key="zones">
-              <router-link to="/housekeeping/zones">Зоны</router-link>
-            </a-menu-item>
-            <a-menu-item key="equipment">
-              <router-link to="/housekeeping/equipment">Оборудование</router-link>
-            </a-menu-item>
-            <a-menu-item key="lost-and-found">
-              <router-link to="/housekeeping/lost-and-found">Потеряшки</router-link>
-            </a-menu-item>
-          </a-sub-menu>
-          <a-sub-menu key="service" v-if="authStore.selectedVenue" @titleClick="router.push('/service')">
-            <template #title>
-              <span class="cursor-pointer">Сервис</span>
-            </template>
-            <a-menu-item key="reservations">
-              <router-link to="/service/reservations">Резерв столов</router-link>
-            </a-menu-item>
-          </a-sub-menu>
-          <a-sub-menu key="events" v-if="authStore.selectedVenue" @titleClick="router.push('/events')">
-            <template #title>
-              <span class="cursor-pointer">Мероприятия</span>
-            </template>
-            <a-menu-item key="djs">
-              <router-link to="/events/djs">Диджеи</router-link>
-            </a-menu-item>
-            <a-menu-item key="schedule">
-              <router-link to="/events/schedule">График</router-link>
-            </a-menu-item>
-          </a-sub-menu>
-          <a-sub-menu key="marketing" v-if="authStore.selectedVenue" @titleClick="router.push('/marketing')">
-            <template #title>
-              <span class="cursor-pointer">Маркетинг</span>
-            </template>
-            <a-menu-item key="reviews">
-              <router-link to="/marketing/reviews">Отзывы</router-link>
-            </a-menu-item>
-            <a-menu-item key="guests">
-              <router-link to="/marketing/guests">Постоянные гости</router-link>
-            </a-menu-item>
-            <a-menu-item key="merch">
-              <router-link to="/marketing/merch">Мерч</router-link>
-            </a-menu-item>
-          </a-sub-menu>
-        </a-menu>
+  <a-layout style="min-height: 100vh">
+    <!-- Sidebar -->
+    <a-layout-sider
+      v-if="authStore.isAuthenticated && authStore.selectedVenue"
+      v-model:collapsed="collapsed"
+      :trigger="null"
+      collapsible
+      :width="250"
+      style="overflow: auto; height: 100vh; position: fixed; left: 0; top: 0; bottom: 0; background: #001529"
+    >
+      <div class="logo" style="height: 64px; display: flex; align-items: center; justify-content: center; color: white;">
+        <img src="./assets/logo.png" alt="Logo" style="height: 32px; width: auto; margin-right: 8px;" />
+        <span v-if="!collapsed" style="font-size: 18px; font-weight: bold;">Cocktails</span>
       </div>
       
-      <div class="auth-actions">
-        <div v-if="!authStore.isAuthenticated" class="auth-links">
-          <router-link to="/login">Sign in</router-link>
-          <router-link to="/register">Sign up</router-link>
+      <a-menu
+        v-model:selectedKeys="selectedKeys"
+        v-model:openKeys="openKeys"
+        mode="inline"
+        theme="dark"
+        :inline-collapsed="collapsed"
+      >
+        <a-menu-item key="dashboard">
+          <router-link to="/dashboard">
+            <HomeOutlined />
+            <span>Главная</span>
+          </router-link>
+        </a-menu-item>
+
+        <a-sub-menu key="bar">
+          <template #title>
+            <span>
+              <CoffeeOutlined />
+              <span>Бар</span>
+            </span>
+          </template>
+          <a-menu-item key="cocktails">
+            <router-link to="/cocktails">Коктейли</router-link>
+          </a-menu-item>
+          <a-menu-item key="cocktailComponents">
+            <router-link to="/cocktailComponents">Компоненты</router-link>
+          </a-menu-item>
+          <a-menu-item key="cocktailMethods">
+            <router-link to="/cocktailMethods">Методы</router-link>
+          </a-menu-item>
+          <a-menu-item key="cocktailGlasses">
+            <router-link to="/cocktailGlasses">Бокалы</router-link>
+          </a-menu-item>
+          <a-menu-item key="cocktailDecorations">
+            <router-link to="/cocktailDecorations">Украшения</router-link>
+          </a-menu-item>
+          <a-menu-item key="categories">
+            <router-link to="/categories">Категории</router-link>
+          </a-menu-item>
+          <a-menu-item key="bar-counters">
+            <router-link to="/bar-counters">Барные стойки</router-link>
+          </a-menu-item>
+          <a-menu-item key="cocktail-game">
+            <router-link to="/cocktail-game">Коктейль-игра</router-link>
+          </a-menu-item>
+        </a-sub-menu>
+
+        <a-sub-menu key="kitchen">
+          <template #title>
+            <span>
+              <FireOutlined />
+              <span>Кухня</span>
+            </span>
+          </template>
+          <a-menu-item key="dishes">
+            <router-link to="/dishes">Блюда</router-link>
+          </a-menu-item>
+          <a-menu-item key="ingredients">
+            <router-link to="/ingredients">Ингредиенты</router-link>
+          </a-menu-item>
+        </a-sub-menu>
+
+        <a-sub-menu key="staff">
+          <template #title>
+            <span>
+              <TeamOutlined />
+              <span>Персонал</span>
+            </span>
+          </template>
+          <a-menu-item key="employees">
+            <router-link to="/employees">Сотрудники</router-link>
+          </a-menu-item>
+          <a-menu-item key="schedule">
+            <router-link to="/schedule">График смен</router-link>
+          </a-menu-item>
+          <a-menu-item key="users">
+            <router-link to="/users">Пользователи</router-link>
+          </a-menu-item>
+        </a-sub-menu>
+
+        <a-sub-menu key="events">
+          <template #title>
+            <span>
+              <CalendarOutlined />
+              <span>Мероприятия</span>
+            </span>
+          </template>
+          <a-menu-item key="events-schedule">
+            <router-link to="/events/schedule">График</router-link>
+          </a-menu-item>
+          <a-menu-item key="djs">
+            <router-link to="/events/djs">DJ</router-link>
+          </a-menu-item>
+        </a-sub-menu>
+
+        <a-sub-menu key="marketing">
+          <template #title>
+            <span>
+              <ShopOutlined />
+              <span>Маркетинг</span>
+            </span>
+          </template>
+          <a-menu-item key="regular-guests">
+            <router-link to="/marketing/guests">Постоянные гости</router-link>
+          </a-menu-item>
+          <a-menu-item key="merch">
+            <router-link to="/marketing/merch">Мерч</router-link>
+          </a-menu-item>
+          <a-menu-item key="reviews">
+            <router-link to="/marketing/reviews">Отзывы</router-link>
+          </a-menu-item>
+        </a-sub-menu>
+
+        <a-sub-menu key="housekeeping">
+          <template #title>
+            <span>
+              <ToolOutlined />
+              <span>Хозяйство</span>
+            </span>
+          </template>
+          <a-menu-item key="zones">
+            <router-link to="/housekeeping/zones">Зоны</router-link>
+          </a-menu-item>
+          <a-menu-item key="equipment">
+            <router-link to="/housekeeping/equipment">Оборудование</router-link>
+          </a-menu-item>
+          <a-menu-item key="cleaning-schedule">
+            <router-link to="/housekeeping/schedule">График уборки</router-link>
+          </a-menu-item>
+          <a-menu-item key="lost-and-found">
+            <router-link to="/housekeeping/lost-and-found">Потеряшки</router-link>
+          </a-menu-item>
+        </a-sub-menu>
+
+        <a-sub-menu key="service">
+          <template #title>
+            <span>
+              <CustomerServiceOutlined />
+              <span>Сервис</span>
+            </span>
+          </template>
+          <a-menu-item key="reservations">
+            <router-link to="/service/reservations">Резерв столов</router-link>
+          </a-menu-item>
+        </a-sub-menu>
+      </a-menu>
+    </a-layout-sider>
+
+    <!-- Main Layout -->
+    <a-layout :style="{ marginLeft: (authStore.isAuthenticated && authStore.selectedVenue) ? (collapsed ? '80px' : '250px') : '0' }">
+      <!-- Header -->
+      <a-layout-header class="header" style="position: fixed; z-index: 1; width: 100%; right: 0;">
+        <div class="header-left">
+          <menu-unfold-outlined
+            v-if="collapsed && authStore.isAuthenticated && authStore.selectedVenue"
+            class="trigger"
+            @click="() => (collapsed = !collapsed)"
+          />
+          <menu-fold-outlined
+            v-else-if="authStore.isAuthenticated && authStore.selectedVenue"
+            class="trigger"
+            @click="() => (collapsed = !collapsed)"
+          />
+          
+          <router-link v-if="!authStore.isAuthenticated" to="/" class="logo-link">
+            <img src="./assets/logo.png" alt="Logo" class="app-logo" />
+            <span>Главная</span>
+          </router-link>
         </div>
         
-        <div v-else class="user-menu">
-          <!-- Venue Selector -->
-          <a-select
-            v-if="authStore.venues && authStore.venues.length > 0"
-            :value="authStore.selectedVenue?._id"
-            @change="(venueId) => authStore.selectVenue(authStore.venues.find(v => v._id === venueId))"
-            placeholder="Выберите заведение"
-            style="width: 200px; margin-right: 16px"
-            class="venue-selector"
-          >
-            <a-select-option
-              v-for="venue in authStore.venues"
-              :key="venue._id"
-              :value="venue._id"
-            >
-              {{ venue.name }}
-            </a-select-option>
-          </a-select>
+        <div class="auth-actions">
+          <div v-if="!authStore.isAuthenticated" class="auth-links">
+            <router-link to="/login">Sign in</router-link>
+            <router-link to="/register">Sign up</router-link>
+          </div>
           
-          <!-- User Avatar Dropdown -->
-          <a-dropdown trigger="click">
-            <a-avatar style="background-color: #87d068; cursor: pointer">
-              {{ authStore.user?.name?.[0]?.toUpperCase() || 'U' }}
-            </a-avatar>
-            <template #overlay>
-              <a-menu>
-                <a-menu-item disabled style="color: rgba(0, 0, 0, 0.85); cursor: default;">
-                  Вы вошли как {{ roleNames[authStore.user?.role] || authStore.user?.role }}
-                </a-menu-item>
-                <a-menu-divider />
-                <a-menu-item key="profile">
-                  <router-link to="/profile">Profile</router-link>
-                </a-menu-item>
-                <a-menu-item key="organizations">
-                  <router-link to="/organizations">Organizations</router-link>
-                </a-menu-item>
-                <a-menu-item key="users">
-                  <router-link to="/users">Users</router-link>
-                </a-menu-item>
-                <a-menu-item key="settings">
-                  <router-link to="/settings">Settings</router-link>
-                </a-menu-item>
-                <a-menu-item key="logout" @click="handleLogout">
-                  Log out
-                </a-menu-item>
-              </a-menu>
-            </template>
-          </a-dropdown>
+          <div v-else class="user-menu">
+            <!-- Venue Selector -->
+            <a-select
+              v-if="authStore.venues && authStore.venues.length > 0"
+              :value="authStore.selectedVenue?._id"
+              @change="(venueId) => authStore.selectVenue(authStore.venues.find(v => v._id === venueId))"
+              placeholder="Выберите заведение"
+              style="width: 200px; margin-right: 16px"
+              class="venue-selector"
+            >
+              <a-select-option
+                v-for="venue in authStore.venues"
+                :key="venue._id"
+                :value="venue._id"
+              >
+                {{ venue.name }}
+              </a-select-option>
+            </a-select>
+            
+            <!-- User Avatar Dropdown -->
+            <a-dropdown trigger="click">
+              <a-avatar style="background-color: #87d068; cursor: pointer">
+                {{ authStore.user?.name?.[0]?.toUpperCase() || 'U' }}
+              </a-avatar>
+              <template #overlay>
+                <a-menu>
+                  <a-menu-item disabled style="color: rgba(0, 0, 0, 0.85); cursor: default;">
+                    Вы вошли как {{ roleNames[authStore.user?.role] || authStore.user?.role }}
+                  </a-menu-item>
+                  <a-menu-divider />
+                  <a-menu-item key="profile">
+                    <router-link to="/profile">Profile</router-link>
+                  </a-menu-item>
+                  <a-menu-item key="organizations">
+                    <router-link to="/organizations">Organizations</router-link>
+                  </a-menu-item>
+                  <a-menu-item key="users">
+                    <router-link to="/users">Users</router-link>
+                  </a-menu-item>
+                  <a-menu-item key="settings">
+                    <router-link to="/settings">Settings</router-link>
+                  </a-menu-item>
+                  <a-menu-item key="logout" @click="handleLogout">
+                    Log out
+                  </a-menu-item>
+                </a-menu>
+              </template>
+            </a-dropdown>
+          </div>
         </div>
-      </div>
-    </a-layout-header>
+      </a-layout-header>
 
-    <a-layout style="flex: 1">
-      <a-layout-content style="padding: 24px">
+      <!-- Content -->
+      <a-layout-content style="margin: 88px 16px 24px; padding: 24px; background: #fff; min-height: 280px">
         <env-badge />
         <router-view :key="authStore.selectedVenue?._id" />
       </a-layout-content>
+
+      <!-- Footer -->
+      <a-layout-footer style="text-align: center">
+        <div class="flex flex-col items-center gap-4">
+          <div class="flex gap-8 text-gray-500">
+            <span>© 2024 Cocktails App</span>
+            <span>v1.2.0</span>
+          </div>
+          
+          <div class="flex gap-8">
+            <a href="#" class="text-gray-500 hover:text-blue-500">Помощь / Инструкции</a>
+            <a href="#" class="text-gray-500 hover:text-blue-500">Сообщить об ошибке</a>
+            <a href="#" class="text-gray-500 hover:text-blue-500">Политика конфиденциальности</a>
+          </div>
+        </div>
+      </a-layout-footer>
     </a-layout>
-      
-    <a-layout-footer style="text-align: center; background: #f0f2f5; position: relative; z-index: 100;">
-      <div class="flex flex-col items-center gap-4">
-        <div class="flex gap-8 text-gray-500">
-          <span>© 2024 Cocktails App</span>
-          <span>v1.2.0</span>
-        </div>
-        
-        <div class="flex gap-8">
-          <a href="#" class="text-gray-500 hover:text-blue-500">Помощь / Инструкции</a>
-          <a href="#" class="text-gray-500 hover:text-blue-500">Сообщить об ошибке</a>
-          <a href="#" class="text-gray-500 hover:text-blue-500">Политика конфиденциальности</a>
-        </div>
-      </div>
-    </a-layout-footer>
   </a-layout>
 </template>
 
@@ -241,15 +414,30 @@ const roleNames = {
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
+  background: #001529;
 }
 
-.menu-container {
-  flex: 1;
-  min-width: 0;
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.trigger {
+  font-size: 18px;
+  line-height: 64px;
+  padding: 0 24px;
+  cursor: pointer;
+  transition: color 0.3s;
+  color: #fff;
+}
+
+.trigger:hover {
+  color: #1890ff;
 }
 
 .auth-actions {
-  margin-left: 20px;
+  margin-left: auto;
 }
 
 .auth-links {
@@ -277,6 +465,8 @@ const roleNames = {
   display: flex;
   align-items: center;
   gap: 10px;
+  color: #fff;
+  text-decoration: none;
 }
 
 .app-logo {

@@ -1,6 +1,6 @@
 <template>
   <div class="p-6 max-w-7xl mx-auto">
-    <h1 class="text-3xl font-bold mb-8">Маркетинг</h1>
+    <h1 class="text-3xl font-bold mb-8">Управление маркетингом</h1>
     
     <a-row :gutter="[24, 24]">
       <a-col :xs="24" :sm="12" :md="8" v-for="item in menuItems" :key="item.path">
