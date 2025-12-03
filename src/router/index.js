@@ -79,24 +79,14 @@ const routes = [
     component: () => import("../views/Bar/ComponentView.vue"),
     meta: { requiresAuth: true, titleKey: 'pages.component' },
   },
-  {
-    path: "/bar",
-    name: "Bar",
-    component: () => import("../views/Bar/Bar.vue"),
-    meta: { requiresAuth: true, titleKey: 'nav.bar' },
-  },
+
   {
     path: "/users",
     name: "Users",
     component: () => import("../views/Staff/Users.vue"),
     meta: { requiresAuth: true, titleKey: 'nav.users' },
   },
-  {
-    path: "/kitchen",
-    name: "Kitchen",
-    component: () => import("../views/Kitchen/Kitchen.vue"),
-    meta: { requiresAuth: true, titleKey: 'nav.kitchen' },
-  },
+
   {
     path: "/dishes",
     name: "Dishes",
@@ -115,12 +105,7 @@ const routes = [
     component: () => import("../views/Kitchen/Ingredients.vue"),
     meta: { requiresAuth: true, titleKey: 'nav.ingredients' },
   },
-  {
-    path: "/staff",
-    name: "Staff",
-    component: () => import("../views/Staff/Staff.vue"),
-    meta: { requiresAuth: true, titleKey: 'nav.staff' },
-  },
+
   {
     path: "/employees",
     name: "Employees",
@@ -133,12 +118,7 @@ const routes = [
     component: () => import("../views/Staff/Schedule.vue"),
     meta: { requiresAuth: true, titleKey: 'nav.schedule' },
   },
-  {
-    path: "/housekeeping",
-    name: "Housekeeping",
-    component: () => import("../views/Housekeeping/Housekeeping.vue"),
-    meta: { requiresAuth: true, titleKey: 'nav.housekeeping' },
-  },
+
   {
     path: "/housekeeping/zones",
     name: "Zones",
@@ -163,24 +143,14 @@ const routes = [
     component: () => import("../views/Housekeeping/CleaningSchedule.vue"),
     meta: { requiresAuth: true, titleKey: 'nav.cleaningSchedule' },
   },
-  {
-    path: "/service",
-    name: "Service",
-    component: () => import("../views/Service/Service.vue"),
-    meta: { requiresAuth: true, titleKey: 'nav.service' },
-  },
+
   {
     path: "/service/reservations",
     name: "Reservations",
     component: () => import("../views/Service/Reservations.vue"),
     meta: { requiresAuth: true, titleKey: 'nav.reservations' },
   },
-  {
-    path: "/events",
-    name: "Events",
-    component: () => import("../views/Events/Events.vue"),
-    meta: { requiresAuth: true, titleKey: 'nav.events' },
-  },
+
   {
     path: "/events/djs",
     name: "DJs",
@@ -193,12 +163,7 @@ const routes = [
     component: () => import("../views/Events/EventSchedule.vue"),
     meta: { requiresAuth: true, titleKey: 'nav.eventSchedule' },
   },
-  {
-    path: "/marketing",
-    name: "Marketing",
-    component: () => import("../views/Marketing/Marketing.vue"),
-    meta: { requiresAuth: true, titleKey: 'nav.marketing' },
-  },
+
   {
     path: "/marketing/reviews",
     name: "Reviews",
