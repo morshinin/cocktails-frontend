@@ -8,46 +8,17 @@
       </a-button>
     </div>
 
-    <div class="grid grid-cols-1 gap-4">
-      <div v-if="events.length === 0" class="text-center text-gray-400 py-12">
-        На этот день ничего не запланировано
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div v-if="events.length === 0" class="col-span-full text-center text-gray-400 py-12">
+        Нет запланированных мероприятий
       </div>
-      <div v-for="event in events" :key="event._id" class="bg-gray-800 rounded-xl p-6 border border-gray-700 flex flex-col md:flex-row gap-6">
-        <div class="w-full md:w-48 h-32 bg-gray-700 rounded-lg overflow-hidden flex-shrink-0">
-          <img 
-            :src="event.imageUrl || 'https://via.placeholder.com/300x200?text=Event'" 
-            class="w-full h-full object-cover"
-          />
-        </div>
-        <div class="flex-grow">
-          <div class="flex justify-between items-start">
-            <div>
-              <div class="flex items-center gap-3 mb-2">
-                <span class="text-sm text-gray-400">{{ formatDate(event.date) }}</span>
-                <span class="text-2xl font-bold text-white">{{ event.startTime }}</span>
-                <span v-if="event.endTime" class="text-gray-400">- {{ event.endTime }}</span>
-                <a-tag :color="getStatusColor(event.status)">{{ getStatusLabel(event.status) }}</a-tag>
-              </div>
-              <h2 class="text-xl font-semibold text-white mb-2">{{ event.title }}</h2>
-              <p class="text-gray-400 mb-4">{{ event.description }}</p>
-              <div v-if="event.djId" class="flex items-center gap-2 text-gray-300">
-                <UserOutlined />
-                <span>DJ: {{ event.djId.name }}</span>
-              </div>
-            </div>
-            <div class="flex gap-2">
-              <a-button type="text" @click="editEvent(event)">
-                <template #icon><EditOutlined class="text-blue-400" /></template>
-              </a-button>
-              <a-popconfirm title="Удалить событие?" @confirm="deleteEvent(event._id)">
-                <a-button type="text">
-                  <template #icon><DeleteOutlined class="text-red-500" /></template>
-                </a-button>
-              </a-popconfirm>
-            </div>
-          </div>
-        </div>
-      </div>
+      <EventCard
+        v-for="event in events"
+        :key="event._id"
+        :event="event"
+        @edit="editEvent"
+        @delete="deleteEvent"
+      />
     </div>
 
     <AddEventDrawer
@@ -60,40 +31,18 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { PlusOutlined, EditOutlined, DeleteOutlined, UserOutlined } from '@ant-design/icons-vue';
+import { PlusOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import axios from 'axios';
-import dayjs from 'dayjs';
 import { useAuthStore } from '../../stores/auth.js';
 import AddEventDrawer from '../../components/Events/AddEventDrawer.vue';
+import EventCard from '../../components/Events/EventCard.vue';
 
 const auth = useAuthStore();
 
 const events = ref([]);
 const drawerVisible = ref(false);
 const editingEvent = ref(null);
-
-const formatDate = (date) => {
-  return dayjs(date).format('DD MMMM YYYY');
-};
-
-const getStatusColor = (status) => {
-  switch (status) {
-    case 'Scheduled': return 'blue';
-    case 'Completed': return 'green';
-    case 'Cancelled': return 'red';
-    default: return 'default';
-  }
-};
-
-const getStatusLabel = (status) => {
-  const labels = {
-    'Scheduled': 'Запланировано',
-    'Completed': 'Завершено',
-    'Cancelled': 'Отменено'
-  };
-  return labels[status] || status;
-};
 
 const fetchEvents = async () => {
   try {
