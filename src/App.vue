@@ -71,6 +71,9 @@ const roleNames = {
             <a-menu-item key="decorations">
               <router-link to="/cocktailDecorations">Украшения</router-link>
             </a-menu-item>
+            <a-menu-item key="bar-counters">
+              <router-link to="/bar-counters">Барные стойки</router-link>
+            </a-menu-item>
             <a-menu-item key="game">
               <router-link to="/cocktail-game">Коктейль-игра</router-link>
             </a-menu-item>
