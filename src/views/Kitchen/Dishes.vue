@@ -1,16 +1,12 @@
 <template>
   <div class="p-6 max-w-7xl mx-auto">
-    <a-page-header
-      title="🍽 Блюда"
-      sub-title="Список рецептов"
-      :breadcrumb="{ routes: [{ path: '/dishes', breadcrumbName: 'Блюда' }] }"
-    >
-      <template #extra>
-        <a-button type="primary" @click="showAddDrawer = true">
-          ➕ Добавить блюдо
-        </a-button>
-      </template>
-    </a-page-header>
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold">Блюда</h1>
+      <a-button type="primary" @click="showAddDrawer = true">
+        <template #icon><PlusOutlined /></template>
+        Добавить блюдо
+      </a-button>
+    </div>
 
     <a-row :gutter="[16, 16]">
       <a-col v-for="dish in dishes" :key="dish._id" :xs="24" :sm="12" :md="8">

@@ -2,7 +2,7 @@
   <div class="p-6 max-w-7xl mx-auto">
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold">Зоны</h1>
-      <a-button type="primary" @click="showDrawer">
+      <a-button type="primary" @click="showDrawer = true">
         <template #icon><PlusOutlined /></template>
         Добавить зону
       </a-button>

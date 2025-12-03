@@ -1,5 +1,7 @@
 <template>
   <div class="p-6 max-w-7xl mx-auto">
+    <h1 class="text-2xl font-bold mb-6">Коктейль-игра</h1>
+    
     <!-- Верхняя панель -->
     <div class="flex justify-between items-center mb-4">
       <div v-if="gameStarted">
