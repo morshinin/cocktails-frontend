@@ -1,6 +1,6 @@
 <template>
   <a-drawer
-    title="Добавить ингредиент"
+    :title="ingredientToEdit ? 'Редактировать ингредиент' : 'Добавить ингредиент'"
     :width="600"
     :open="open"
     :body-style="{ paddingBottom: '80px' }"
@@ -36,7 +36,7 @@
       <a-space>
         <a-button @click="onClose">Отмена</a-button>
         <a-button type="primary" @click="handleSubmit" :loading="loading">
-          Создать
+          {{ ingredientToEdit ? 'Сохранить' : 'Создать' }}
         </a-button>
       </a-space>
     </template>
@@ -44,17 +44,21 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, watch } from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
 import { useAuthStore } from '../../stores/auth';
 import { UPLOAD_URL } from '../../config/api.js';
 
 const props = defineProps({
-  open: Boolean
+  open: Boolean,
+  ingredientToEdit: {
+    type: Object,
+    default: null
+  }
 });
 
-const emit = defineEmits(['update:open', 'ingredientAdded']);
+const emit = defineEmits(['update:open', 'ingredientAdded', 'ingredientUpdated']);
 
 const loading = ref(false);
 const formState = reactive({
@@ -63,6 +67,20 @@ const formState = reactive({
   description: '',
   image: ''
 });
+
+watch(() => props.ingredientToEdit, (newVal) => {
+  if (newVal) {
+    formState.name = newVal.name || '';
+    formState.category = newVal.category || '';
+    formState.description = newVal.description || '';
+    formState.image = newVal.image || '';
+  } else {
+    formState.name = '';
+    formState.category = '';
+    formState.description = '';
+    formState.image = '';
+  }
+}, { immediate: true });
 
 const onClose = () => {
   emit('update:open', false);
@@ -97,11 +115,24 @@ const handleSubmit = async () => {
   loading.value = true;
   try {
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-    await axios.post(`${API_URL}/ingredients`, {
-      ...formState,
-      venueId: authStore.selectedVenue._id
-    });
-    message.success("Ингредиент создан!");
+    
+    if (props.ingredientToEdit) {
+      // Update existing ingredient
+      await axios.put(`${API_URL}/ingredients/${props.ingredientToEdit._id}`, {
+        ...formState,
+        venueId: authStore.selectedVenue._id
+      });
+      message.success("Ингредиент обновлён!");
+      emit('ingredientUpdated');
+    } else {
+      // Create new ingredient
+      await axios.post(`${API_URL}/ingredients`, {
+        ...formState,
+        venueId: authStore.selectedVenue._id
+      });
+      message.success("Ингредиент создан!");
+      emit('ingredientAdded');
+    }
     
     // Reset form
     formState.name = '';
