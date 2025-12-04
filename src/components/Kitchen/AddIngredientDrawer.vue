@@ -20,8 +20,15 @@
         <a-textarea v-model:value="formState.description" placeholder="Описание" :rows="4" />
       </a-form-item>
 
-      <a-form-item label="Ссылка на изображение">
-        <a-input v-model:value="formState.image" placeholder="https://..." />
+
+      <a-form-item label="Изображение">
+        <div class="flex gap-4 items-center">
+          <input type="file" accept="image/*" @change="onImageChange" />
+
+          <div v-if="formState.image">
+            <img :src="formState.image" alt="Preview" class="w-24 h-24 object-cover rounded" />
+          </div>
+        </div>
       </a-form-item>
     </a-form>
 
@@ -41,6 +48,7 @@ import { ref, reactive } from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
 import { useAuthStore } from '../../stores/auth';
+import { UPLOAD_URL } from '../../config/api.js';
 
 const props = defineProps({
   open: Boolean
@@ -58,6 +66,25 @@ const formState = reactive({
 
 const onClose = () => {
   emit('update:open', false);
+};
+
+const onImageChange = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append("image", file);
+
+  try {
+    const res = await axios.post(UPLOAD_URL, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    formState.image = res.data.url;
+    message.success("Изображение загружено!");
+  } catch (err) {
+    console.error(err);
+    message.error("Ошибка при загрузке изображения");
+  }
 };
 
 const handleSubmit = async () => {
