@@ -24,6 +24,44 @@
         />
       </a-form-item>
 
+      <a-form-item label="Ингредиенты">
+        <div
+          v-for="(ing, i) in formState.ingredients"
+          :key="i"
+          class="flex items-center gap-2 mb-2"
+        >
+          <a-select
+            v-model:value="ing.name"
+            placeholder="Выберите ингредиент"
+            style="flex: 2"
+            :options="ingredients.map(item => ({ label: item.name, value: item.name }))"
+          />
+          <a-input-number
+            v-model:value="ing.amount"
+            placeholder="Кол-во"
+            style="width: 100px"
+            :min="0"
+          />
+          <a-select
+            v-model:value="ing.unit"
+            placeholder="Ед."
+            style="width: 80px"
+            :options="[
+              { label: 'г', value: 'g' },
+              { label: 'мл', value: 'ml' },
+              { label: 'шт', value: 'pcs' },
+              { label: 'кг', value: 'kg' },
+              { label: 'л', value: 'l' }
+            ]"
+          />
+          <a-button type="text" danger @click="removeIngredient(i)">Удалить</a-button>
+        </div>
+
+        <a-button type="dashed" block @click="addEmptyIngredient">
+          ➕ Добавить ингредиент
+        </a-button>
+      </a-form-item>
+
       <a-form-item label="Метод приготовления">
         <a-select
           v-model:value="formState.method"
@@ -98,11 +136,13 @@ const categories = ref([]);
 const methods = ref([]);
 const allergens = ref([]);
 const upsells = ref([]);
+const ingredients = ref([]);
 
 const formState = reactive({
   name: '',
   description: '',
   category: '',
+  ingredients: [],
   method: '',
   allergens: [],
   upsells: [],
@@ -171,6 +211,29 @@ const fetchUpsells = async () => {
   }
 };
 
+const fetchIngredients = async () => {
+  const authStore = useAuthStore();
+  if (!authStore.selectedVenue) return;
+  
+  try {
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+    const res = await axios.get(`${API_URL}/ingredients`, {
+      params: { venueId: authStore.selectedVenue._id }
+    });
+    ingredients.value = res.data || [];
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+const addEmptyIngredient = () => {
+  formState.ingredients.push({ name: "", amount: 0, unit: "g" });
+};
+
+const removeIngredient = (i) => {
+  formState.ingredients.splice(i, 1);
+};
+
 const onImageChange = async (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -214,6 +277,7 @@ const handleSubmit = async () => {
     formState.name = '';
     formState.description = '';
     formState.category = '';
+    formState.ingredients = [];
     formState.method = '';
     formState.allergens = [];
     formState.upsells = [];
@@ -232,6 +296,6 @@ const handleSubmit = async () => {
 };
 
 onMounted(async () => {
-  await Promise.all([fetchCategories(), fetchMethods(), fetchAllergens(), fetchUpsells()]);
+  await Promise.all([fetchCategories(), fetchMethods(), fetchAllergens(), fetchUpsells(), fetchIngredients()]);
 });
 </script>
