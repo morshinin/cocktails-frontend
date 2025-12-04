@@ -117,6 +117,12 @@ const routes = [
     component: () => import("../views/Kitchen/DishCategories.vue"),
     meta: { requiresAuth: true, titleKey: 'nav.categories' },
   },
+  {
+    path: "/upsells",
+    name: "Upsells",
+    component: () => import("../views/Kitchen/Upsells.vue"),
+    meta: { requiresAuth: true, titleKey: 'nav.upsells' },
+  },
 
 
   {
