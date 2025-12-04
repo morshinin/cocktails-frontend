@@ -1,6 +1,6 @@
 <template>
   <a-drawer
-    title="Добавить блюдо"
+    :title="dishToEdit ? 'Редактировать блюдо' : 'Добавить блюдо'"
     :width="600"
     :open="open"
     :body-style="{ paddingBottom: '80px' }"
@@ -111,7 +111,7 @@
       <a-space>
         <a-button @click="onClose">Отмена</a-button>
         <a-button type="primary" @click="handleSubmit" :loading="loading">
-          Создать
+          {{ dishToEdit ? 'Сохранить' : 'Создать' }}
         </a-button>
       </a-space>
     </template>
@@ -119,17 +119,21 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, watch, onMounted } from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
 import { useAuthStore } from '../../stores/auth';
 import { DISH_CATEGORIES_URL, KITCHEN_METHODS_URL, ALLERGENS_URL, UPSELLS_URL, UPLOAD_URL } from '../../config/api.js';
 
 const props = defineProps({
-  open: Boolean
+  open: Boolean,
+  dishToEdit: {
+    type: Object,
+    default: null
+  }
 });
 
-const emit = defineEmits(['update:open', 'dishAdded']);
+const emit = defineEmits(['update:open', 'dishAdded', 'dishUpdated']);
 
 const loading = ref(false);
 const categories = ref([]);
@@ -150,6 +154,32 @@ const formState = reactive({
   pairing: '',
   image: ''
 });
+
+watch(() => props.dishToEdit, (newVal) => {
+  if (newVal) {
+    formState.name = newVal.name || '';
+    formState.description = newVal.description || '';
+    formState.category = newVal.category || '';
+    formState.ingredients = newVal.ingredients || [];
+    formState.method = newVal.method || '';
+    formState.allergens = newVal.allergens || [];
+    formState.upsells = newVal.upsells || [];
+    formState.notes = newVal.notes || '';
+    formState.pairing = newVal.pairing || '';
+    formState.image = newVal.image || '';
+  } else {
+    formState.name = '';
+    formState.description = '';
+    formState.category = '';
+    formState.ingredients = [];
+    formState.method = '';
+    formState.allergens = [];
+    formState.upsells = [];
+    formState.notes = '';
+    formState.pairing = '';
+    formState.image = '';
+  }
+}, { immediate: true });
 
 const fetchCategories = async () => {
   const authStore = useAuthStore();
@@ -267,11 +297,24 @@ const handleSubmit = async () => {
   loading.value = true;
   try {
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-    await axios.post(`${API_URL}/dishes`, {
-      ...formState,
-      venueId: authStore.selectedVenue._id
-    });
-    message.success("Блюдо создано!");
+    
+    if (props.dishToEdit) {
+      // Update existing dish
+      await axios.put(`${API_URL}/dishes/${props.dishToEdit._id}`, {
+        ...formState,
+        venueId: authStore.selectedVenue._id
+      });
+      message.success("Блюдо обновлено!");
+      emit('dishUpdated');
+    } else {
+      // Create new dish
+      await axios.post(`${API_URL}/dishes`, {
+        ...formState,
+        venueId: authStore.selectedVenue._id
+      });
+      message.success("Блюдо создано!");
+      emit('dishAdded');
+    }
     
     // Reset form
     formState.name = '';

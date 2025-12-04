@@ -15,31 +15,19 @@
 
     <a-row :gutter="[16, 16]">
       <a-col v-for="dish in dishes" :key="dish._id" :xs="24" :sm="12" :md="8">
-        <a-card hoverable class="h-full flex flex-col">
-          <template #cover>
-            <img
-              :src="dish.image || placeholderImage"
-              :alt="dish.name"
-              class="h-48 object-cover"
-              @error="e => e.target.src = placeholderImage"
-            />
-          </template>
-          <a-card-meta :title="dish.name">
-            <template #description>
-              <div class="line-clamp-2">{{ dish.description }}</div>
-              <div class="mt-2 font-bold text-lg">{{ dish.price ? `${dish.price} ₽` : '' }}</div>
-            </template>
-          </a-card-meta>
-          <template #actions>
-            <DeleteOutlined key="delete" @click="deleteDish(dish._id)" />
-          </template>
-        </a-card>
+        <DishCard 
+          :dish="dish" 
+          @delete="deleteDish"
+          @edit="handleEdit"
+        />
       </a-col>
     </a-row>
 
     <AddDishDrawer
       v-model:open="showAddDrawer"
+      :dishToEdit="editingDish"
       @dishAdded="fetchDishes"
+      @dishUpdated="fetchDishes"
     />
   </div>
 </template>
@@ -48,13 +36,19 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { message } from "ant-design-vue";
-import { DeleteOutlined } from "@ant-design/icons-vue";
+import { PlusOutlined } from "@ant-design/icons-vue";
 import { useAuthStore } from '../../stores/auth';
 import AddDishDrawer from '../../components/Kitchen/AddDishDrawer.vue';
-import placeholderImage from '../../assets/cocktail_placeholder.png';
+import DishCard from '../../components/Kitchen/DishCard.vue';
 
 const dishes = ref([]);
 const showAddDrawer = ref(false);
+const editingDish = ref(null);
+
+const handleEdit = (dish) => {
+  editingDish.value = dish;
+  showAddDrawer.value = true;
+};
 
 const fetchDishes = async () => {
   const authStore = useAuthStore();
