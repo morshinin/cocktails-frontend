@@ -10,31 +10,19 @@
 
     <a-row :gutter="[16, 16]">
       <a-col v-for="item in ingredients" :key="item._id" :xs="24" :sm="12" :md="8">
-        <a-card hoverable class="h-full flex flex-col">
-          <template #cover>
-            <img
-              :src="item.image || placeholderImage"
-              :alt="item.name"
-              class="h-48 object-cover"
-              @error="e => e.target.src = placeholderImage"
-            />
-          </template>
-          <a-card-meta :title="item.name">
-            <template #description>
-              <div class="line-clamp-2">{{ item.description }}</div>
-              <div class="mt-1 text-xs text-gray-500">{{ item.category }}</div>
-            </template>
-          </a-card-meta>
-          <template #actions>
-            <DeleteOutlined key="delete" @click="deleteIngredient(item._id)" />
-          </template>
-        </a-card>
+        <IngredientCard 
+          :ingredient="item" 
+          @delete="deleteIngredient"
+          @edit="handleEdit"
+        />
       </a-col>
     </a-row>
 
     <AddIngredientDrawer
       v-model:open="showAddDrawer"
+      :ingredientToEdit="editingIngredient"
       @ingredientAdded="fetchIngredients"
+      @ingredientUpdated="fetchIngredients"
     />
   </div>
 </template>
@@ -43,13 +31,19 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { message } from "ant-design-vue";
-import { PlusOutlined, DeleteOutlined } from "@ant-design/icons-vue";
+import { PlusOutlined } from "@ant-design/icons-vue";
 import { useAuthStore } from '../../stores/auth';
 import AddIngredientDrawer from '../../components/Kitchen/AddIngredientDrawer.vue';
-import placeholderImage from '../../assets/cocktail_placeholder.png';
+import IngredientCard from '../../components/Kitchen/IngredientCard.vue';
 
 const ingredients = ref([]);
 const showAddDrawer = ref(false);
+const editingIngredient = ref(null);
+
+const handleEdit = (ingredient) => {
+  editingIngredient.value = ingredient;
+  showAddDrawer.value = true;
+};
 
 const fetchIngredients = async () => {
   const authStore = useAuthStore();
