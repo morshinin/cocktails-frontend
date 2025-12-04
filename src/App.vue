@@ -72,6 +72,9 @@ watch(
     } else if (pathSegments[0] === 'allergens') {
       selectedKeys.value = ['allergens'];
       openKeys.value = ['kitchen'];
+    } else if (pathSegments[0] === 'upsells') {
+      selectedKeys.value = ['upsells'];
+      openKeys.value = ['kitchen'];
     } else if (pathSegments[0] === 'employees') {
       selectedKeys.value = ['employees'];
       openKeys.value = ['staff'];
@@ -226,6 +229,9 @@ const roleNames = {
           </a-menu-item>
           <a-menu-item key="allergens">
             <router-link to="/allergens">Аллергены</router-link>
+          </a-menu-item>
+          <a-menu-item key="upsells">
+            <router-link to="/upsells">Доп. продажа</router-link>
           </a-menu-item>
         </a-sub-menu>
 
