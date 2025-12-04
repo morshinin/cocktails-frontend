@@ -41,8 +41,13 @@
         />
       </a-form-item>
 
-      <a-form-item label="Цена">
-        <a-input-number v-model:value="formState.price" :min="0" style="width: 100%" />
+      <a-form-item label="Доп. продажа">
+        <a-select
+          v-model:value="formState.upsells"
+          mode="multiple"
+          placeholder="Выберите доп. продажи"
+          :options="upsells.map(u => ({ label: u.name, value: u.name }))"
+        />
       </a-form-item>
 
       <a-form-item label="Примечания">
@@ -80,7 +85,7 @@ import { ref, reactive, onMounted } from 'vue';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
 import { useAuthStore } from '../../stores/auth';
-import { DISH_CATEGORIES_URL, KITCHEN_METHODS_URL, ALLERGENS_URL, UPLOAD_URL } from '../../config/api.js';
+import { DISH_CATEGORIES_URL, KITCHEN_METHODS_URL, ALLERGENS_URL, UPSELLS_URL, UPLOAD_URL } from '../../config/api.js';
 
 const props = defineProps({
   open: Boolean
@@ -92,6 +97,7 @@ const loading = ref(false);
 const categories = ref([]);
 const methods = ref([]);
 const allergens = ref([]);
+const upsells = ref([]);
 
 const formState = reactive({
   name: '',
@@ -99,7 +105,7 @@ const formState = reactive({
   category: '',
   method: '',
   allergens: [],
-  price: null,
+  upsells: [],
   notes: '',
   pairing: '',
   image: ''
@@ -150,6 +156,21 @@ const fetchAllergens = async () => {
   }
 };
 
+const fetchUpsells = async () => {
+  const authStore = useAuthStore();
+  if (!authStore.selectedVenue) return;
+  
+  try {
+    const res = await axios.get(UPSELLS_URL, {
+      params: { venueId: authStore.selectedVenue._id },
+      headers: { Authorization: `Bearer ${authStore.token}` }
+    });
+    upsells.value = res.data || [];
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 const onImageChange = async (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -195,7 +216,7 @@ const handleSubmit = async () => {
     formState.category = '';
     formState.method = '';
     formState.allergens = [];
-    formState.price = null;
+    formState.upsells = [];
     formState.notes = '';
     formState.pairing = '';
     formState.image = '';
@@ -211,6 +232,6 @@ const handleSubmit = async () => {
 };
 
 onMounted(async () => {
-  await Promise.all([fetchCategories(), fetchMethods(), fetchAllergens()]);
+  await Promise.all([fetchCategories(), fetchMethods(), fetchAllergens(), fetchUpsells()]);
 });
 </script>
