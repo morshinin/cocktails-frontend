@@ -18,7 +18,9 @@ import {
 const authStore = useAuthStore();
 const route = useRoute();
 
-const collapsed = ref(false);
+// Initialize collapsed state from localStorage setting
+const sidebarDefaultState = localStorage.getItem('sidebarDefaultState') || 'expanded';
+const collapsed = ref(sidebarDefaultState === 'collapsed');
 const selectedKeys = ref([]);
 const openKeys = ref([]);
 
