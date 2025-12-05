@@ -414,7 +414,7 @@ const roleNames = {
       </a-layout-header>
 
       <!-- Content -->
-      <a-layout-content style="margin: 88px 16px 24px; padding: 24px; background: #fff; min-height: 280px">
+      <a-layout-content style="margin-top: 64px; background: #fff; min-height: 280px">
         <env-badge />
         <router-view :key="authStore.selectedVenue?._id" />
       </a-layout-content>

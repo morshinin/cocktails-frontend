@@ -9,7 +9,7 @@
       @update:value="$emit('update:searchValue', $event)"
       @change="$emit('search')"
       placeholder="Поиск по названию..."
-      style="width: 300px"
+      style="width: 300px; margin-left: auto;"
       allow-clear
     />
     
