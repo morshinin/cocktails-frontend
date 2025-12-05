@@ -19,8 +19,29 @@
     <div v-else>
       <CocktailFilter @filter="handleFilter" />
       
-      <div class="mb-4 text-gray-600">
-        {{ getCocktailCountText(filteredRecipes.length) }}
+      <div class="mb-4 flex justify-between items-center">
+        <div class="text-gray-600">
+          {{ getCocktailCountText(filteredRecipes.length) }}
+        </div>
+        
+        <a-space>
+          <a-button 
+            :type="sortOrder === 'asc' ? 'primary' : 'default'"
+            @click="sortCocktails('asc')"
+            title="Сортировка А-Я"
+          >
+            <template #icon><SortAscendingOutlined /></template>
+            А-Я
+          </a-button>
+          <a-button 
+            :type="sortOrder === 'desc' ? 'primary' : 'default'"
+            @click="sortCocktails('desc')"
+            title="Сортировка Я-А"
+          >
+            <template #icon><SortDescendingOutlined /></template>
+            Я-А
+          </a-button>
+        </a-space>
       </div>
 
       <a-row :gutter="[16, 16]">
@@ -35,6 +56,7 @@
 <script setup>
 import { ref, onMounted } from "vue"
 import axios from "axios"
+import { SortAscendingOutlined, SortDescendingOutlined } from '@ant-design/icons-vue'
 import { message } from "ant-design-vue"
 import CocktailFilter from "../../components/Bar/CocktailFilter.vue"
 import CocktailCard from "../../components/Bar/CocktailCard.vue"
@@ -46,6 +68,7 @@ const recipes = ref([])
 const showAddModal = ref(false)
 const filteredRecipes = ref([])
 const loading = ref(false)
+const sortOrder = ref(null)
 
 const fetchRecipes = async () => {
   const authStore = useAuthStore();
@@ -102,6 +125,21 @@ const getCocktailCountText = (count) => {
 
   return `${count} коктейлей`;
 }
+
+const sortCocktails = (order) => {
+  sortOrder.value = order;
+  filteredRecipes.value = [...filteredRecipes.value].sort((a, b) => {
+    const nameA = a.name.toLowerCase();
+    const nameB = b.name.toLowerCase();
+    
+    if (order === 'asc') {
+      return nameA.localeCompare(nameB, 'ru');
+    } else {
+      return nameB.localeCompare(nameA, 'ru');
+    }
+  });
+}
+
 
 const deleteRecipe = async (id) => {
   const authStore = useAuthStore();
