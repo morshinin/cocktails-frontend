@@ -319,6 +319,29 @@ const roleNames = {
           </a-menu-item>
         </a-sub-menu>
       </a-menu>
+      
+      <!-- Collapse Trigger -->
+      <div 
+        class="sidebar-trigger" 
+        @click="() => (collapsed = !collapsed)"
+        :style="{
+          position: 'absolute',
+          bottom: 0,
+          width: '100%',
+          height: '48px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+          color: '#fff',
+          fontSize: '18px',
+          transition: 'all 0.3s'
+        }"
+      >
+        <menu-fold-outlined v-if="!collapsed" />
+        <menu-unfold-outlined v-else />
+      </div>
     </a-layout-sider>
 
     <!-- Main Layout -->
@@ -326,17 +349,6 @@ const roleNames = {
       <!-- Header -->
       <a-layout-header class="header" style="position: fixed; z-index: 1; width: 100%; right: 0;">
         <div class="header-left">
-          <menu-unfold-outlined
-            v-if="collapsed && authStore.isAuthenticated && authStore.selectedVenue"
-            class="trigger"
-            @click="() => (collapsed = !collapsed)"
-          />
-          <menu-fold-outlined
-            v-else-if="authStore.isAuthenticated && authStore.selectedVenue"
-            class="trigger"
-            @click="() => (collapsed = !collapsed)"
-          />
-          
           <router-link v-if="!authStore.isAuthenticated" to="/" class="logo-link">
             <img src="./assets/logo.png" alt="Logo" class="app-logo" />
             <span>Главная</span>
@@ -490,6 +502,11 @@ const roleNames = {
 .app-logo {
   height: 32px;
   width: auto;
+}
+
+.sidebar-trigger:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #1890ff;
 }
 </style>
 
