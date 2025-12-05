@@ -8,6 +8,36 @@
     @close="onClose"
   >
     <a-form layout="vertical" :model="formState">
+      <a-form-item label="Фото профиля">
+        <div class="flex flex-col items-center gap-4">
+          <a-avatar :size="120" :src="photoPreview || formState.photoUrl" class="bg-green-500 text-4xl">
+            {{ !photoPreview && !formState.photoUrl ? (formState.name?.[0]?.toUpperCase() || 'U') : '' }}
+          </a-avatar>
+          
+          <a-space>
+            <a-upload
+              :before-upload="handleBeforeUpload"
+              :show-upload-list="false"
+              accept="image/*"
+            >
+              <a-button>
+                <template #icon><UploadOutlined /></template>
+                {{ formState.photoUrl ? 'Изменить фото' : 'Загрузить фото' }}
+              </a-button>
+            </a-upload>
+            
+            <a-button 
+              v-if="formState.photoUrl" 
+              danger 
+              @click="handleDeletePhoto"
+            >
+              <template #icon><DeleteOutlined /></template>
+              Удалить
+            </a-button>
+          </a-space>
+        </div>
+      </a-form-item>
+      
       <a-form-item label="Имя" required>
         <a-input v-model:value="formState.name" placeholder="Ваше имя" />
       </a-form-item>
@@ -35,7 +65,9 @@
 <script setup>
 import { ref, reactive, watch } from 'vue';
 import { message } from 'ant-design-vue';
+import { UploadOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import { useAuthStore } from '../../stores/auth';
+import axios from 'axios';
 
 const props = defineProps({
   open: Boolean,
@@ -48,10 +80,12 @@ const props = defineProps({
 const emit = defineEmits(['update:open', 'profileUpdated']);
 
 const loading = ref(false);
+const photoPreview = ref('');
 const formState = reactive({
   name: '',
   email: '',
-  password: ''
+  password: '',
+  photoUrl: ''
 });
 
 watch(() => props.user, (newUser) => {
@@ -59,11 +93,64 @@ watch(() => props.user, (newUser) => {
     formState.name = newUser.name || '';
     formState.email = newUser.email || '';
     formState.password = '';
+    formState.photoUrl = newUser.photoUrl || '';
+    photoPreview.value = '';
   }
 }, { immediate: true, deep: true });
 
 const onClose = () => {
   emit('update:open', false);
+  photoPreview.value = '';
+};
+
+const handleBeforeUpload = async (file) => {
+  const isImage = file.type.startsWith('image/');
+  if (!isImage) {
+    message.error('Можно загружать только изображения!');
+    return false;
+  }
+
+  const isLt5M = file.size / 1024 / 1024 < 5;
+  if (!isLt5M) {
+    message.error('Размер изображения не должен превышать 5MB!');
+    return false;
+  }
+
+  // Create preview
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    photoPreview.value = e.target.result;
+  };
+  reader.readAsDataURL(file);
+
+  // Upload to server
+  const formData = new FormData();
+  formData.append('image', file);
+
+  try {
+    const authStore = useAuthStore();
+    const res = await axios.post(`${import.meta.env.VITE_API_URL}/upload`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${authStore.token}`
+      }
+    });
+    
+    formState.photoUrl = res.data.url;
+    message.success('Фото загружено!');
+  } catch (error) {
+    console.error(error);
+    message.error('Ошибка при загрузке фото');
+    photoPreview.value = '';
+  }
+
+  return false; // Prevent default upload behavior
+};
+
+const handleDeletePhoto = () => {
+  formState.photoUrl = '';
+  photoPreview.value = '';
+  message.success('Фото удалено');
 };
 
 const handleSubmit = async () => {
@@ -77,7 +164,8 @@ const handleSubmit = async () => {
   try {
     const updateData = {
       name: formState.name,
-      email: formState.email
+      email: formState.email,
+      photoUrl: formState.photoUrl
     };
     
     if (formState.password) {

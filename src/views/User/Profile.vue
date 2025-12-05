@@ -14,8 +14,8 @@
       <div class="flex flex-col md:flex-row gap-8">
         <!-- Avatar Section -->
         <div class="flex flex-col items-center justify-center md:w-1/3">
-          <a-avatar :size="120" class="mb-4 bg-green-500 text-4xl">
-            {{ authStore.user?.name?.[0]?.toUpperCase() || 'U' }}
+          <a-avatar :size="120" :src="authStore.user?.photoUrl" class="mb-4 bg-green-500 text-4xl">
+            {{ !authStore.user?.photoUrl ? (authStore.user?.name?.[0]?.toUpperCase() || 'U') : '' }}
           </a-avatar>
           <a-tag :color="getRoleColor(authStore.user?.role)" class="text-lg py-1 px-3">
             {{ getRoleName(authStore.user?.role) }}
