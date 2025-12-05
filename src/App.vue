@@ -370,8 +370,8 @@ const roleNames = {
             
             <!-- User Avatar Dropdown -->
             <a-dropdown trigger="click">
-              <a-avatar style="background-color: #87d068; cursor: pointer">
-                {{ authStore.user?.name?.[0]?.toUpperCase() || 'U' }}
+              <a-avatar :src="authStore.user?.photoUrl" style="background-color: #87d068; cursor: pointer">
+                {{ !authStore.user?.photoUrl ? (authStore.user?.name?.[0]?.toUpperCase() || 'U') : '' }}
               </a-avatar>
               <template #overlay>
                 <a-menu>
