@@ -377,6 +377,7 @@ const roleNames = {
               placeholder="Выберите заведение"
               style="width: 200px; margin-right: 16px"
               class="venue-selector"
+              popupClassName="venue-selector-dropdown"
             >
               <a-select-option
                 v-for="venue in authStore.venues"
@@ -518,17 +519,51 @@ const roleNames = {
 </style>
 
 <style>
-.venue-selector :deep(.ant-select-selector) {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
+/* Venue selector - main input */
+.header .venue-selector .ant-select-selector {
+  background-color: #001529 !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
   color: white !important;
 }
 
-.venue-selector :deep(.ant-select-arrow) {
+.header .venue-selector .ant-select-selector:hover {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  background-color: #001529 !important;
+}
+
+.header .venue-selector .ant-select-arrow {
   color: rgba(255, 255, 255, 0.65) !important;
 }
 
-.venue-selector :deep(.ant-select-selection-placeholder) {
+.header .venue-selector .ant-select-selection-placeholder {
   color: rgba(255, 255, 255, 0.45) !important;
+}
+
+.header .venue-selector .ant-select-selection-item {
+  color: white !important;
+}
+
+/* Also target with class directly */
+.venue-selector.ant-select .ant-select-selector {
+  background-color: #001529 !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Venue selector dropdown - global styles */
+.venue-selector-dropdown {
+  background-color: #001529 !important;
+}
+
+.venue-selector-dropdown .ant-select-item {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.venue-selector-dropdown .ant-select-item-option-selected {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+}
+
+.venue-selector-dropdown .ant-select-item-option-active {
+  background-color: rgba(255, 255, 255, 0.15) !important;
 }
 </style>
