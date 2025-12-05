@@ -161,7 +161,7 @@ const roleNames = {
     >
       <div class="logo" style="height: 64px; display: flex; align-items: center; justify-content: center; color: white;">
         <img src="./assets/logo.png" alt="Logo" style="height: 32px; width: auto; margin-right: 8px;" />
-        <span v-if="!collapsed" style="font-size: 18px; font-weight: bold;">Cocktails</span>
+        <span v-if="!collapsed" style="font-size: 18px; font-weight: bold;">UselessBarApp</span>
       </div>
       
       <a-menu
@@ -349,9 +349,9 @@ const roleNames = {
       <!-- Header -->
       <a-layout-header class="header" style="position: fixed; z-index: 1; width: 100%; right: 0;">
         <div class="header-left">
-          <router-link v-if="!authStore.isAuthenticated" to="/" class="logo-link">
+          <router-link to="/" class="logo-link">
             <img src="./assets/logo.png" alt="Logo" class="app-logo" />
-            <span>Главная</span>
+            <span style="font-size: 18px; font-weight: bold;">UselessBarApp</span>
           </router-link>
         </div>
         
