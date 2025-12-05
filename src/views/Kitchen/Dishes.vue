@@ -13,8 +13,17 @@
       </a-space>
     </div>
 
+    <SearchAndSort
+      :item-count="filteredDishes.length"
+      v-model:search-value="searchQuery"
+      :sort-order="sortOrder"
+      item-type="dish"
+      @search="handleSearch"
+      @sort="sortDishes"
+    />
+
     <a-row :gutter="[16, 16]">
-      <a-col v-for="dish in dishes" :key="dish._id" :xs="24" :sm="12" :md="8">
+      <a-col v-for="dish in filteredDishes" :key="dish._id" :xs="24" :sm="12" :md="8">
         <DishCard 
           :dish="dish" 
           @delete="deleteDish"
@@ -40,10 +49,14 @@ import { PlusOutlined } from "@ant-design/icons-vue";
 import { useAuthStore } from '../../stores/auth';
 import AddDishDrawer from '../../components/Kitchen/AddDishDrawer.vue';
 import DishCard from '../../components/Kitchen/DishCard.vue';
+import SearchAndSort from '../../components/Common/SearchAndSort.vue';
 
 const dishes = ref([]);
+const filteredDishes = ref([]);
 const showAddDrawer = ref(false);
 const editingDish = ref(null);
+const searchQuery = ref('');
+const sortOrder = ref(null);
 
 const handleEdit = (dish) => {
   editingDish.value = dish;
@@ -60,6 +73,7 @@ const fetchDishes = async () => {
       params: { venueId: authStore.selectedVenue._id }
     });
     dishes.value = res.data;
+    filteredDishes.value = res.data;
   } catch (e) {
     console.error(e);
     message.error("Ошибка при загрузке блюд");
@@ -76,6 +90,31 @@ const deleteDish = async (id) => {
     console.error(e);
     message.error("Ошибка при удалении");
   }
+};
+
+const handleSearch = () => {
+  filteredDishes.value = dishes.value.filter((d) => {
+    const matchSearch = !searchQuery.value || d.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    return matchSearch
+  })
+  
+  if (sortOrder.value) {
+    sortDishes(sortOrder.value)
+  }
+}
+
+const sortDishes = (order) => {
+  sortOrder.value = order;
+  filteredDishes.value = [...filteredDishes.value].sort((a, b) => {
+    const nameA = a.name.toLowerCase();
+    const nameB = b.name.toLowerCase();
+    
+    if (order === 'asc') {
+      return nameA.localeCompare(nameB, 'ru');
+    } else {
+      return nameB.localeCompare(nameA, 'ru');
+    }
+  });
 };
 
 onMounted(fetchDishes);

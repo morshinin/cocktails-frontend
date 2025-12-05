@@ -19,38 +19,14 @@
     <div v-else>
       <CocktailFilter @filter="handleFilter" />
       
-      <div class="mb-4 flex justify-between items-center gap-4">
-        <div class="text-gray-600">
-          {{ getCocktailCountText(filteredRecipes.length) }}
-        </div>
-        
-        <a-input-search
-          v-model:value="searchQuery"
-          placeholder="Поиск по названию..."
-          style="width: 300px"
-          @change="handleSearch"
-          allow-clear
-        />
-        
-        <a-space>
-          <a-button 
-            :type="sortOrder === 'asc' ? 'primary' : 'default'"
-            @click="sortCocktails('asc')"
-            title="Сортировка А-Я"
-          >
-            <template #icon><SortAscendingOutlined /></template>
-            А-Я
-          </a-button>
-          <a-button 
-            :type="sortOrder === 'desc' ? 'primary' : 'default'"
-            @click="sortCocktails('desc')"
-            title="Сортировка Я-А"
-          >
-            <template #icon><SortDescendingOutlined /></template>
-            Я-А
-          </a-button>
-        </a-space>
-      </div>
+      <SearchAndSort
+        :item-count="filteredRecipes.length"
+        v-model:search-value="searchQuery"
+        :sort-order="sortOrder"
+        item-type="cocktail"
+        @search="handleSearch"
+        @sort="sortCocktails"
+      />
 
       <a-row :gutter="[16, 16]">
         <a-col v-for="r in filteredRecipes" :key="r._id" :xs="24" :sm="12" :md="8">
@@ -64,11 +40,11 @@
 <script setup>
 import { ref, onMounted } from "vue"
 import axios from "axios"
-import { SortAscendingOutlined, SortDescendingOutlined } from '@ant-design/icons-vue'
 import { message } from "ant-design-vue"
 import CocktailFilter from "../../components/Bar/CocktailFilter.vue"
 import CocktailCard from "../../components/Bar/CocktailCard.vue"
 import AddCocktailDrawer from "../../components/Bar/AddCocktailDrawer.vue"
+import SearchAndSort from "../../components/Common/SearchAndSort.vue"
 import { RECIPES_URL } from '../../config/api.js';
 import { useAuthStore } from '../../stores/auth';
 
@@ -134,24 +110,6 @@ const handleSearch = () => {
   }
 }
 
-const getCocktailCountText = (count) => {
-  const lastDigit = count % 10;
-  const lastTwoDigits = count % 100;
-
-  if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
-    return `${count} коктейлей`;
-  }
-
-  if (lastDigit === 1) {
-    return `${count} коктейль`;
-  }
-
-  if (lastDigit >= 2 && lastDigit <= 4) {
-    return `${count} коктейля`;
-  }
-
-  return `${count} коктейлей`;
-}
 
 const sortCocktails = (order) => {
   sortOrder.value = order;
