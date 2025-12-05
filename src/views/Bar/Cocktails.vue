@@ -19,10 +19,18 @@
     <div v-else>
       <CocktailFilter @filter="handleFilter" />
       
-      <div class="mb-4 flex justify-between items-center">
+      <div class="mb-4 flex justify-between items-center gap-4">
         <div class="text-gray-600">
           {{ getCocktailCountText(filteredRecipes.length) }}
         </div>
+        
+        <a-input-search
+          v-model:value="searchQuery"
+          placeholder="Поиск по названию..."
+          style="width: 300px"
+          @change="handleSearch"
+          allow-clear
+        />
         
         <a-space>
           <a-button 
@@ -69,6 +77,7 @@ const showAddModal = ref(false)
 const filteredRecipes = ref([])
 const loading = ref(false)
 const sortOrder = ref(null)
+const searchQuery = ref('')
 
 const fetchRecipes = async () => {
   const authStore = useAuthStore();
@@ -103,8 +112,26 @@ const handleFilter = (filters) => {
     const matchGlass = !filters.glass || r.glass === filters.glass
     const matchMethod = !filters.method || (Array.isArray(r.method) ? r.method.includes(filters.method) : r.method === filters.method)
     const matchDecoration = !filters.decoration || (Array.isArray(r.decoration) ? r.decoration.includes(filters.decoration) : r.decoration === filters.decoration)
-    return matchCategory && matchComponent && matchGlass && matchMethod && matchDecoration
+    const matchSearch = !searchQuery.value || r.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    return matchCategory && matchComponent && matchGlass && matchMethod && matchDecoration && matchSearch
   })
+  
+  // Reapply current sort if active
+  if (sortOrder.value) {
+    sortCocktails(sortOrder.value)
+  }
+}
+
+const handleSearch = () => {
+  filteredRecipes.value = recipes.value.filter((r) => {
+    const matchSearch = !searchQuery.value || r.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    return matchSearch
+  })
+  
+  // Reapply current sort if active
+  if (sortOrder.value) {
+    sortCocktails(sortOrder.value)
+  }
 }
 
 const getCocktailCountText = (count) => {
