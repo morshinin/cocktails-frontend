@@ -2,6 +2,7 @@
 import EnvBadge from "./components/Common/EnvBadge.vue";
 import AppFooter from "./components/Common/AppFooter.vue";
 import AppSidebar from "./components/Common/AppSidebar.vue";
+import UserAvatar from "./components/Common/UserAvatar.vue";
 import { useAuthStore } from "./stores/auth";
 import { useRouter } from "vue-router";
 import { onMounted, ref } from "vue";
@@ -20,23 +21,7 @@ onMounted(() => {
   }
 });
 
-const handleLogout = () => {
-  authStore.logout();
-  router.push("/login");
-};
 
-const roleNames = {
-  developer: 'Разработчик',
-  owner: 'Владелец',
-  manager: 'Управляющий',
-  head_bartender: 'Старший бармен',
-  bartender: 'Бармен',
-  head_chef: 'Шеф-повар',
-  cook: 'Повар',
-  cleaner: 'Клинер',
-  waiter: 'Официант',
-  guest: 'Гость'
-};
 </script>
 
 <template>
@@ -82,34 +67,7 @@ const roleNames = {
             </a-select>
             
             <!-- User Avatar Dropdown -->
-            <a-dropdown trigger="click">
-              <a-avatar :src="authStore.user?.photoUrl" style="background-color: #87d068; cursor: pointer">
-                {{ !authStore.user?.photoUrl ? (authStore.user?.name?.[0]?.toUpperCase() || 'U') : '' }}
-              </a-avatar>
-              <template #overlay>
-                <a-menu>
-                  <a-menu-item disabled style="color: rgba(0, 0, 0, 0.85); cursor: default;">
-                    Вы вошли как {{ roleNames[authStore.user?.role] || authStore.user?.role }}
-                  </a-menu-item>
-                  <a-menu-divider />
-                  <a-menu-item key="profile">
-                    <router-link to="/profile">Profile</router-link>
-                  </a-menu-item>
-                  <a-menu-item key="organizations">
-                    <router-link to="/organizations">Organizations</router-link>
-                  </a-menu-item>
-                  <a-menu-item key="users">
-                    <router-link to="/users">Users</router-link>
-                  </a-menu-item>
-                  <a-menu-item key="settings">
-                    <router-link to="/settings">Settings</router-link>
-                  </a-menu-item>
-                  <a-menu-item key="logout" @click="handleLogout">
-                    Log out
-                  </a-menu-item>
-                </a-menu>
-              </template>
-            </a-dropdown>
+            <UserAvatar />
           </div>
         </div>
       </a-layout-header>
