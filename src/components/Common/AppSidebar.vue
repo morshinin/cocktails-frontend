@@ -79,9 +79,6 @@ watch(
     } else if (pathSegments[0] === 'schedule') {
       selectedKeys.value = ['schedule'];
       openKeys.value = ['staff'];
-    } else if (pathSegments[0] === 'users') {
-      selectedKeys.value = ['users'];
-      openKeys.value = ['staff'];
     } else if (pathSegments[0] === 'events') {
       if (pathSegments[1] === 'schedule') {
         selectedKeys.value = ['events-schedule'];
@@ -226,9 +223,6 @@ defineExpose({ collapsed });
         </a-menu-item>
         <a-menu-item key="schedule">
           <router-link to="/schedule">График смен</router-link>
-        </a-menu-item>
-        <a-menu-item key="users">
-          <router-link to="/users">Пользователи</router-link>
         </a-menu-item>
       </a-sub-menu>
 

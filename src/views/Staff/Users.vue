@@ -85,10 +85,16 @@ const getRoleColor = (role) => {
 
 const fetchUsers = async () => {
   const authStore = useAuthStore();
+  if (!authStore.selectedVenue?.organizationId) {
+    message.warning("Пожалуйста, выберите заведение");
+    return;
+  }
+  
   loading.value = true;
   try {
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
     const res = await axios.get(`${API_URL}/users`, {
+      params: { organizationId: authStore.selectedVenue.organizationId },
       headers: { Authorization: `Bearer ${authStore.token}` }
     });
     users.value = res.data;
