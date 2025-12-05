@@ -53,7 +53,7 @@ const props = defineProps({
   itemType: {
     type: String,
     required: true,
-    validator: (value) => ['cocktail', 'dish'].includes(value)
+    validator: (value) => ['cocktail', 'dish', 'ingredient'].includes(value)
   }
 });
 
@@ -85,6 +85,17 @@ const getItemCountText = (count) => {
       return `${count} блюда`;
     }
     return `${count} блюд`;
+  } else if (props.itemType === 'ingredient') {
+    if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+      return `${count} ингредиентов`;
+    }
+    if (lastDigit === 1) {
+      return `${count} ингредиент`;
+    }
+    if (lastDigit >= 2 && lastDigit <= 4) {
+      return `${count} ингредиента`;
+    }
+    return `${count} ингредиентов`;
   }
 };
 </script>
