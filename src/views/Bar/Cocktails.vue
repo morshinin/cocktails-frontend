@@ -1,7 +1,7 @@
 <template>
   <div class="p-6 max-w-7xl mx-auto">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold">🍸 Коктейли</h1>
+      <h1 class="text-2xl font-bold">Коктейли</h1>
       <a-button type="primary" @click="showAddModal = true">
         ➕ Добавить коктейль
       </a-button>
