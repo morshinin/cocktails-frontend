@@ -41,16 +41,16 @@ watch(
       openKeys.value = ['bar'];
     } else if (pathSegments[0] === 'cocktailComponents') {
       selectedKeys.value = ['cocktailComponents'];
-      openKeys.value = ['bar'];
+      openKeys.value = ['bar', 'bar-references'];
     } else if (pathSegments[0] === 'cocktailMethods') {
       selectedKeys.value = ['cocktailMethods'];
-      openKeys.value = ['bar'];
+      openKeys.value = ['bar', 'bar-references'];
     } else if (pathSegments[0] === 'cocktailGlasses') {
       selectedKeys.value = ['cocktailGlasses'];
-      openKeys.value = ['bar'];
+      openKeys.value = ['bar', 'bar-references'];
     } else if (pathSegments[0] === 'cocktailDecorations') {
       selectedKeys.value = ['cocktailDecorations'];
-      openKeys.value = ['bar'];
+      openKeys.value = ['bar', 'bar-references'];
     } else if (pathSegments[0] === 'categories') {
       selectedKeys.value = ['categories'];
       openKeys.value = ['bar'];
@@ -65,16 +65,16 @@ watch(
       openKeys.value = ['kitchen'];
     } else if (pathSegments[0] === 'ingredients') {
       selectedKeys.value = ['ingredients'];
-      openKeys.value = ['kitchen'];
+      openKeys.value = ['kitchen', 'kitchen-references'];
     } else if (pathSegments[0] === 'kitchen-methods') {
       selectedKeys.value = ['kitchen-methods'];
-      openKeys.value = ['kitchen'];
+      openKeys.value = ['kitchen', 'kitchen-references'];
     } else if (pathSegments[0] === 'allergens') {
       selectedKeys.value = ['allergens'];
-      openKeys.value = ['kitchen'];
+      openKeys.value = ['kitchen', 'kitchen-references'];
     } else if (pathSegments[0] === 'upsells') {
       selectedKeys.value = ['upsells'];
-      openKeys.value = ['kitchen'];
+      openKeys.value = ['kitchen', 'kitchen-references'];
     } else if (pathSegments[0] === 'employees') {
       selectedKeys.value = ['employees'];
       openKeys.value = ['staff'];
@@ -188,21 +188,23 @@ const roleNames = {
           <a-menu-item key="cocktails">
             <router-link to="/cocktails">Коктейли</router-link>
           </a-menu-item>
-          <a-menu-item key="cocktailComponents">
-            <router-link to="/cocktailComponents">Компоненты</router-link>
-          </a-menu-item>
-          <a-menu-item key="cocktailMethods">
-            <router-link to="/cocktailMethods">Методы</router-link>
-          </a-menu-item>
-          <a-menu-item key="cocktailGlasses">
-            <router-link to="/cocktailGlasses">Бокалы</router-link>
-          </a-menu-item>
-          <a-menu-item key="cocktailDecorations">
-            <router-link to="/cocktailDecorations">Украшения</router-link>
-          </a-menu-item>
-          <a-menu-item key="categories">
-            <router-link to="/categories">Категории</router-link>
-          </a-menu-item>
+          <a-sub-menu key="bar-references">
+            <template #title>
+              <span>Справочники</span>
+            </template>
+            <a-menu-item key="cocktailComponents">
+              <router-link to="/cocktailComponents">Компоненты</router-link>
+            </a-menu-item>
+            <a-menu-item key="cocktailMethods">
+              <router-link to="/cocktailMethods">Методы</router-link>
+            </a-menu-item>
+            <a-menu-item key="cocktailGlasses">
+              <router-link to="/cocktailGlasses">Бокалы</router-link>
+            </a-menu-item>
+            <a-menu-item key="cocktailDecorations">
+              <router-link to="/cocktailDecorations">Украшения</router-link>
+            </a-menu-item>
+          </a-sub-menu>
           <a-menu-item key="bar-counters">
             <router-link to="/bar-counters">Барные стойки</router-link>
           </a-menu-item>
@@ -221,18 +223,23 @@ const roleNames = {
           <a-menu-item key="dishes">
             <router-link to="/dishes">Блюда</router-link>
           </a-menu-item>
-          <a-menu-item key="ingredients">
-            <router-link to="/ingredients">Ингредиенты</router-link>
-          </a-menu-item>
-          <a-menu-item key="kitchen-methods">
-            <router-link to="/kitchen-methods">Методы</router-link>
-          </a-menu-item>
-          <a-menu-item key="allergens">
-            <router-link to="/allergens">Аллергены</router-link>
-          </a-menu-item>
-          <a-menu-item key="upsells">
-            <router-link to="/upsells">Доп. продажа</router-link>
-          </a-menu-item>
+          <a-sub-menu key="kitchen-references">
+            <template #title>
+              <span>Справочники</span>
+            </template>
+            <a-menu-item key="ingredients">
+              <router-link to="/ingredients">Ингредиенты</router-link>
+            </a-menu-item>
+            <a-menu-item key="kitchen-methods">
+              <router-link to="/kitchen-methods">Методы</router-link>
+            </a-menu-item>
+            <a-menu-item key="allergens">
+              <router-link to="/allergens">Аллергены</router-link>
+            </a-menu-item>
+            <a-menu-item key="upsells">
+              <router-link to="/upsells">Доп. продажа</router-link>
+            </a-menu-item>
+          </a-sub-menu>
         </a-sub-menu>
 
         <a-sub-menu key="staff">
