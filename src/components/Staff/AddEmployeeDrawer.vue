@@ -1,7 +1,7 @@
 <template>
   <a-drawer
     :visible="visible"
-    title="➕ Новый сотрудник"
+    :title="employeeToEdit ? '✏️ Редактирование сотрудника' : '➕ Новый сотрудник'"
     @close="$emit('update:visible', false)"
     :width="isMobile ? '100%' : '500px'"
     placement="right"
@@ -15,8 +15,8 @@
         <a-input v-model:value="newUser.email" placeholder="email@example.com" />
       </a-form-item>
 
-      <a-form-item label="Пароль" required>
-        <a-input-password v-model:value="newUser.password" placeholder="Введите пароль" />
+      <a-form-item label="Пароль" :required="!employeeToEdit">
+        <a-input-password v-model:value="newUser.password" :placeholder="employeeToEdit ? 'Оставьте пустым, чтобы не менять' : 'Введите пароль'" />
       </a-form-item>
 
       <a-form-item label="Роль" required>
@@ -34,7 +34,9 @@
     <template #footer>
       <div class="flex justify-end gap-2">
         <a-button @click="$emit('update:visible', false)">Отмена</a-button>
-        <a-button type="primary" :loading="loading" @click="addUser">Добавить</a-button>
+        <a-button type="primary" :loading="loading" @click="handleSubmit">
+          {{ employeeToEdit ? 'Сохранить' : 'Добавить' }}
+        </a-button>
       </div>
     </template>
   </a-drawer>
@@ -47,7 +49,8 @@ import { message } from "ant-design-vue"
 import { useAuthStore } from '../../stores/auth';
 
 const props = defineProps({
-  visible: Boolean
+  visible: Boolean,
+  employeeToEdit: Object
 })
 
 const emit = defineEmits(['update:visible', 'success'])
@@ -89,33 +92,61 @@ const initialUserState = {
 const newUser = ref({ ...initialUserState })
 
 // Reset form when drawer opens
+// Reset form when drawer opens
 watch(() => props.visible, (val) => {
   if (val) {
-    newUser.value = JSON.parse(JSON.stringify(initialUserState))
+    if (props.employeeToEdit) {
+      newUser.value = { 
+        ...initialUserState,
+        name: props.employeeToEdit.name,
+        email: props.employeeToEdit.email,
+        role: props.employeeToEdit.role,
+        password: "" // Don't show password hash
+      }
+    } else {
+      newUser.value = JSON.parse(JSON.stringify(initialUserState))
+    }
   }
 })
 
-const addUser = async () => {
-  if (!newUser.value.name || !newUser.value.email || !newUser.value.password) {
+const handleSubmit = async () => {
+  if (!newUser.value.email || (!props.employeeToEdit && !newUser.value.password)) {
     return message.warning("Заполните все обязательные поля")
   }
 
   loading.value = true;
   try {
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-    await axios.post(`${API_URL}/users`, {
-      ...newUser.value,
-      organizationId: authStore.user.organizationId
-    }, {
-      headers: { Authorization: `Bearer ${authStore.token}` }
-    });
     
-    message.success("Сотрудник добавлен")
+    if (props.employeeToEdit) {
+      // Update
+      const payload = {
+        name: newUser.value.name,
+        email: newUser.value.email,
+        role: newUser.value.role,
+      }
+      if (newUser.value.password) payload.password = newUser.value.password;
+
+      await axios.put(`${API_URL}/users/${props.employeeToEdit._id}`, payload, {
+         headers: { Authorization: `Bearer ${authStore.token}` }
+      });
+      message.success("Сотрудник обновлен");
+    } else {
+      // Create
+      await axios.post(`${API_URL}/users`, {
+        ...newUser.value,
+        organizationId: authStore.user.organizationId
+      }, {
+        headers: { Authorization: `Bearer ${authStore.token}` }
+      });
+      message.success("Сотрудник добавлен");
+    }
+    
     emit('success')
     emit('update:visible', false)
   } catch (e) {
     console.error(e)
-    message.error(e.response?.data?.message || "Ошибка при добавлении сотрудника")
+    message.error(e.response?.data?.message || "Ошибка при сохранении")
   } finally {
     loading.value = false;
   }
