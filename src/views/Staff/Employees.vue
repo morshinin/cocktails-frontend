@@ -2,14 +2,15 @@
   <div class="p-6 max-w-7xl mx-auto">
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold">Сотрудники</h1>
-      <a-button type="primary" @click="showDrawer = true">
+      <a-button type="primary" @click="handleAdd">
         <template #icon><PlusOutlined /></template>
         Добавить сотрудника
       </a-button>
     </div>
 
     <AddEmployeeDrawer
-      v-model:visible="showAddModal"
+      v-model:visible="showDrawer"
+      :employeeToEdit="editingEmployee"
       @success="fetchUsers"
     />
 
@@ -20,7 +21,7 @@
     <div v-else>
       <a-row :gutter="[16, 16]">
         <a-col v-for="user in users" :key="user._id" :xs="24" :sm="12" :md="8">
-          <EmployeeCard :employee="user" @delete="deleteUser" />
+          <EmployeeCard :employee="user" @delete="deleteUser" @edit="handleEdit" />
         </a-col>
       </a-row>
       
@@ -41,8 +42,19 @@ import AddEmployeeDrawer from '../../components/Staff/AddEmployeeDrawer.vue';
 
 const users = ref([]);
 const loading = ref(false);
-const showAddModal = ref(false);
+const showDrawer = ref(false);
+const editingEmployee = ref(null);
 const authStore = useAuthStore();
+
+const handleAdd = () => {
+  editingEmployee.value = null;
+  showDrawer.value = true;
+};
+
+const handleEdit = (employee) => {
+  editingEmployee.value = employee;
+  showDrawer.value = true;
+};
 
 const fetchUsers = async () => {
   if (!authStore.user) return;
