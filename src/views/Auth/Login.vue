@@ -4,11 +4,11 @@
 
     <a-form @submit.prevent="submit">
       <a-form-item label="Email">
-        <a-input v-model:value="email" />
+        <a-input id="email" v-model:value="email" />
       </a-form-item>
 
       <a-form-item label="Password">
-        <a-input type="password" v-model:value="password" />
+        <a-input id="password" type="password" v-model:value="password" />
       </a-form-item>
 
       <a-button type="primary" html-type="submit" block :loading="loading">
