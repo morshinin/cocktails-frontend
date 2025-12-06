@@ -10,7 +10,8 @@
     "devremote": "vite --mode development",
     "prodserver": "vite --mode production",
     "lint": "eslint . --fix",
-    "test": "vitest"
+    "test": "vitest",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "ant-design-vue": "^4.2.6",
@@ -21,6 +22,7 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "@types/node": "^24.10.1",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/eslint-config-prettier": "^10.2.0",
