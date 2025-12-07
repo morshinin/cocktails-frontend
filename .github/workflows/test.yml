@@ -7,8 +7,8 @@ on:
     branches: [ main, dev ]
 
 jobs:
-  test:
-    timeout-minutes: 60
+  unit-tests:
+    timeout-minutes: 10
     runs-on: ubuntu-latest
 
     steps:
@@ -23,17 +23,57 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-
     - name: Run Unit Tests
       run: npm test
+
+  e2e-tests:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.57.0-jammy
+      options: --ipc=host
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps chromium
+
+    - name: Install curl
+      run: apt-get update && apt-get install -y curl
+
+    - name: Start dev server
+      run: |
+        npm run dev &
+        echo $! > /tmp/dev-server.pid
+        # Ждем запуска сервера
+        timeout=60
+        counter=0
+        while ! curl -f http://localhost:5173 > /dev/null 2>&1; do
+          if [ $counter -ge $timeout ]; then
+            echo "Dev server failed to start"
+            exit 1
+          fi
+          sleep 1
+          counter=$((counter + 1))
+        done
+        echo "Dev server is ready"
 
     - name: Run E2E Tests
       run: npm run test:e2e
       env:
         CI: true
         VITE_API_URL: ${{ github.ref == 'refs/heads/main' && secrets.API_URL_MAIN || secrets.API_URL_DEV }}
+
+    - name: Stop dev server
+      if: always()
+      run: |
+        if [ -f /tmp/dev-server.pid ]; then
+          kill $(cat /tmp/dev-server.pid) 2>/dev/null || true
+        fi
 
     - uses: actions/upload-artifact@v4
       if: always()
