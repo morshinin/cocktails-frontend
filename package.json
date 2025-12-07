@@ -12,8 +12,8 @@
     "lint": "eslint . --fix",
     "test": "vitest",
     "test:e2e": "playwright test",
-    "test:e2e:docker": "docker build -f Dockerfile.e2e -t cocktails-e2e . && docker run --rm -e CI=false -v $(pwd)/playwright-report:/app/playwright-report -v $(pwd)/test-results:/app/test-results cocktails-e2e",
-    "test:e2e:compose": "docker-compose -f docker-compose.e2e.yml up --build --abort-on-container-exit"
+    "test:e2e:docker": "docker --version > /dev/null 2>&1 && docker build -f Dockerfile.e2e -t cocktails-e2e . && docker run --rm -e CI=false -v $(pwd)/playwright-report:/app/playwright-report -v $(pwd)/test-results:/app/test-results cocktails-e2e || (echo 'Docker not found. Running tests without Docker...' && npm run test:e2e)",
+    "test:e2e:compose": "docker-compose --version > /dev/null 2>&1 && docker-compose -f docker-compose.e2e.yml up --build --abort-on-container-exit || (echo 'Docker Compose not found. Running tests without Docker...' && npm run test:e2e)"
   },
   "dependencies": {
     "ant-design-vue": "^4.2.6",
