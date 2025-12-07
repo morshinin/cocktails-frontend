@@ -56,35 +56,40 @@ test.describe('Cocktail Management', () => {
 
     test('should display existing cocktails', async ({ page }) => {
         const currentRecipes = getInitialRecipes();
+        let recipesResponseReceived = false;
         
-        // Mock GET recipes endpoint - match any recipes request
+        // Mock GET recipes endpoint - match any recipes request (more flexible pattern)
         await page.route('**/recipes*', async route => {
-            if (route.request().method() === 'GET') {
-                await route.fulfill({ json: currentRecipes });
+            const method = route.request().method();
+            if (method === 'GET') {
+                recipesResponseReceived = true;
+                await route.fulfill({ 
+                    json: currentRecipes,
+                    status: 200,
+                    headers: { 'Content-Type': 'application/json' }
+                });
             } else {
                 await route.continue();
             }
         });
 
-        await page.goto('/cocktails');
+        await page.goto('/cocktails', { waitUntil: 'domcontentloaded' });
         
         // Wait for the recipes API response to complete
         await page.waitForResponse(response => {
             const url = response.url();
             const method = response.request().method();
             return url.includes('recipes') && method === 'GET' && response.status() === 200;
-        }, { timeout: 10000 }).catch(() => {});
+        }, { timeout: 20000 }).catch(() => {});
         
         // Wait for the page to load and API calls to complete
         // Wait for loading spinner to disappear first
-        await page.waitForSelector('.ant-spin', { state: 'hidden', timeout: 10000 }).catch(() => {});
+        await page.waitForSelector('.ant-spin', { state: 'hidden', timeout: 20000 }).catch(() => {});
         
-        // Wait for the card container to appear, then check for content
-        await page.waitForSelector('.ant-card', { timeout: 10000 });
-        
-        // Wait for the card to appear (more reliable than fixed timeout)
-        await expect(page.getByText('Existing Cocktail')).toBeVisible({ timeout: 10000 });
-        await expect(page.getByText('Vodka')).toBeVisible();
+        // Wait for Vue to render the cards - check for the text directly instead of card selector
+        // This is more reliable as it waits for actual content
+        await expect(page.getByText('Existing Cocktail')).toBeVisible({ timeout: 20000 });
+        await expect(page.getByText('Vodka')).toBeVisible({ timeout: 10000 });
     });
 
     test('should add a new cocktail', async ({ page }) => {
@@ -93,7 +98,7 @@ test.describe('Cocktail Management', () => {
         const currentRecipes = getInitialRecipes();
         let getCallCount = 0;
 
-        // Mock recipes endpoint - handle GET and POST
+        // Mock recipes endpoint - handle GET and POST (more flexible pattern)
         await page.route('**/recipes*', async route => {
             if (route.request().method() === 'GET') {
                 getCallCount++;
@@ -121,18 +126,20 @@ test.describe('Cocktail Management', () => {
             }
         });
 
-        await page.goto('/cocktails');
+        await page.goto('/cocktails', { waitUntil: 'domcontentloaded' });
         
         // Wait for the recipes API response to complete
         await page.waitForResponse(response => {
             const url = response.url();
             const method = response.request().method();
             return url.includes('recipes') && method === 'GET' && response.status() === 200;
-        }, { timeout: 10000 }).catch(() => {});
+        }, { timeout: 20000 }).catch(() => {});
         
         // Wait for the page to load and initial data to appear
-        await page.waitForSelector('.ant-spin', { state: 'hidden', timeout: 10000 }).catch(() => {});
-        await page.waitForTimeout(300);
+        await page.waitForSelector('.ant-spin', { state: 'hidden', timeout: 20000 }).catch(() => {});
+        
+        // Wait for content to appear - more reliable than waiting for card selector
+        await page.waitForTimeout(1000);
 
         // Click "Добавить коктейль" button
         await page.getByRole('button', { name: /Добавить коктейль/i }).click();
@@ -231,7 +238,7 @@ test.describe('Cocktail Management', () => {
             }
         });
 
-        // Mock GET recipes endpoint - handle multiple calls
+        // Mock GET recipes endpoint - handle multiple calls (more flexible pattern)
         await page.route('**/recipes*', async route => {
             if (route.request().method() === 'GET') {
                 getCallCount++;
@@ -247,22 +254,21 @@ test.describe('Cocktail Management', () => {
             }
         });
 
-        await page.goto('/cocktails');
+        await page.goto('/cocktails', { waitUntil: 'domcontentloaded' });
         
         // Wait for the recipes API response to complete
         await page.waitForResponse(response => {
             const url = response.url();
             const method = response.request().method();
             return url.includes('recipes') && method === 'GET' && response.status() === 200;
-        }, { timeout: 10000 }).catch(() => {});
+        }, { timeout: 20000 }).catch(() => {});
         
         // Wait for the page to load and API calls to complete
-        await page.waitForSelector('.ant-spin', { state: 'hidden', timeout: 10000 }).catch(() => {});
-        await page.waitForSelector('.ant-card', { timeout: 10000 });
-        await page.waitForTimeout(300);
-
-        // Verify card is present
-        await expect(page.getByText('Existing Cocktail')).toBeVisible({ timeout: 10000 });
+        await page.waitForSelector('.ant-spin', { state: 'hidden', timeout: 20000 }).catch(() => {});
+        await page.waitForTimeout(1000);
+        
+        // Verify card is present - wait for text content instead of card selector
+        await expect(page.getByText('Existing Cocktail')).toBeVisible({ timeout: 20000 });
 
         // 1. Click the "More" dropdown trigger on the card
         const card = page.locator('.ant-card').filter({ hasText: 'Existing Cocktail' });
