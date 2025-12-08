@@ -17,8 +17,14 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '22.x'
+        node-version: '23.x'
         cache: 'npm'
+
+    - name: Debug variables
+      run: |
+        echo "Ref: ${{ github.ref }}"
+        echo "Ref name: ${{ github.ref_name }}"
+        echo "API_URL from vars: ${{ vars.API_URL }}"
 
     - name: Install dependencies
       run: npm ci
@@ -27,6 +33,7 @@ jobs:
       run: npm test
 
   e2e-tests:
+    environment: ${{ github.ref_name == 'main' && 'production' || 'preview' }}
     timeout-minutes: 60
     runs-on: ubuntu-latest
 
@@ -43,7 +50,7 @@ jobs:
       run: |
         docker run --rm \
           -e CI=true \
-          -e VITE_API_URL="${{ github.ref == 'refs/heads/main' && secrets.API_URL_MAIN || secrets.API_URL_DEV }}" \
+          -e VITE_API_URL="${{ vars.API_URL }}" \
           -v ${{ github.workspace }}/playwright-report:/app/playwright-report \
           -v ${{ github.workspace }}/test-results:/app/test-results \
           cocktails-e2e:test
