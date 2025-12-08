@@ -54,42 +54,79 @@ test.describe('Cocktail Management', () => {
         });
     });
 
-    test('should display existing cocktails', async ({ page }) => {
+    test('should display existing cocktails', async ({ page }, testInfo) => {
+        testInfo.setTimeout(60000); // Increase timeout for this test
         const currentRecipes = getInitialRecipes();
         let recipesResponseReceived = false;
         
-        // Mock GET recipes endpoint - match any recipes request (more flexible pattern)
-        await page.route('**/recipes*', async route => {
-            const method = route.request().method();
-            if (method === 'GET') {
+        // Enable request logging for debugging
+        page.on('request', request => console.log('>>', request.method(), request.url()));
+        page.on('response', response => console.log('<<', response.status(), response.url()));
+        
+        // Mock GET recipes endpoint
+        await page.route('**/recipes*', async (route, request) => {
+            console.log('Intercepted request to:', request.url());
+            if (request.method() === 'GET') {
                 recipesResponseReceived = true;
-                await route.fulfill({ 
+                console.log('Returning mock recipes:', currentRecipes);
+                return route.fulfill({ 
                     json: currentRecipes,
                     status: 200,
                     headers: { 'Content-Type': 'application/json' }
                 });
-            } else {
-                await route.continue();
             }
+            return route.continue();
         });
 
-        await page.goto('/cocktails', { waitUntil: 'domcontentloaded' });
+        // Add a screenshot before navigation for debugging
+        await page.screenshot({ path: 'before-navigation.png' });
         
-        // Wait for the recipes API response to complete
-        await page.waitForResponse(response => {
-            const url = response.url();
-            const method = response.request().method();
-            return url.includes('recipes') && method === 'GET' && response.status() === 200;
-        }, { timeout: 20000 }).catch(() => {});
+        // Navigate to the page with networkidle to ensure all resources are loaded
+        await page.goto('/cocktails', { 
+            waitUntil: 'networkidle',
+            timeout: 30000 
+        });
         
-        // Wait for the page to load and API calls to complete
-        // Wait for loading spinner to disappear first
-        await page.waitForSelector('.ant-spin', { state: 'hidden', timeout: 20000 }).catch(() => {});
+        // Wait for the recipes API to be called
+        try {
+            await expect(async () => {
+                expect(recipesResponseReceived).toBeTruthy();
+            }).toPass({ timeout: 20000 });
+            console.log('Recipes API was called successfully');
+        } catch (error) {
+            console.error('Recipes API was not called:', error);
+            throw error;
+        }
         
-        // Wait for Vue to render the cards - check for the text directly instead of card selector
-        // This is more reliable as it waits for actual content
-        await expect(page.getByText('Existing Cocktail')).toBeVisible({ timeout: 20000 });
-        await expect(page.getByText('Vodka')).toBeVisible({ timeout: 10000 });
+        // Wait for loading to complete
+        await page.waitForLoadState('networkidle');
+        await page.waitForSelector('.ant-spin', { state: 'hidden', timeout: 15000 }).catch(() => {
+            console.log('No loading spinner found or it was already hidden');
+        });
+        
+        // Take a screenshot after page load
+        await page.screenshot({ path: 'after-navigation.png' });
+        
+        // Wait for the cocktail card to be visible with more specific selector
+        const cocktailCard = page.locator('.ant-card').filter({ hasText: 'Existing Cocktail' });
+        
+        try {
+            // First check if the card is present in the DOM
+            await expect(cocktailCard).toBeVisible({ timeout: 20000 });
+            console.log('Cocktail card is visible');
+            
+            // Then check for the content
+            await expect(cocktailCard.getByText('Vodka')).toBeVisible({ timeout: 10000 });
+            console.log('Vodka text is visible in the card');
+            
+            // Take a final screenshot
+            await page.screenshot({ path: 'test-complete.png' });
+        } catch (error) {
+            // On failure, log the page content and take a screenshot
+            console.error('Test failed. Page content:', await page.content());
+            await page.screenshot({ path: 'test-failure.png' });
+            throw error;
+        }
     });
 
     test('should add a new cocktail', async ({ page }) => {
