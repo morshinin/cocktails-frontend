@@ -1,5 +1,48 @@
 import { test, expect } from '@playwright/test';
 
+test('should display existing cocktails', async ({ page }) => {
+    console.log('Starting login test...');
+
+    // Шаг 1
+    await page.goto('/');
+    await page.screenshot({ path: 'step1-home.png' });
+
+    // Шаг 2
+    await page.click('a[href="/login"]');
+    await page.waitForURL('**/login');
+    await page.screenshot({ path: 'step2-login-page.png' });
+
+    // Шаг 3
+    await page.fill('input[id="email"]', process.env.TEST_USER_EMAIL || 'test@example.com');
+    await page.fill('input[id="password"]', process.env.TEST_PASSWORD || 'test123');
+    await page.screenshot({ path: 'step3-filled-form.png' });
+
+    // Шаг 4
+    await page.click('button[type="submit"]');
+
+    // Шаг 5
+    await page.waitForURL('**/select-venue**', { timeout: 10000 });
+    await page.screenshot({ path: 'step4-after-login.png' });
+
+    await page.click('text=ПЭУ (Ереван)');
+
+    await page.waitForURL('**/dashboard**', { timeout: 10000 });
+
+    await page.click('div[class="sidebar-trigger"]');
+
+    await page.waitFor(1000);
+
+    await page.click('div=[data-menu-id="bar"]');
+
+    await page.click('li[data-menu-id="cocktails"]');
+
+    await page.waitForURL('**/cocktails**', { timeout: 10000 });
+
+    // Шаг 6
+    await expect(page.getByText('Existing Cocktail')).toBeVisible({ timeout: 20000 });
+    console.log('Test passed!');
+});
+
 test.describe('Cocktail Management', () => {
     // Helper to get initial recipes
     const getInitialRecipes = () => [
