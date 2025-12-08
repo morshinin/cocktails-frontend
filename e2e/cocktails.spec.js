@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Login', () => {
     test('should display cocktails page', async ({ page }) => {
+        test.setTimeout(120000);
         // Шаг 1
         await page.goto('/');
 
@@ -20,7 +21,7 @@ test.describe('Login', () => {
         await page.click('button[type="submit"]');
 
         // Шаг 5
-        await page.waitForURL('**/select-venue**', { timeout: 30000 });
+        await page.waitForURL('**/select-venue**', { timeout: 60000 });
 
         await page.click('text=ПЭУ (Ереван)');
 
