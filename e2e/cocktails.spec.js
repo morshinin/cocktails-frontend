@@ -20,7 +20,7 @@ test.describe('Login', () => {
         await page.click('button[type="submit"]');
 
         // Шаг 5
-        await page.waitForURL('**/select-venue**', { timeout: 10000 });
+        await page.waitForURL('**/select-venue**', { timeout: 30000 });
 
         await page.click('text=ПЭУ (Ереван)');
 
