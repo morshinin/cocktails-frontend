@@ -10,6 +10,7 @@ import CocktailGlasses from '../views/Bar/CocktailGlasses.vue'
 import CocktailDetails from "../views/Bar/CocktailDetails.vue"
 import Login from "../views/Auth/Login.vue";
 import SelectVenue from "../views/Organization/SelectVenue.vue";
+import CocktailGame from '../views/Bar/CocktailGame.vue';
 
 const routes = [
   { path: '/', name: 'Home', component: Home, meta: { titleKey: 'pages.home' } },
@@ -17,6 +18,11 @@ const routes = [
   { path: "/register", component: () => import("../views/Auth/Register.vue"), meta: { titleKey: 'auth.register' } },
   { path: "/verify-email/:token", component: () => import("../views/Auth/VerifyEmail.vue"), meta: { title: 'Email Verification' } },
   { path: "/select-venue", component: SelectVenue, meta: { titleKey: 'auth.selectVenue' } },
+  {
+    path: "/cocktail-game",
+    component: CocktailGame,
+    meta: { requiresAuth: true, titleKey: 'nav.cocktailGame' },
+  },
   {
     path: "/profile",
     name: "Profile",
