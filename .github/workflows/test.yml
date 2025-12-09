@@ -7,8 +7,8 @@ on:
     branches: [ main, dev ]
 
 jobs:
-  test:
-    timeout-minutes: 60
+  unit-tests:
+    timeout-minutes: 10
     runs-on: ubuntu-latest
 
     steps:
@@ -17,23 +17,66 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '22.x'
+        node-version: '23.x'
         cache: 'npm'
+
+    - name: Debug variables
+      run: |
+        echo "Ref: ${{ github.ref }}"
+        echo "Ref name: ${{ github.ref_name }}"
+        echo "API_URL from vars: ${{ vars.API_URL }}"
 
     - name: Install dependencies
       run: npm ci
 
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-
     - name: Run Unit Tests
       run: npm test
 
-    - name: Run E2E Tests
-      run: npm run test:e2e
+  e2e-tests:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'production' || 'preview' }}
+
+    steps:
+
+    - uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build Docker image for E2E tests
+      run: docker build -f Dockerfile.e2e -t cocktails-e2e:test .
+
+    - name: Debug before tests
+      run: |
+        echo "=== WORKFLOW DEBUG ==="
+        echo "API_URL variable: ${{ vars.API_URL }}"
+        echo "TEST_USER_EMAIL secret exists: ${{ secrets.TEST_USER_EMAIL != '' }}"
+        
+        # Проверяем что фронтенд запускается
+        echo "--- Starting frontend in background ---"
+        docker run -d --name frontend -p 5173:5173 cocktails-e2e:test sleep 30
+        sleep 10
+        
+        echo "--- Testing connectivity ---"
+        curl -f http://localhost:5173 || echo "Frontend not responding"
+        
+        echo "--- Environment in container ---"
+        docker exec frontend printenv | grep -E "(API|TEST|VITE|CI)" || true
+
+    - name: Run E2E Tests in Docker
       env:
-        CI: true
-        VITE_API_URL: ${{ github.ref == 'refs/heads/main' && secrets.API_URL_MAIN || secrets.API_URL_DEV }}
+        TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+      run: |
+        docker run --rm \
+          -e CI=true \
+          -e VITE_API_URL="${{ vars.API_URL }}" \
+          -e TEST_USER_EMAIL="${{ secrets.TEST_USER_EMAIL }}" \
+          -e TEST_PASSWORD="${{ secrets.TEST_PASSWORD }}" \
+          -v ${{ github.workspace }}/playwright-report:/app/playwright-report \
+          -v ${{ github.workspace }}/test-results:/app/test-results \
+          cocktails-e2e:test
 
     - uses: actions/upload-artifact@v4
       if: always()

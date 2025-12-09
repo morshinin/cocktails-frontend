@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  dev-server:
+    image: node:22
+    working_dir: /app
+    command: npm run dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=${VITE_API_URL:-http://localhost:3000/api}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5173"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+
+  e2e-tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.e2e
+    depends_on:
+      dev-server:
+        condition: service_healthy
+    environment:
+      - CI=true
+      - VITE_API_URL=${VITE_API_URL:-http://localhost:3000/api}
+    volumes:
+      # Монтируем результаты тестов
+      - ./playwright-report:/app/playwright-report
+      - ./test-results:/app/test-results
+    # Используем host network для доступа к dev-server
+    network_mode: service:dev-server
+    # Или можно использовать отдельную сеть:
+    # networks:
+    #   - test-network
+
+# networks:
+#   test-network:
+#     driver: bridge
+
