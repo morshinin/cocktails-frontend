@@ -38,6 +38,22 @@ jobs:
     environment: ${{ github.ref_name == 'main' && 'production' || 'preview' }}
 
     steps:
+    - name: Debug before tests
+      run: |
+        echo "=== WORKFLOW DEBUG ==="
+        echo "API_URL variable: ${{ vars.API_URL }}"
+        echo "TEST_USER_EMAIL secret exists: ${{ secrets.TEST_USER_EMAIL != '' }}"
+        
+        # Проверяем что фронтенд запускается
+        echo "--- Starting frontend in background ---"
+        docker run -d --name frontend -p 5173:5173 cocktails-e2e:test sleep 30
+        sleep 10
+        
+        echo "--- Testing connectivity ---"
+        curl -f http://localhost:5173 || echo "Frontend not responding"
+        
+        echo "--- Environment in container ---"
+        docker exec frontend printenv | grep -E "(API|TEST|VITE|CI)" || true
     - uses: actions/checkout@v4
     
     - name: Set up Docker Buildx
