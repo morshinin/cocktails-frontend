@@ -145,43 +145,7 @@ async function setupMocks(page) {
   });
 }
 
-test.describe('Cocktails Page', async ({page}) => {
-  // === ДОБАВЬ ЭТО ДЛЯ ОТЛАДКИ CI ===
-  console.log('=== CI DEBUG START ===');
-  console.log('1. Environment check:');
-  console.log('   - CI mode?', process.env.CI === 'true');
-  console.log('   - TEST_USER_EMAIL exists?', !!process.env.TEST_USER_EMAIL);
-  console.log('   - VITE_API_URL:', process.env.VITE_API_URL);
-  console.log('   - Node env:', process.env.NODE_ENV);
-
-  // 2. Проверим доступность бэкенда
-  if (process.env.VITE_API_URL) {
-    try {
-      const response = await fetch(`${process.env.VITE_API_URL}/health`, {
-        method: 'GET',
-        timeout: 5000
-      }).catch(() => null);
-      console.log('   - Backend health check:', response?.status || 'FAILED');
-    } catch {
-      console.log('   - Backend health check: Cannot connect');
-    }
-  }
-
-  // 3. Слушаем все сетевые запросы
-  page.on('request', request => {
-    if (request.url().includes('api') || request.url().includes('auth')) {
-      console.log('🌐 REQUEST:', request.method(), request.url());
-    }
-  });
-
-  page.on('response', response => {
-    if (response.url().includes('api') || response.url().includes('auth')) {
-      console.log('🌐 RESPONSE:', response.status(), response.url());
-    }
-  });
-
-  page.on('console', msg => console.log('📱 BROWSER LOG:', msg.text()));
-  // === КОНЕЦ ОТЛАДКИ ===
+test.describe('Cocktails Page', () => {
 
   test.beforeEach(async ({ page }) => {
     // Setup all mocks
@@ -200,6 +164,43 @@ test.describe('Cocktails Page', async ({page}) => {
   });
 
   test('should display cocktails page after login', async ({ page }) => {
+    // === ДОБАВЬ ЭТО ДЛЯ ОТЛАДКИ CI ===
+    console.log('=== CI DEBUG START ===');
+    console.log('1. Environment check:');
+    console.log('   - CI mode?', process.env.CI === 'true');
+    console.log('   - TEST_USER_EMAIL exists?', !!process.env.TEST_USER_EMAIL);
+    console.log('   - VITE_API_URL:', process.env.VITE_API_URL);
+    console.log('   - Node env:', process.env.NODE_ENV);
+
+    // 2. Проверим доступность бэкенда
+    if (process.env.VITE_API_URL) {
+      try {
+        const response = await fetch(`${process.env.VITE_API_URL}/health`, {
+          method: 'GET',
+          timeout: 5000
+        }).catch(() => null);
+        console.log('   - Backend health check:', response?.status || 'FAILED');
+      } catch {
+        console.log('   - Backend health check: Cannot connect');
+      }
+    }
+
+    // 3. Слушаем все сетевые запросы
+    page.on('request', request => {
+      if (request.url().includes('api') || request.url().includes('auth')) {
+        console.log('🌐 REQUEST:', request.method(), request.url());
+      }
+    });
+
+    page.on('response', response => {
+      if (response.url().includes('api') || response.url().includes('auth')) {
+        console.log('🌐 RESPONSE:', response.status(), response.url());
+      }
+    });
+
+    page.on('console', msg => console.log('📱 BROWSER LOG:', msg.text()));
+    // === КОНЕЦ ОТЛАДКИ ===
+
     try {
       // Go to login page
       await page.click('a[href="/login"]');
