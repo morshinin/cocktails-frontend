@@ -34,9 +34,10 @@ export default defineConfig({
     ],
 
     /* Run your local dev server before starting the tests */
-    webServer: {
+    // Отключаем webServer в CI, так как сервер запускается вручную в workflow
+    webServer: process.env.CI ? undefined : {
         command: 'npm run dev',
         url: 'http://localhost:5173',
-        reuseExistingServer: !process.env.CI,
+        reuseExistingServer: true,
     },
 });
