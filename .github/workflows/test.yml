@@ -38,6 +38,15 @@ jobs:
     environment: ${{ github.ref_name == 'main' && 'production' || 'preview' }}
 
     steps:
+
+    - uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build Docker image for E2E tests
+      run: docker build -f Dockerfile.e2e -t cocktails-e2e:test .
+
     - name: Debug before tests
       run: |
         echo "=== WORKFLOW DEBUG ==="
@@ -54,13 +63,6 @@ jobs:
         
         echo "--- Environment in container ---"
         docker exec frontend printenv | grep -E "(API|TEST|VITE|CI)" || true
-    - uses: actions/checkout@v4
-    
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    - name: Build Docker image for E2E tests
-      run: docker build -f Dockerfile.e2e -t cocktails-e2e:test .
 
     - name: Run E2E Tests in Docker
       env:
